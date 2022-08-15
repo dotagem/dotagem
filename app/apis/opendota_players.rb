@@ -1,6 +1,6 @@
 class OpendotaPlayers
   include HTTParty
-  base_uri 'api.opendota.com/api/players'
+  base_uri 'https://api.opendota.com/api/players'
 
   def initialize(player_id)
     @player_id = player_id
@@ -26,7 +26,19 @@ class OpendotaPlayers
     self.class.get("/#{@player_id}/peers", query: opts)
   end
 
+  def totals(opts = {})
+    self.class.get("/#{@player_id}/totals", query: opts)
+  end
+
+  def counts(opts = {})
+    self.class.get("/#{@player_id}/counts", query: opts)
+  end
+
   def wordcloud
     self.class.get("/#{@player_id}/wordcloud")
+  end
+
+  def refresh
+    self.class.post("/#{@player_id}/refresh").code
   end
 end

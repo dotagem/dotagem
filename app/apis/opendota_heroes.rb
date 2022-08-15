@@ -1,6 +1,6 @@
 class OpendotaHeroes
   include HTTParty
-  base_uri 'api.opendota.com/api/heroes'
+  base_uri 'https://api.opendota.com/api/heroes'
 
   def initialize(hero_id)
     @hero_id = hero_id
