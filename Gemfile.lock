@@ -230,7 +230,7 @@ DEPENDENCIES
   sprockets-rails
   sqlite3 (~> 1.4)
   stimulus-rails
-  telegram-bot
+  telegram-bot (~> 0.15.6)
   turbo-rails
   tzinfo-data
   web-console
