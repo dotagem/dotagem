@@ -71,4 +71,4 @@ group :test do
   gem "webdrivers"
 end
 
-gem "telegram-bot"
+gem 'telegram-bot', '~> 0.15.6'
