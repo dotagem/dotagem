@@ -72,3 +72,4 @@ group :test do
 end
 
 gem 'telegram-bot', '~> 0.15.6'
+gem 'httparty', '~> 0.20'
