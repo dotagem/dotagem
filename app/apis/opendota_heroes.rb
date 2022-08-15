@@ -3,7 +3,7 @@ class OpendotaHeroes
   base_uri 'api.opendota.com/api/heroes'
 
   def initialize(hero_id)
-    @hero_id = hero_id.to_s
+    @hero_id = hero_id
   end
 
   def all
@@ -11,7 +11,7 @@ class OpendotaHeroes
   end
 
   def info
-    self.class.get("/").select { |hero| hero["id"] == @hero_id.to_i }
+    self.class.get("/").select { |hero| hero["id"] == @hero_id }
   end
 
   def matchups
