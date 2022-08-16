@@ -6,7 +6,7 @@ class OpendotaMatches
     @match_id = match_id
   end
 
-  def info
+  def show
     self.class.get("/#{@match_id}")
   end
 end
