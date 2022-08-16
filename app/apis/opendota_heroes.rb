@@ -6,8 +6,8 @@ class OpendotaHeroes
     @hero_id = hero_id
   end
 
-  def all
-    self.class.get("/")
+  def self.all
+    get("/")
   end
 
   def info
