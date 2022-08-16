@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  lobby_id: 1
+  name: MyString
+  localized_name: MyString
+  balanced: false
+
+two:
+  lobby_id: 1
+  name: MyString
+  localized_name: MyString
+  balanced: false
