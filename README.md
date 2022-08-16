@@ -17,7 +17,7 @@ Not nearly. Here's my incomplete checklist of doom:
 - [x] Set up telegram-bot and make it talk to the Telegram bot API 💬
 - [x] Set up HTTParty so we can talk to the OpenDota API 🌐
 - [ ] Make the data we get back from OpenDota quack like a Rails model 🦆
-- [ ] Fetch and cache constants from OpenDota so we don't need to bother the API for things like hero names 📃
+- [x] Fetch and cache constants from OpenDota so we don't need to bother the API for things like hero names 📃
 - [ ] Allow users to sign in through Steam and identify themselves 🔐
 - [ ] Build match commands 📅
 - [ ] Build player commands 🤼
