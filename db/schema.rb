@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_08_16_135922) do
+ActiveRecord::Schema[7.0].define(version: 2022_08_16_153958) do
   create_table "game_modes", force: :cascade do |t|
     t.integer "mode_id", null: false
     t.string "name", null: false
@@ -59,6 +59,23 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_16_135922) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["lobby_id"], name: "index_lobby_types_on_lobby_id", unique: true
+  end
+
+  create_table "users", force: :cascade do |t|
+    t.boolean "admin", default: false
+    t.integer "telegram_id", null: false
+    t.string "telegram_username"
+    t.string "telegram_avatar"
+    t.integer "steam_id64"
+    t.string "steam_id3"
+    t.string "steam_nickname"
+    t.string "steam_url"
+    t.string "steam_avatar"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["steam_id3"], name: "index_users_on_steam_id3", unique: true
+    t.index ["steam_id64"], name: "index_users_on_steam_id64", unique: true
+    t.index ["telegram_id"], name: "index_users_on_telegram_id", unique: true
   end
 
 end
