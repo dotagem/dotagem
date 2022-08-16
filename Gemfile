@@ -73,3 +73,10 @@ end
 
 gem 'telegram-bot', '~> 0.15.6'
 gem 'httparty', '~> 0.20'
+
+gem 'omniauth', '~> 2.1.0'
+gem 'omniauth-rails_csrf_protection'
+gem 'omniauth-steam'
+gem 'omniauth-telegram'
+
+gem 'steam-condenser', '~> 1.3.11'
