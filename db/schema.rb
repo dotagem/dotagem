@@ -10,7 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_08_15_182106) do
+ActiveRecord::Schema[7.0].define(version: 2022_08_16_123403) do
+  create_table "game_modes", force: :cascade do |t|
+    t.integer "mode_id", null: false
+    t.string "name", null: false
+    t.string "localized_name"
+    t.boolean "balanced", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["mode_id"], name: "index_game_modes_on_mode_id", unique: true
+  end
+
   create_table "heroes", force: :cascade do |t|
     t.integer "hero_id", null: false
     t.string "name", null: false

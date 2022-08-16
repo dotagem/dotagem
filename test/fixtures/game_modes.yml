@@ -1,0 +1,11 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  mode_id: 1
+  name: MyString
+  localized_name: MyString
+
+two:
+  mode_id: 1
+  name: MyString
+  localized_name: MyString
