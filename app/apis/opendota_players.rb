@@ -10,8 +10,8 @@ class OpendotaPlayers
     self.class.get("/#{@player_id}")
   end
 
-  def wl
-    self.class.get("/#{@player_id}/wl")
+  def wl(opts = {})
+    self.class.get("/#{@player_id}/wl", query: opts)
   end
 
   def matches(opts = {})
