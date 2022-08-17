@@ -77,6 +77,6 @@ gem 'httparty', '~> 0.20'
 gem 'omniauth', '~> 2.1.0'
 gem 'omniauth-rails_csrf_protection'
 gem 'omniauth-steam'
-gem 'omniauth-telegram'
+gem 'omniauth-telegram', github: 'cschuijt/omniauth-telegram', branch: 'master'
 
 gem 'steam-condenser', '~> 1.3.11'

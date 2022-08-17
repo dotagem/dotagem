@@ -1,3 +1,11 @@
+GIT
+  remote: https://github.com/cschuijt/omniauth-telegram.git
+  revision: 45a6b3a3e322bfe5e2e706f95a8d26525efcd870
+  branch: master
+  specs:
+    omniauth-telegram (0.2.1)
+      omniauth (>= 1.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -153,8 +161,6 @@ GEM
     omniauth-steam (1.0.6)
       multi_json
       omniauth-openid
-    omniauth-telegram (0.2.1)
-      omniauth (>= 1.0)
     public_suffix (4.0.7)
     puma (5.6.4)
       nio4r (~> 2.0)
@@ -261,7 +267,7 @@ DEPENDENCIES
   omniauth (~> 2.1.0)
   omniauth-rails_csrf_protection
   omniauth-steam
-  omniauth-telegram
+  omniauth-telegram!
   puma (~> 5.0)
   rails (~> 7.0.3, >= 7.0.3.1)
   selenium-webdriver
