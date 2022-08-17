@@ -24,7 +24,7 @@ Not nearly. Here's my incomplete checklist of doom:
 - [ ] Handle inline queries as well ⌨
 - [ ] Make sure the bot performs over webhooks as well (dev environment uses the poller) ⚙
 - [ ] Write tests for everything 🧪
-- [ ] Make an example credentials file 🔑
+- [x] Make an example credentials file 🔑
 
 ### Technical details and loosely related thoughts
 * [Telegram-bot](https://github.com/telegram-bot-rb/telegram-bot) behaves as Rails middleware, so we run a Rails app with it installed. The only thing we use the web frontend for is logging in through Steam and for a landing page in case people browse to our site.
