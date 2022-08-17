@@ -1,2 +1,35 @@
 <h1>Pages#home</h1>
 <p>Find me in app/views/pages/home.html.erb</p>
+<p>
+  <%= form_tag('/auth/steam', method: 'post', data: {turbo: false}) do %>
+    <button type='submit'>Login with Steam</button>
+  <% end %>
+
+  <%= form_tag('/auth/telegram', method: 'post', data: {turbo: false}) do %>
+    <button type='submit'>Login with Telegram</button>
+  <% end %>
+
+  <%= form_tag('/logout', method: 'delete') do %>
+    <button type='submit'>Log out</button>
+  <% end %>
+</p>
+<p>
+  <% if logged_in? %>
+    Signed in
+  <% else %>
+    Not signed in
+  <% end %>
+</p>
+<% if logged_in? && current_user.telegram_registered? %>
+  <p>
+    Telegram ID:
+    <%= current_user.telegram_id %>
+  </p>
+<% end %>
+
+<% if logged_in? && current_user.steam_registered? %>
+  <p>
+    Steam ID:
+    <%= current_user.steam_id64 %>
+  </p>
+<% end %>

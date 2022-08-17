@@ -1,10 +1,38 @@
 class SessionsController < ApplicationController
+  require 'steam_id'
+  # Only the highest quality code here
+  skip_before_action :verify_authenticity_token, only: [:steam]
+  before_action :logged_in_user, only: [:steam, :destroy]
+
   def telegram
+    auth = request.env['omniauth.auth']
+
+    # Refresh user data if they're known, else create new user
+    user = User.find_or_create_by(telegram_id: auth['uid'])
+    user.telegram_username = auth['info']['nickname']
+    user.telegram_avatar   = auth['info']['image']
+    user.telegram_name     = auth['info']['name']
+    user.save
+
+    log_out if logged_in?
+    log_in(user)
+    redirect_to '/'
   end
 
   def steam
+    auth = request.env['omniauth.auth']
+    current_user.steam_id64     = auth['uid']
+    current_user.steam_id3      = SteamID.from_string(auth['uid']).account_id
+    current_user.steam_nickname = auth['info']['nickname']
+    current_user.steam_url      = auth['info']['urls']['Profile']
+    current_user.steam_avatar   = auth['info']['image']
+
+    current_user.save
+    redirect_to '/'
   end
 
   def destroy
+    log_out
+    redirect_to '/'
   end
 end
