@@ -28,6 +28,24 @@ class User < ApplicationRecord
     matches
   end
 
+  def heroes(opts = {})
+    p = OpendotaPlayers.new(self.steam_id3)
+
+    heroes = []
+    p.heroes(opts).each do |hero|
+      h = Hero.find_by(hero_id: hero['hero_id'])
+      h.last_played =   hero['last_played']
+      h.games =         hero['games']
+      h.win =           hero['win']
+      h.with_games =    hero['with_games']
+      h.with_win =      hero['with_win']
+      h.against_games = hero['against_games']
+      h.against_win =   hero['against_win']
+      heroes << h
+    end
+    heroes
+  end
+
   # Returns an array of Peer objects
   def peers(opts = {})
     p = OpendotaPlayers.new(self.steam_id3)
