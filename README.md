@@ -16,7 +16,7 @@ Not nearly. Here's my incomplete checklist of doom:
 
 - [x] Set up telegram-bot and make it talk to the Telegram bot API 💬
 - [x] Set up HTTParty so we can talk to the OpenDota API 🌐
-- [ ] Make the data we get back from OpenDota quack like a Rails model 🦆
+- [x] Make the data we get back from OpenDota quack like a Rails model 🦆
 - [x] Fetch and cache constants from OpenDota so we don't need to bother the API for things like hero names 📃
 - [x] Allow users to sign in through Steam and identify themselves 🔐
 - [ ] Build match commands 📅
@@ -25,6 +25,7 @@ Not nearly. Here's my incomplete checklist of doom:
 - [ ] Make sure the bot performs over webhooks as well (dev environment uses the poller) ⚙
 - [ ] Write tests for everything 🧪
 - [x] Make an example credentials file 🔑
+- [ ] Pretty up the sign-in frontend 💻
 
 ### Technical details and loosely related thoughts
 * [Telegram-bot](https://github.com/telegram-bot-rb/telegram-bot) behaves as Rails middleware, so we run a Rails app with it installed. The only thing we use the web frontend for is logging in through Steam and for a landing page in case people browse to our site.
