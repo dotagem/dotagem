@@ -1,4 +1,6 @@
 class User < ApplicationRecord
+  DEFAULT_MATCH_OPTS = {limit: 5, offset: 0, project: ListMatch.attribute_names}
+
   def telegram_registered?
     self.telegram_id != nil
   end
@@ -7,12 +9,22 @@ class User < ApplicationRecord
     self.steam_id64 != nil
   end
 
-  def win_loss(hero=nil)
+  # Returns a hash with a "win" and "loss" value
+  def win_loss(opts = {})
     p = OpendotaPlayers.new(self.steam_id3)
-    if hero
-      p.wl(hero_id: hero)
-    else
-      p.wl
+    p.wl(opts)
+  end
+
+  # Returns an array of ListMatch objects
+  def matches(opts = {})
+    opts = DEFAULT_MATCH_OPTS.merge(opts)
+
+    p = OpendotaPlayers.new(self.steam_id3)
+
+    matches = []
+    p.matches(opts).each do |match|
+      matches << ListMatch.from_data(match)
     end
+    matches
   end
 end

@@ -32,7 +32,7 @@ class ListMatch
   def self.from_data(data)
     match = self.new
     match.attributes.each_pair do |k, _|
-      player.send("#{k}=", data[k])
+      match.send("#{k}=", data[k])
     end
     match
   end
