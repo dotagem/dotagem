@@ -13,6 +13,7 @@ class MatchPlayer
   attribute :item_3
   attribute :item_4
   attribute :item_5
+  attribute :item_neutral
   attribute :backpack_0
   attribute :backpack_1
   attribute :backpack_2
