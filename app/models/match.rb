@@ -14,6 +14,7 @@ class Match
   attribute :picks_bans
   attribute :lobby_type
   attribute :game_mode
+  attribute :version
 
   def self.from_api(match_id)
     data = OpendotaMatches.new(match_id).show
@@ -26,6 +27,10 @@ class Match
       match.players << MatchPlayer.from_data(playerdata)
     end
     match
+  end
+
+  def parsed?
+    !self.version.nil?
   end
 
   def persisted?
