@@ -24,6 +24,10 @@ class Peer
     peer
   end
 
+  def known?
+    User.find_by(steam_id3: self.account_id).exists?
+  end
+
   def persisted?
     false
   end
