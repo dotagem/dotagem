@@ -5,9 +5,11 @@ class Match
   attribute :match_id
   attribute :barracks_status_dire
   attribute :barracks_status_radiant
+  attribute :tower_status_dire
+  attribute :tower_status_radiant
+  attribute :duration
   attribute :start_time
   attribute :radiant_win
-  attribute :duration
   attribute :radiant_score
   attribute :dire_score
   attribute :players
@@ -15,6 +17,7 @@ class Match
   attribute :lobby_type
   attribute :game_mode
   attribute :version
+  attribute :patch
 
   def self.from_api(match_id)
     data = OpendotaMatches.new(match_id).show
