@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_08_19_075236) do
+ActiveRecord::Schema[7.0].define(version: 2022_08_19_085200) do
   create_table "game_modes", force: :cascade do |t|
     t.integer "mode_id", null: false
     t.string "name", null: false
@@ -59,6 +59,15 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_19_075236) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["lobby_id"], name: "index_lobby_types_on_lobby_id", unique: true
+  end
+
+  create_table "patches", force: :cascade do |t|
+    t.integer "patch_id", null: false
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.datetime "date"
+    t.index ["patch_id"], name: "index_patches_on_patch_id", unique: true
   end
 
   create_table "regions", force: :cascade do |t|
