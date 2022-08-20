@@ -1,4 +1,4 @@
-class TelegramWebhooksController < Telegram::Bot::UpdatesController
+class TelegramStartController < Telegram::Bot::UpdatesController
   include Telegram::Bot::UpdatesController::MessageContext
 
   def start!(*)
