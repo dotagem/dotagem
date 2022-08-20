@@ -69,4 +69,7 @@ Rails.application.configure do
   # config.action_cable.disable_request_forgery_protection = true
 
   config.telegram_updates_controller.session_store = :memory_store
+
+  # Enable this if you want to test the Telegram one-click authentication
+  # config.force_ssl = true
 end
