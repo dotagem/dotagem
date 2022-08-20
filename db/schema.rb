@@ -10,7 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_08_19_085200) do
+ActiveRecord::Schema[7.0].define(version: 2022_08_20_155110) do
+  create_table "aliases", force: :cascade do |t|
+    t.integer "hero_id", null: false
+    t.string "name", null: false
+    t.boolean "default", default: false
+    t.boolean "from_seed", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["hero_id"], name: "index_aliases_on_hero_id"
+    t.index ["name"], name: "index_aliases_on_name"
+  end
+
   create_table "game_modes", force: :cascade do |t|
     t.integer "mode_id", null: false
     t.string "name", null: false
