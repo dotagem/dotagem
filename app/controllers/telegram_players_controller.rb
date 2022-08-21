@@ -1,10 +1,11 @@
 class TelegramPlayersController < Telegram::Bot::UpdatesController
   include Telegram::Bot::UpdatesController::MessageContext
 
-  before_action :logged_in_or_mentioning_player, only: [:winrate!]
+  before_action :logged_in_or_mentioning_player, only: [:winrate!, :wl!]
 
   def winrate!(*args)
-    args.delete_at(0) if User.find_by(telegram_username: args[0].tr("@", ""))
+    args[0] = args[0].tr("@", "") if args.any?
+    args.delete_at(0) if User.find_by(telegram_username: args[0])
 
     if args.any?
       if args[0].in?(["as", "with", "against"])
@@ -30,28 +31,31 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
     message << "#{@data["win"]} wins, #{@data["lose"]} losses"
     reply_with :message, text: message
   end
-end
 
-private
+  alias_method :wl!, :winrate!
 
-def wl_query(mode, hero)
-  if    mode == "as"
-    {hero_id: hero.hero_id}
-  elsif mode == "with"
-    {with_hero_id: hero.hero_id}
-  else
-    {against_hero_id: hero.hero_id}
+  private
+
+  def wl_query(mode, hero)
+    if    mode == "as"
+      {hero_id: hero.hero_id}
+    elsif mode == "with"
+      {with_hero_id: hero.hero_id}
+    else
+      {against_hero_id: hero.hero_id}
+    end
   end
-end
 
-def logged_in_or_mentioning_player
-  _, args = Telegram::Bot::UpdatesController::Commands.command_from_text(payload['text'], bot_username)
-  @player = User.find_by(telegram_username: args[0].tr("@", "")) ||
-            User.find_by(telegram_id: from["id"])
-  if @player.nil?
-    respond_with :message, text: "Can't find that user!"
-    throw(:filtered)
-  elsif @player.steam_registered? == false
-    respond_with :message, text: "That account has not completed their registration!"
+  def logged_in_or_mentioning_player
+    _, args = Telegram::Bot::UpdatesController::Commands.command_from_text(payload['text'], bot_username)
+    args[0] = args[0].tr("@", "") if args.any?
+    @player = User.find_by(telegram_username: args[0]) ||
+              User.find_by(telegram_id: from["id"])
+    if @player.nil?
+      respond_with :message, text: "Can't find that user!"
+      throw(:filtered)
+    elsif @player.steam_registered? == false
+      respond_with :message, text: "That user has not completed their registration!"
+    end
   end
 end
