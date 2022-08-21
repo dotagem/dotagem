@@ -13,14 +13,16 @@ class TelegramWebhooksRouter < Telegram::Bot::UpdatesController
   # Monkey patching action_missing will 'catch' all
   # non-matching commands in your controller, breaking others.
   def self.dispatch(bot, update)
-    result = nil
-    
-    telegram_controllers.each do |controller|
-      result = controller.dispatch(bot, update) if result.nil?
-      break unless result.nil?
+    catch :filtered do
+      result = nil
+      
+      telegram_controllers.each do |controller|
+        result = controller.dispatch(bot, update) if result.nil?
+        break unless result.nil?
+      end
+      
+      super if result.nil?
     end
-
-    super if result.nil?
   end
 
   def action_missing(*)

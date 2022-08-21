@@ -1,14 +1,10 @@
 class TelegramPlayersController < Telegram::Bot::UpdatesController
   include Telegram::Bot::UpdatesController::MessageContext
 
+  before_action :logged_in_or_mentioning_player, only: [:winrate!]
+
   def winrate!(*args)
-    player = User.find_by(telegram_username: args[0]) ||
-             User.find_by(telegram_id: from["id"])
-    if player.nil?
-      reply_with :message, text: "Can't find that user, please log in!"
-      return false
-    end
-    args.delete_at(0) if User.find_by(telegram_username: args[0])
+    args.delete_at(0) if User.find_by(telegram_username: args[0].tr("@", ""))
 
     if args.any?
       if args[0].in?(["as", "with", "against"])
@@ -24,9 +20,9 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
         return false
       end
 
-      @data = player.win_loss(wl_query(@mode, @a.hero))
+      @data = @player.win_loss(wl_query(@mode, @a.hero))
     else
-      @data = player.win_loss
+      @data = @player.win_loss
     end
 
     message = ""
@@ -45,5 +41,17 @@ def wl_query(mode, hero)
     {with_hero_id: hero.hero_id}
   else
     {against_hero_id: hero.hero_id}
+  end
+end
+
+def logged_in_or_mentioning_player
+  _, args = Telegram::Bot::UpdatesController::Commands.command_from_text(payload['text'], bot_username)
+  @player = User.find_by(telegram_username: args[0].tr("@", "")) ||
+            User.find_by(telegram_id: from["id"])
+  if @player.nil?
+    respond_with :message, text: "Can't find that user!"
+    throw(:filtered)
+  elsif @player.steam_registered? == false
+    respond_with :message, text: "That account has not completed their registration!"
   end
 end
