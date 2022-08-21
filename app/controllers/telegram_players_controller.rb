@@ -50,6 +50,7 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
 
     return false if options.first[:mode] == "and"
     options.each_with_index do |o, i|
+      o[:mode] = o[:mode].split(" ").last
       if o[:mode] == "and"
         o[:mode] = options[i - 1][:mode]
       end
