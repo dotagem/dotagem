@@ -4,30 +4,19 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
   before_action :logged_in_or_mentioning_player, only: [:winrate!, :wl!]
 
   def winrate!(*args)
-    args[0] = args[0].tr("@", "") if args.any?
-    args.delete_at(0) if User.find_by(telegram_username: args[0])
-
     if args.any?
-      if args[0].in?(["as", "with", "against"])
-        @mode = args[0]
-        args.delete_at(0)
-      else
-        @mode = "as"
-      end
-
-      @a = Alias.find_by(name: args.join(" "))
-      if @a.nil?
-        reply_with :message, text: "Can't find that hero!"
+      options = build_and_validate_options(args)
+      if options == false
+        respond_with :message, text: "Invalid input!"
         return false
       end
-
-      @data = @player.win_loss(wl_query(@mode, @a.hero))
+      @data = @player.win_loss(options)
     else
       @data = @player.win_loss
     end
 
-    message = ""
-    message << "#{@mode.capitalize} #{@a.hero.localized_name}: " if args.any? 
+    message = "Winrate: "
+    message << construct_options_message(options) if args.any? 
     message << "#{@data["win"]} wins, #{@data["lose"]} losses"
     reply_with :message, text: message
   end
@@ -36,14 +25,89 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
 
   private
 
-  def wl_query(mode, hero)
-    if    mode == "as"
-      {hero_id: hero.hero_id}
-    elsif mode == "with"
-      {with_hero_id: hero.hero_id}
-    else
-      {against_hero_id: hero.hero_id}
+  def build_and_validate_options(args)
+    delimiters = ["as", "with", "against", "and"]
+
+    # Prepare the array
+    args.each do |a|
+      a.downcase.tr("@", "")
     end
+    args.delete_at(0) if User.find_by(telegram_username: args[0])
+    # Split it up
+    chunks = args.chunk { |v| v.in?(delimiters) }.to_a
+    # Array must start with a true chunk and end with a false one
+    # It's okay to insert an invalid value here, we just don't want to
+    # throw an exception at this stage
+    chunks.unshift [true, ["as"]] if chunks.first[0] == false
+    chunks.push    [false, [""] ] if chunks.last[0]  == true
+    # Build the array
+    options = []
+    chunks.each_with_index do |c, i|
+      if c[0] == true
+        options << { mode: c[1].join(" "), value: chunks[i+1][1].join(" ") }
+      end
+    end
+
+    return false if options.first[:mode] == "and"
+    options.each_with_index do |o, i|
+      if o[:mode] == "and"
+        o[:mode] = options[i - 1][:mode]
+      end
+    end
+
+    # Validation time!
+    return false if options.count { |o| o[:mode] == "as" } > 1
+    return false if options.count > 10
+    options.each do |o|
+      return false unless o[:mode].in?(delimiters)
+      return false if     o[:value].blank?
+      return false unless hero_or_player(o[:value])
+      return false if     (o[:mode] == "as" || o[:mode] == "against") &&
+                          User.find_by(telegram_username: o[:value])
+    end
+
+    # Construct query hash
+    query = {}
+    options.each do |o|
+      if User.find_by(telegram_username: o[:value])
+        query[:included_account_id] ||= []
+        query[:included_account_id] << User.find_by(telegram_username: o[:value]).steam_id3
+      else # Alias
+        if o[:mode] == "as"
+          query[:hero_id] = Alias.find_by(name: o[:value]).hero.hero_id
+        elsif o[:mode] == "with"
+          query[:with_hero_id] ||= []
+          query[:with_hero_id] << Alias.find_by(name: o[:value]).hero.hero_id
+        else # mode == "against"
+          query[:against_hero_id] ||= []
+          query[:against_hero_id] << Alias.find_by(name: o[:value]).hero.hero_id
+        end
+      end
+    end
+    return query
+  end
+
+  def construct_options_message(options)
+    message_parts = []
+    if options[:hero_id]
+      message_parts << "as #{Hero.find_by(hero_id: options[:hero_id]).localized_name}"
+    end
+    if options[:with_hero_id]
+      options[:with_hero_id].each do |id|
+        message_parts << "with #{Hero.find_by(hero_id: id).localized_name}"
+      end
+    end
+    if options[:against_hero_id]
+      options[:against_hero_id].each do |id|
+        message_parts << "against #{Hero.find_by(hero_id: id).localized_name}"
+      end
+    end
+    message_parts << ""
+    message_parts.join(" ")
+  end
+
+  def hero_or_player(string)
+    Alias.find_by(name: string) || User.find_by(telegram_username: string)
   end
 
   def logged_in_or_mentioning_player
@@ -56,6 +120,7 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
       throw(:filtered)
     elsif @player.steam_registered? == false
       respond_with :message, text: "That user has not completed their registration!"
+      throw(:filtered)
     end
   end
 end
