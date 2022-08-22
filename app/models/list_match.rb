@@ -37,6 +37,26 @@ class ListMatch
     match
   end
 
+  def won?
+    if self.player_slot < 128
+      self.radiant_win ? true : false
+    else
+      self.radiant_win ? false : true
+    end
+  end
+
+  def is_radiant?
+    self.player_slot < 128 ? true : false
+  end
+
+  def rd
+    self.is_radiant? ? "R" : "D"
+  end
+
+  def wl
+    self.won? ? "W" : "L"
+  end
+
   def parsed?
     !self.version.nil?
   end

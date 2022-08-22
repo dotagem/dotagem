@@ -22,6 +22,7 @@ Not nearly. Here's my incomplete checklist of doom:
 - [ ] Build match commands 📅
 - [ ] Build player commands 🤼
 - [ ] Handle inline queries as well ⌨
+- [x] Configure session storage so we can paginate and clarify on the fly ✅
 - [ ] Make sure the bot performs over webhooks as well (dev environment uses the poller) ⚙
 - [ ] Write tests for everything 🧪
 - [x] Make an example credentials file 🔑
