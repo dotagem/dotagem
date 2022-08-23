@@ -92,6 +92,6 @@ Rails.application.configure do
   config.active_record.dump_schema_after_migration = false
 
   # Configure session store for telegram bot.
-  config.telegram_updates_controller.session_store = :file_store,
-    Rails.root.join('tmp', 'session_store')
+  config.telegram_updates_controller.session_store = :redis_store,
+    Rails.credentials.redis_url, { expires_in: 1.month }
 end
