@@ -68,7 +68,11 @@ Rails.application.configure do
   # Uncomment if you wish to allow Action Cable access from any origin.
   # config.action_cable.disable_request_forgery_protection = true
 
-  config.telegram_updates_controller.session_store = :memory_store
+  
+  # To use memory store instead, use this:
+  # config.telegram_updates_controller.session_store = :memory_store
+  config.telegram_updates_controller.session_store = :redis_cache_store, 
+    { expires_in: 1.week }
 
   # Enable this if you want to test the Telegram one-click authentication
   # config.force_ssl = true
