@@ -1,6 +1,6 @@
 module OpendotaHelper
   # Uncalibrated players pass nil, so default should be 0
-  def rank(num=0, leaderboard_rank=nil)
+  def format_rank(num=0, leaderboard_rank=nil)
     ranks = ["Uncalibrated", "Herald",  "Guardian", "Crusader", "Archon",
              "Legend",       "Ancient", "Divine",   "Immortal"]
     medal = ranks[num / 10]

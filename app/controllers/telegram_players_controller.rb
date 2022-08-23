@@ -8,7 +8,8 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
   include Pagination
 
   before_action :logged_in_or_mentioning_player, only: [:matches!, :recents!,
-                                                        :winrate!, :wl!]
+                                                        :winrate!, :wl!,
+                                                        :rank!]
 
   def matches!(*args)
     options = nil
@@ -83,6 +84,10 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
   end
 
   alias_method :wl!, :winrate!
+
+  def rank!(*args)
+    respond_with :message, text: "@#{@player.telegram_username}'s rank is #{@player.rank}"
+  end
 
   private
 

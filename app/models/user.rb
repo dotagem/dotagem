@@ -1,4 +1,5 @@
 class User < ApplicationRecord
+  include OpendotaHelper
   DEFAULT_MATCH_OPTS = {project: ListMatch.attribute_names, limit: 500}
 
   def telegram_registered?
@@ -26,6 +27,12 @@ class User < ApplicationRecord
       matches << ListMatch.from_data(match)
     end
     matches
+  end
+
+  def rank
+    p = OpendotaPlayers.new(self.steam_id)
+    data = p.info
+    format_rank(data["rank_tier"], data["leaderboard_rank"])
   end
 
   def heroes(opts = {})
