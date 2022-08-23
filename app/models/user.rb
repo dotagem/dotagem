@@ -1,5 +1,5 @@
 class User < ApplicationRecord
-  DEFAULT_MATCH_OPTS = {project: ListMatch.attribute_names}
+  DEFAULT_MATCH_OPTS = {project: ListMatch.attribute_names, limit: 500}
 
   def telegram_registered?
     self.telegram_id != nil
