@@ -4,6 +4,8 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
   include Telegram::Bot::UpdatesController::Session
 
   include MatchMessages
+  include AliasHandling
+  include Pagination
 
   before_action :logged_in_or_mentioning_player, only: [:matches!, :recents!,
                                                         :winrate!, :wl!]
@@ -23,7 +25,8 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
         intention = "matches"
         result = respond_with :message, text: build_alias_resolution_message(options, intention),
                  reply_markup: {inline_keyboard: build_alias_resolution_keyboard(options)}
-        message_session(result['result']['message_id'])[:options] = options
+        message_session(result['result']['message_id'])
+        message_session[:options] = options
         message_session[:player] = @player
         message_session[:intention] = intention
         # We can't build a normal message yet so we throw out right now
@@ -36,20 +39,13 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
     end
 
     result = respond_with :message, text: build_matches_header(@matches, options),
-             reply_markup: {inline_keyboard: build_matches_buttons(@matches)}
-    
-    message_session(result['result']['message_id'])[:matches] = @matches
+             reply_markup: {inline_keyboard: build_paginated_buttons(@matches)}
+    message_session(result['result']['message_id'])
+    message_session[:items] = @matches
     message_session[:page] = 1
   end
 
   alias_method :recents!, :matches!
-
-  def pagination_callback_query(page)
-    edit_message :reply_markup, reply_markup:
-          {inline_keyboard: build_matches_buttons(session[:matches], page.to_i)}
-    session[:page] = page
-    answer_callback_query ""
-  end
 
   def winrate!(*args)
     if args.any?
@@ -87,62 +83,6 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
   end
 
   alias_method :wl!, :winrate!
-
-  def alias_callback_query(selection)
-    options = session[:options]
-    unclear = options.deep_locate -> (key, _, object) { key == :query && !object[:result] }
-    unclear.first[:result] = selection.to_i
-    session[:options] = clean_up_options session[:options]
-
-    if unclear.count > 1
-      edit_message :text, text:
-        build_alias_resolution_message(session[:options], session[:intention])
-      edit_message :reply_markup, reply_markup:
-        {inline_keyboard: build_alias_resolution_keyboard(session[:options])}
-    else
-      # All set!
-      if session[:intention] == "wl"
-        data = session[:player].win_loss(session[:options])
-        edit_message :text, text: build_win_loss_message(data, session[:options])
-      elsif session[:intention] == "matches"
-        data = session[:player].matches(session[:options])
-        edit_message :text, text: build_matches_header(data, session[:options])
-        edit_message :reply_markup, reply_markup:
-          {inline_keyboard: build_matches_buttons(data, 1)}
-      end
-    end
-    answer_callback_query ""
-  end
-
-  def build_alias_resolution_message(options, intention)
-    message = []
-    if intention == "wl"
-      message << "Winrate"
-    elsif intention == "matches"
-      message << "Matches"
-    end
-    message << build_options_message(options)
-    message << "Which hero did you mean by the marked input?"
-    message.join("\n")
-  end
-
-  def build_alias_resolution_keyboard(options)
-    to_match = options.deep_locate -> (key, _, object) do
-      key == :query && !object[:result] 
-    end
-    to_match = to_match.first[:query]
-    possible_matches = Alias.where(name: to_match).includes(:hero).order("heroes.localized_name")
-    keyboard = []
-    possible_matches.each do |match|
-      keyboard << [
-        {
-          text: match.hero.localized_name,
-          callback_data: "alias:#{match.hero_id}"
-        }
-      ]
-    end
-    keyboard
-  end
 
   private
 
