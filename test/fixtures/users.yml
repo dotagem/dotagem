@@ -6,7 +6,7 @@ one:
   telegram_username: MyString
   telegram_avatar: MyString
   steam_id64: 1
-  steam_id3: MyString
+  steam_id: MyString
   steam_nickname: MyString
   steam_url: MyString
   steam_avatar: MyString
@@ -17,7 +17,7 @@ two:
   telegram_username: MyString
   telegram_avatar: MyString
   steam_id64: 1
-  steam_id3: MyString
+  steam_id: MyString
   steam_nickname: MyString
   steam_url: MyString
   steam_avatar: MyString

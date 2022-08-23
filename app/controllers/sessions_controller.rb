@@ -28,7 +28,7 @@ class SessionsController < ApplicationController
       users_with_steamid.each do |u|
         unless current_user?(u)
           u.steam_id64     = nil
-          u.steam_id3      = nil
+          u.steam_id       = nil
           u.steam_nickname = nil
           u.steam_url      = nil
           u.steam_avatar   = nil
@@ -38,7 +38,7 @@ class SessionsController < ApplicationController
     end
 
     current_user.steam_id64     = auth['uid']
-    current_user.steam_id3      = SteamID.from_string(auth['uid']).account_id
+    current_user.steam_id       = SteamID.from_string(auth['uid']).account_id
     current_user.steam_nickname = auth['info']['nickname']
     current_user.steam_url      = auth['info']['urls']['Profile']
     current_user.steam_avatar   = auth['info']['image']

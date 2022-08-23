@@ -11,7 +11,7 @@ class User < ApplicationRecord
 
   # Returns a hash with a "win" and "loss" value
   def win_loss(opts = {})
-    p = OpendotaPlayers.new(self.steam_id3)
+    p = OpendotaPlayers.new(self.steam_id)
     p.wl(opts)
   end
 
@@ -19,7 +19,7 @@ class User < ApplicationRecord
   def matches(opts = {})
     opts = DEFAULT_MATCH_OPTS.merge(opts)
 
-    p = OpendotaPlayers.new(self.steam_id3)
+    p = OpendotaPlayers.new(self.steam_id)
 
     matches = []
     p.matches(opts).each do |match|
@@ -29,7 +29,7 @@ class User < ApplicationRecord
   end
 
   def heroes(opts = {})
-    p = OpendotaPlayers.new(self.steam_id3)
+    p = OpendotaPlayers.new(self.steam_id)
 
     heroes = []
     p.heroes(opts).each do |hero|
@@ -48,7 +48,7 @@ class User < ApplicationRecord
 
   # Returns an array of Peer objects
   def peers(opts = {})
-    p = OpendotaPlayers.new(self.steam_id3)
+    p = OpendotaPlayers.new(self.steam_id)
 
     peers = []
     p.peers(opts).each do |peer|

@@ -42,7 +42,7 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
       if options[:included_account_id]
         accounts = []
         options[:included_account_id].each do |account|
-          accounts << Player.find_by(steam_id3: account).telegram_username
+          accounts << Player.find_by(steam_id: account).telegram_username
         end
         message << "With players: #{accounts.join(", ")}"
       end
@@ -197,7 +197,7 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
     options.each do |o|
       if User.find_by(telegram_username: o[:value])
         query[:included_account_id] ||= []
-        query[:included_account_id] << User.find_by(telegram_username: o[:value]).steam_id3
+        query[:included_account_id] << User.find_by(telegram_username: o[:value]).steam_id
       else # Alias
         if o[:mode] == "as"
           query[:hero_id] = Alias.find_by(name: o[:value]).hero.hero_id
