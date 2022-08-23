@@ -263,6 +263,7 @@ DEPENDENCIES
   bootsnap
   capybara
   debug
+  hashie (~> 5.0.0)
   httparty (~> 0.20)
   importmap-rails
   jbuilder
