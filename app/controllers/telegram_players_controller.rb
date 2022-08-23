@@ -12,7 +12,25 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
     options = nil
     if args.any?
       options = build_and_validate_options(args) 
-      @matches = @player.matches(options)
+      if options == false
+        respond_with :message, text: "Invalid input!"
+        throw(:filtered)
+      end
+      options.extend Hashie::Extensions::DeepLocate
+      
+      unclear = options.deep_locate -> (key, _, object) { key == :query && !object[:result] }
+      if unclear.any?
+        intention = "matches"
+        result = respond_with :message, text: build_alias_resolution_message(options, intention),
+                 reply_markup: {inline_keyboard: build_alias_resolution_keyboard(options)}
+        message_session(result['result']['message_id'])[:options] = options
+        message_session[:player] = @player
+        message_session[:intention] = intention
+        # We can't build a normal message yet so we throw out right now
+        throw(:filtered)
+      else
+        @matches = @player.matches(options)
+      end
     else
       @matches = @player.matches
     end
@@ -40,20 +58,102 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
         respond_with :message, text: "Invalid input!"
         return false
       end
-      @data = @player.win_loss(options)
+      options.extend Hashie::Extensions::DeepLocate
+      
+      unclear = options.deep_locate -> (key, _, object) { key == :query && !object[:result] }
+      if unclear.any?
+        intention = "wl"
+        result = respond_with :message, text: build_alias_resolution_message(options, intention),
+                 reply_markup: {inline_keyboard: build_alias_resolution_keyboard(options)}
+        message_session(result['result']['message_id'])[:options] = options
+        message_session[:player] = @player
+        message_session[:intention] = intention
+        # We can't build a normal message yet so we throw out right now
+        throw(:filtered)
+      else
+        @data = @player.win_loss(options)
+      end
     else
       @data = @player.win_loss
     end
 
-    message = ["Winrate:"]
-    message << build_options_message(options) if args.any? 
-    message << "#{@data["win"]} wins, #{@data["lose"]} losses"
-    reply_with :message, text: message.join("\n")
+    if args.any?
+      message = build_win_loss_message(@data, options)
+    else
+      message = build_win_loss_message(@data)
+    end
+    
+    reply_with :message, text: message
   end
 
   alias_method :wl!, :winrate!
 
+  def alias_callback_query(selection)
+    options = session[:options]
+    unclear = options.deep_locate -> (key, _, object) { key == :query && !object[:result] }
+    unclear.first[:result] = selection.to_i
+    session[:options] = clean_up_options session[:options]
+
+    if unclear.count > 1
+      edit_message :text, text:
+        build_alias_resolution_message(session[:options], session[:intention])
+      edit_message :reply_markup, reply_markup:
+        {inline_keyboard: build_alias_resolution_keyboard(session[:options])}
+    else
+      # All set!
+      if session[:intention] == "wl"
+        data = session[:player].win_loss(session[:options])
+        edit_message :text, text: build_win_loss_message(data, session[:options])
+      elsif session[:intention] == "matches"
+        data = session[:player].matches(session[:options])
+        edit_message :text, text: build_matches_header(data, session[:options])
+        edit_message :reply_markup, reply_markup:
+          {inline_keyboard: build_matches_buttons(data, 1)}
+      end
+    end
+    answer_callback_query ""
+  end
+
+  def build_alias_resolution_message(options, intention)
+    message = []
+    if intention == "wl"
+      message << "Winrate"
+    elsif intention == "matches"
+      message << "Matches"
+    end
+    message << build_options_message(options)
+    message << "Which hero did you mean by the marked input?"
+    message.join("\n")
+  end
+
+  def build_alias_resolution_keyboard(options)
+    to_match = options.deep_locate -> (key, _, object) do
+      key == :query && !object[:result] 
+    end
+    to_match = to_match.first[:query]
+    possible_matches = Alias.where(name: to_match).includes(:hero).order("heroes.localized_name")
+    keyboard = []
+    possible_matches.each do |match|
+      keyboard << [
+        {
+          text: match.hero.localized_name,
+          callback_data: "alias:#{match.hero_id}"
+        }
+      ]
+    end
+    keyboard
+  end
+
   private
+
+  def build_win_loss_message(data, options=nil)
+    message = ["Winrate:"]
+    if options
+      message << build_options_message(options)
+    end
+    message << "#{data["win"]} wins, #{data["lose"]} losses"
+    message.join("\n")
+  end
 
   def build_and_validate_options(args)
     delimiters = ["as", "with", "against", "and"]
@@ -105,17 +205,38 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
         query[:included_account_id] << User.find_by(telegram_username: o[:value]).steam_id
       else # Alias
         if o[:mode] == "as"
-          query[:hero_id] = Alias.find_by(name: o[:value]).hero.hero_id
+          query[:hero_id] = resolve_alias(o[:value])
         elsif o[:mode] == "with"
           query[:with_hero_id] ||= []
-          query[:with_hero_id] << Alias.find_by(name: o[:value]).hero.hero_id
+          query[:with_hero_id] << resolve_alias(o[:value])
         else # mode == "against"
           query[:against_hero_id] ||= []
-          query[:against_hero_id] << Alias.find_by(name: o[:value]).hero.hero_id
+          query[:against_hero_id] << resolve_alias(o[:value])
         end
       end
     end
     return query
+  end
+
+  def clean_up_options(options)
+    if Hash === options[:hero_id] && options[:hero_id][:result]
+      options[:hero_id] = options[:hero_id][:result]
+    end
+    if options[:with_hero_id]
+      options[:with_hero_id].each_with_index do |h, i|
+        if Hash === h && h[:result]
+          options[:with_hero_id][i] = h[:result]
+        end
+      end
+    end
+    if options[:against_hero_id]
+      options[:against_hero_id].each_with_index do |h, i|
+        if Hash === h && h[:result]
+          options[:against_hero_id][i] = h[:result]
+        end
+      end
+    end
+    options
   end
 
   def hero_or_player(string)
@@ -129,7 +250,7 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
         aliases.first.hero.hero_id
       else
         # We'll find these later
-        {query: string, count: aliases.count}
+        {query: string}
       end
     end
   end

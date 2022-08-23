@@ -8,16 +8,17 @@ module MatchMessages
     if options
       message << build_options_message(options)
     end
-    
+
     message << "#{matches.count} results"
     message.join("\n")
   end
 
   def build_options_message(options)
     message = []
+    @unresolved = 0
 
     if options[:hero_id]
-      message << "Playing as #{Hero.find_by(hero_id: options[:hero_id]).localized_name}"
+      message << "Playing as #{hero_name_or_alias(options[:hero_id])}"
     end
     if options[:included_account_id]
       accounts = []
@@ -30,20 +31,30 @@ module MatchMessages
     if options[:with_hero_id]
       heroes = []
       options[:with_hero_id].each do |hero_id|
-        heroes << Hero.find_by(hero_id: hero_id).localized_name
+        heroes << hero_name_or_alias(hero_id)
       end
       message << "Allied heroes: #{heroes.join(", ")}"
     end
-
     if options[:against_hero_id]
       heroes = []
       options[:against_hero_id].each do |hero_id|
-        heroes << Hero.find_by(hero_id: hero_id).localized_name
+        heroes << hero_name_or_alias(hero_id)
       end
       message << "Enemy heroes: #{heroes.join(", ")}"
     end
 
     message
+  end
+
+  def hero_name_or_alias(input)
+    case input
+    when Integer
+      Hero.find_by(hero_id: input).localized_name
+    else # Expecting hash
+      @unresolved ||= 0
+      @unresolved = @unresolved + 1
+      @unresolved < 2 ? ">>\"#{input[:query]}\"<<" : "\"#{input[:query]}\""
+    end
   end
 
   def build_matches_buttons(matches, page=1)
@@ -54,7 +65,7 @@ module MatchMessages
       keyboard << [
         {
           text: match_button_text(match),
-          callback_data: "match_detail:#{match.match_id}" 
+          callback_data: "nothing:0" 
         }
       ]
     end
@@ -102,7 +113,7 @@ module MatchMessages
 
   def match_button_text(m)
     duration = m.duration / 60
-    "#{duration}min #{m.wl} #{m.rd} #{m.kills}/#{m.deaths}/#{m.assists} " +
+    "#{m.wl} #{duration}min #{m.rd} #{m.kills}/#{m.deaths}/#{m.assists} " +
     "#{Hero.find_by(hero_id: m.hero_id).localized_name} " +
     "#{time_ago_in_words(Time.at(m.start_time))} ago"
   end
