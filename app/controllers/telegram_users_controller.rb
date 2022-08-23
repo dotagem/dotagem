@@ -13,7 +13,7 @@ class TelegramUsersController < Telegram::Bot::UpdatesController
                                   text: "hi",
                                   login_url:
                                   {
-                                    url: 'https://127.0.0.1/auth/telegram/callback',
+                                    url: "#{Rails.application.credentials.base_url}/auth/telegram/callback",
                                   }
                                 }
                               ]
