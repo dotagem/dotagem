@@ -2,11 +2,11 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
   include Telegram::Bot::UpdatesController::MessageContext
   include Telegram::Bot::UpdatesController::CallbackQueryContext
   include Telegram::Bot::UpdatesController::Session
-  include ActionView::Helpers::DateHelper
 
-  before_action :logged_in_or_mentioning_player, only: [:matches!, :winrate!, :wl!]
+  include MatchMessages
 
-  PAGE_ITEMS = 5
+  before_action :logged_in_or_mentioning_player, only: [:matches!, :recents!,
+                                                        :winrate!, :wl!]
 
   def matches!(*args)
     options = nil
@@ -33,101 +33,6 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
     answer_callback_query ""
   end
 
-  def build_matches_header(matches, options=nil)
-    message = ["Matches"]
-    if options
-      if options[:hero_id]
-        message << "Playing as #{Hero.find_by(hero_id: options[:hero_id]).localized_name}"
-      end
-      if options[:included_account_id]
-        accounts = []
-        options[:included_account_id].each do |account|
-          accounts << Player.find_by(steam_id: account).telegram_username
-        end
-        message << "With players: #{accounts.join(", ")}"
-      end
-
-      if options[:with_hero_id]
-        heroes = []
-        options[:with_hero_id].each do |hero_id|
-          heroes << Hero.find_by(hero_id: hero_id).localized_name
-        end
-        message << "Allied heroes: #{heroes.join(", ")}"
-      end
-
-      if options[:against_hero_id]
-        heroes = []
-        options[:against_hero_id].each do |hero_id|
-          heroes << Hero.find_by(hero_id: hero_id).localized_name
-        end
-        message << "Enemy heroes: #{heroes.join(", ")}"
-      end
-    end
-    message << "#{matches.count} results"
-    message.join("\n")
-  end
-
-  def build_matches_buttons(matches, page=1)
-    i = (page - 1) * PAGE_ITEMS
-    subset = matches[i..i+PAGE_ITEMS-1]
-    keyboard = []
-    subset.each do |match|
-      keyboard << [
-        {
-          text: match_button_text(match),
-          callback_data: "match_detail:#{match.match_id}" 
-        }
-      ]
-    end
-
-    pages = matches.count / PAGE_ITEMS
-    if (matches.count % PAGE_ITEMS) > 0
-      pages = pages + 1
-    end
-    
-    if pages > 1
-      row  = []
-      if page > 1
-        if page > 2
-          row << {
-              text: "|<<",
-              callback_data: "pagination:1"
-          }
-        end
-        row << {
-          text: "<",
-          callback_data: "pagination:#{page-1}"
-        }
-      end
-      row << {
-        text: "#{page} / #{pages}",
-        callback_data: "nothing:0"
-      }
-      if page < pages
-        row << {
-          text: ">",
-          callback_data: "pagination:#{page+1}"
-        }
-        if page < pages - 1
-          row << {
-            text: ">>|",
-            callback_data: "pagination:#{pages}"
-          }
-        end
-      end
-      keyboard << row
-    end
-
-    return keyboard
-  end
-
-  def match_button_text(m)
-    duration = m.duration / 60
-    "#{duration}min #{m.wl} #{m.rd} #{m.kills}/#{m.deaths}/#{m.assists} " +
-    "#{Hero.find_by(hero_id: m.hero_id).localized_name} " +
-    "#{time_ago_in_words(Time.at(m.start_time))} ago"
-  end
-
   def winrate!(*args)
     if args.any?
       options = build_and_validate_options(args)
@@ -140,10 +45,10 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
       @data = @player.win_loss
     end
 
-    message = "Winrate: "
-    message << construct_options_message(options) if args.any? 
+    message = ["Winrate:"]
+    message << build_options_message(options) if args.any? 
     message << "#{@data["win"]} wins, #{@data["lose"]} losses"
-    reply_with :message, text: message
+    reply_with :message, text: message.join("\n")
   end
 
   alias_method :wl!, :winrate!
@@ -213,27 +118,20 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
     return query
   end
 
-  def construct_options_message(options)
-    message_parts = []
-    if options[:hero_id]
-      message_parts << "as #{Hero.find_by(hero_id: options[:hero_id]).localized_name}"
-    end
-    if options[:with_hero_id]
-      options[:with_hero_id].each do |id|
-        message_parts << "with #{Hero.find_by(hero_id: id).localized_name}"
-      end
-    end
-    if options[:against_hero_id]
-      options[:against_hero_id].each do |id|
-        message_parts << "against #{Hero.find_by(hero_id: id).localized_name}"
-      end
-    end
-    message_parts << ""
-    message_parts.join(" ")
-  end
-
   def hero_or_player(string)
     Alias.find_by(name: string) || User.find_by(telegram_username: string)
+  end
+
+  def resolve_alias(string)
+    aliases = Alias.where(name: string)
+    if aliases.any?
+      if aliases.count == 1
+        aliases.first.hero.hero_id
+      else
+        # We'll find these later
+        {query: string, count: aliases.count}
+      end
+    end
   end
 
   def logged_in_or_mentioning_player
