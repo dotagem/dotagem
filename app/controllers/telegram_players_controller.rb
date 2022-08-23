@@ -9,7 +9,7 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
 
   before_action :logged_in_or_mentioning_player, only: [:matches!, :recents!,
                                                         :winrate!, :wl!,
-                                                        :rank!]
+                                                        :rank!,    :profile!]
 
   def matches!(*args)
     options = nil
@@ -85,8 +85,12 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
 
   alias_method :wl!, :winrate!
 
-  def rank!(*args)
+  def rank!(*)
     respond_with :message, text: "@#{@player.telegram_username}'s rank is #{@player.rank}"
+  end
+
+  def profile!(*)
+    respond_with :message, text: "#{@player.telegram_username}'s Steam profile is #{@player.steam_url}"
   end
 
   private
