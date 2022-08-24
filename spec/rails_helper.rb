@@ -60,4 +60,7 @@ RSpec.configure do |config|
   config.filter_rails_from_backtrace!
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
+
+  # Unstub the bot when we're done testing
+  config.after { Telegram.bot.reset }
 end

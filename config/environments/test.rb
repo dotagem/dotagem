@@ -58,9 +58,11 @@ Rails.application.configure do
   # Annotate rendered view with file names.
   # config.action_view.annotate_rendered_view_with_filenames = true
   
-  # Use memory store for bot sessions.
-  config.telegram_updates_controller.session_store = :memory_store
-
-   # Stub clients before processing routes.rb.
-   Telegram::Bot::ClientStub.stub_all!
+  # Use Redis database 8 for testing, reconfigure this as needed
+  config.telegram_updates_controller.session_store = :redis_cache_store,
+  { db: 8, expires_in: 1.day }
+  
+  # Stub clients before processing routes.rb
+  Telegram.reset_bots
+  Telegram::Bot::ClientStub.stub_all!
 end
