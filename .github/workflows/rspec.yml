@@ -17,35 +17,35 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    # Postgres container
+    services:
+      postgres:
+        image: postgres:14.5-bullseye
+        ports:
+          - "5432:5432"
+        env:
+          POSTGRES_DB: dotagem-test
+          POSTGRES_USER: dotagem
+          POSTGRES_PASSWORD: password
+          RAILS_ENV: test
+          DATABASE_URL: "postgres://rails:password@localhost:5432/rails_test"
+
+
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Check out the repo
       - uses: actions/checkout@v3
 
-      # Postgres container
-      services:
-        postgres:
-          image: postgres:14.5-bullseye
-          ports:
-            - "5432:5432"
-          env:
-            POSTGRES_DB: dotagem-test
-            POSTGRES_USER: dotagem
-            POSTGRES_PASSWORD: password
-          env:
-            RAILS_ENV: test
-            DATABASE_URL: "postgres://rails:password@localhost:5432/rails_test"
-
       # Redis
       - uses: supercharge/redis-github-action@1.4.0
         with:
-        redis-version: 7 
+          redis-version: 7 
 
       # Ruby and (cached) gems
       - uses: ruby/setup-ruby@v1
         with:
-        ruby-version: '3.1.2'
-        bundler-cache: true
+          ruby-version: '3.1.2'
+          bundler-cache: true
 
       - name: Configure database
         run: |
