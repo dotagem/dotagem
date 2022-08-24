@@ -1,0 +1,65 @@
+# Clone the repo and run the test suite
+
+name: RSpec
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Check out the repo
+      - uses: actions/checkout@v3
+
+      # Postgres container
+      services:
+        postgres:
+          image: postgres:14.5-bullseye
+          ports:
+            - "5432:5432"
+          env:
+            POSTGRES_DB: dotagem-test
+            POSTGRES_USER: dotagem
+            POSTGRES_PASSWORD: password
+          env:
+            RAILS_ENV: test
+            DATABASE_URL: "postgres://rails:password@localhost:5432/rails_test"
+
+      # Redis
+      - uses: supercharge/redis-github-action@1.4.0
+        with:
+        redis-version: 7 
+
+      # Ruby and (cached) gems
+      - uses: ruby/setup-ruby@v1
+        with:
+        ruby-version: '3.1.2'
+        bundler-cache: true
+
+      - name: Configure database
+        run: |
+          rm config/database.yml
+          touch config/database.yml
+          echo "test:" > config/database.yml
+          echo "  adapter: postgresql" >> config/database.yml
+          echo "  pool: 5" >> config/database.yml
+          echo "  host: localhost" >> config/database.yml
+          echo "  port: 5432" >> config/database.yml
+          echo "  username: dotagem" >> config/database.yml
+          echo "  password: password" >> config/database.yml
+          echo "  database: dotagem-test" >> config/database.yml
+
+      # Runs a single command using the runners shell
+      - name: Run Rspec
+        run: bundle exec rspec
