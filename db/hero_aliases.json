@@ -1,6 +1,476 @@
 [
     {
-        "name":"ANDY",
+        "name":"andy",
         "hero_id":1
+    },
+
+    {
+        "name":"andy mage",
+        "hero_id":1
+    },
+
+    {
+        "name":"magina",
+        "hero_id":1
+    },
+
+    {
+        "name":"abadon",
+        "hero_id":102
+    },
+
+    {
+        "name":"al",
+        "hero_id":73
+    },
+
+    {
+        "name":"chemist",
+        "hero_id":73
+    },
+
+    {
+        "name":"bat",
+        "hero_id":65
+    },
+
+    {
+        "name":"bm",
+        "hero_id":38
+    },
+
+    {
+        "name":"beast",
+        "hero_id":38
+    },
+
+    {
+        "name":"bs",
+        "hero_id":4
+    },
+
+    {
+        "name":"seeker",
+        "hero_id":4
+    },
+
+    {
+        "name":"blood",
+        "hero_id":4
+    },
+
+    {
+        "name":"gondar",
+        "hero_id":62
+    },
+
+    {
+        "name":"brew",
+        "hero_id":78
+    },
+
+    {
+        "name":"bristle",
+        "hero_id":99
+    },
+
+    {
+        "name":"brood",
+        "hero_id":61
+    },
+
+    {
+        "name":"clinks",
+        "hero_id":56
+    },
+
+    {
+        "name":"clock",
+        "hero_id":51
+    },
+
+    {
+        "name":"rylai",
+        "hero_id":5
+    },
+
+    {
+        "name":"mireska",
+        "hero_id":119
+    },
+
+    {
+        "name":"dawn",
+        "hero_id":135
+    },
+
+    {
+        "name":"krob",
+        "hero_id":43
+    },
+
+    {
+        "name":"krobelus",
+        "hero_id":43
+    },
+
+    {
+        "name":"raptor",
+        "hero_id":87
+    },
+
+    {
+        "name":"dooooooooom",
+        "hero_id":69
+    },
+
+    {
+        "name":"davion",
+        "hero_id":49
+    },
+
+    {
+        "name":"traxex",
+        "hero_id":6
+    },
+
+    {
+        "name":"trax",
+        "hero_id":6
+    },
+
+    {
+        "name":"es",
+        "hero_id":7
+    },
+
+    {
+        "name":"earth",
+        "hero_id":7
+    },
+
+    {
+        "name":"shaker",
+        "hero_id":7
+    },
+
+    {
+        "name":"grim",
+        "hero_id":121
+    },
+
+    {
+        "name":"stroke",
+        "hero_id":121
+    },
+
+    {
+        "name":"gyro",
+        "hero_id":72
+    },
+
+    {
+        "name":"copter",
+        "hero_id":72
+    },
+
+    {
+        "name":"squirrel",
+        "hero_id":123
+    },
+
+    {
+        "name":"wisp",
+        "hero_id":91
+    },
+
+    {
+        "name":"thd",
+        "hero_id":64
+    },
+
+    {
+        "name":"jugger",
+        "hero_id":8
+    },
+
+    {
+        "name":"kunka",
+        "hero_id":23
+    },
+
+    {
+        "name":"tresdin",
+        "hero_id":104
+    },
+
+    {
+        "name":"lesh",
+        "hero_id":52
+    },
+
+    {
+        "name":"ls",
+        "hero_id":54
+    },
+
+    {
+        "name":"naix",
+        "hero_id":54
+    },
+
+    {
+        "name":"slayer",
+        "hero_id":25
+    },
+
+    {
+        "name":"bear",
+        "hero_id":80
+    },
+
+    {
+        "name":"lycanthrope",
+        "hero_id":77
+    },
+
+    {
+        "name":"magnataur",
+        "hero_id":97
+    },
+
+    {
+        "name":"potm",
+        "hero_id":9
+    },
+
+    {
+        "name":"morph",
+        "hero_id":10
+    },
+
+    {
+        "name":"natures",
+        "hero_id":53
+    },
+
+    {
+        "name":"natures prophet",
+        "hero_id":53
+    },
+
+    {
+        "name":"necro",
+        "hero_id":36
+    },
+
+    {
+        "name":"necrolyte",
+        "hero_id":36
+    },
+
+    {
+        "name":"balanar",
+        "hero_id":60
+    },
+
+    {
+        "name":"omni",
+        "hero_id":57
+    },
+
+    {
+        "name":"knight",
+        "hero_id":57
+    },
+
+    {
+        "name":"outworld devourer",
+        "hero_id":76
+    },
+
+    {
+        "name":"outworld demolisher",
+        "hero_id":76
+    },
+
+    {
+        "name":"pango",
+        "hero_id":120
+    },
+
+    {
+        "name":"stealth assassin",
+        "hero_id":32
+    },
+
+    {
+        "name":"grand magus",
+        "hero_id":86
+    },
+
+    {
+        "name":"shadow friend",
+        "hero_id":11
+    },
+
+    {
+        "name":"snap",
+        "hero_id":128
+    },
+
+    {
+        "name":"hoho haha",
+        "hero_id":35
+    },
+
+    {
+        "name":"specter",
+        "hero_id":67
+    },
+
+    {
+        "name":"slkjdskjfsdkfjsld",
+        "hero_id":67
+    },
+
+    {
+        "name":"bara",
+        "hero_id":71
+    },
+
+    {
+        "name":"knight",
+        "hero_id":18
+    },
+
+    {
+        "name":"rogue knight",
+        "hero_id":18
+    },
+
+    {
+        "name":"goblin techies",
+        "hero_id":105
+    },
+
+    {
+        "name":"lanaya",
+        "hero_id":46
+    },
+
+    {
+        "name":"terror",
+        "hero_id":109
+    },
+
+    {
+        "name":"tide",
+        "hero_id":29
+    },
+
+    {
+        "name":"hunter",
+        "hero_id":29
+    },
+
+    {
+        "name":"timber",
+        "hero_id":98
+    },
+
+    {
+        "name":"saw",
+        "hero_id":98
+    },
+
+    {
+        "name":"rizzrack",
+        "hero_id":98
+    },
+
+    {
+        "name":"tony",
+        "hero_id":19
+    },
+
+    {
+        "name":"tree",
+        "hero_id":83
+    },
+
+    {
+        "name":"tuskar",
+        "hero_id":100
+    },
+
+    {
+        "name":"abyssal underlord",
+        "hero_id":108
+    },
+
+    {
+        "name":"pit lord",
+        "hero_id":108
+    },
+
+    {
+        "name":"pitlord",
+        "hero_id":108
+    },
+
+    {
+        "name":"ursa warrior",
+        "hero_id":70
+    },
+
+    {
+        "name":"bear",
+        "hero_id":70
+    },
+
+    {
+        "name":"venge",
+        "hero_id":20
+    },
+
+    {
+        "name":"veno",
+        "hero_id":40
+    },
+
+    {
+        "name":"wind",
+        "hero_id":21
+    },
+
+    {
+        "name":"windrunner",
+        "hero_id":21
+    },
+
+    {
+        "name":"auroth",
+        "hero_id":112
+    },
+
+    {
+        "name":"skeleton king",
+        "hero_id":42
+    },
+
+    {
+        "name":"skeleton",
+        "hero_id":42
+    },
+
+    {
+        "name":"zuus",
+        "hero_id":22
+    },
+
+    {
+        "name":"zues",
+        "hero_id":22
     }
 ]

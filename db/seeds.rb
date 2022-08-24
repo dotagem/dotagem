@@ -14,6 +14,7 @@ LobbyType.refresh
 Patch.refresh
 Region.refresh
 
+Alias.destroy_by(from_seed: true)
 # Parse custom aliases from file
 # Aliases should be presented as an array of hashes, each
 # hash containing a "name" and a "hero_id" field
