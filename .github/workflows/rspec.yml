@@ -47,6 +47,7 @@ jobs:
           ruby-version: '3.1.2'
           bundler-cache: true
 
+      # Override the default configuration
       - name: Configure database
         run: |
           rm config/database.yml
@@ -59,6 +60,13 @@ jobs:
           echo "  username: dotagem" >> config/database.yml
           echo "  password: password" >> config/database.yml
           echo "  database: dotagem-test" >> config/database.yml
+
+      - name: Fill in master keys
+        run: |
+          touch config/master.key
+          echo ${{ secrets.RAILS_MASTER_KEY }} > config/master.key
+          touch config/credentials/test.key
+          echo ${{ secrets.RAILS_TEST_KEY }} > config/credentials/test.key
 
       # Runs a single command using the runners shell
       - name: Run Rspec
