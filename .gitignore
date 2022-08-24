@@ -37,3 +37,5 @@
 /config/credentials/development.key
 
 *.code-workspace
+
+/config/credentials/test.key
