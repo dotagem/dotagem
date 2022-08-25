@@ -25,7 +25,7 @@ class Peer
   end
 
   def known?
-    User.find_by(steam_id: self.account_id).exists?
+    !User.find_by(steam_id: self.account_id).nil?
   end
 
   def persisted?
