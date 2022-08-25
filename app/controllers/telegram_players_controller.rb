@@ -91,7 +91,7 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
   alias_method :wl!, :winrate!
 
   def peers!(*)
-    data = @player.peers#.select { |p| p.known? }
+    data = @player.peers.select { |p| p.known? }
     result = respond_with :message,
       text: "Peers of #{@player.telegram_username}\n#{pluralize(data.count, "result")}",
       reply_markup: {inline_keyboard: build_paginated_buttons(data, peer_button_proc_string)}
@@ -102,8 +102,28 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
   end
 
   def heroes!(*)
-    data = @player.heroes
-    # TODO build sortable list thing and callback
+    items = @player.heroes
+    message = "Heroes for #{@player.telegram_username}"
+
+    # Dynamically assign this in the future maybe?
+    hero_mode = "as"
+    hero_sort = "games"
+
+    keyboard = []
+    keyboard << build_hero_mode_buttons(hero_mode)
+    keyboard << build_hero_sort_buttons(hero_sort)
+    keyboard = keyboard + build_paginated_buttons(items, hero_as_button_proc_string)
+
+    result = respond_with :message, text: message, reply_markup: {
+      inline_keyboard: keyboard
+    }
+
+    message_session(result['result']['message_id'])
+    message_session[:items]     = items
+    message_session[:page]      = 1
+    message_session[:button]    = hero_as_button_proc_string
+    message_session[:hero_mode] = hero_mode
+    message_session[:hero_sort] = hero_sort
   end
 
   def rank!(*)

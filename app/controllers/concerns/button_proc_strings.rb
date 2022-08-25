@@ -2,6 +2,8 @@ module ButtonProcStrings
   include ActionView::Helpers::DateHelper
   include ActionView::Helpers::TextHelper
 
+  private
+  
   def match_button_proc_string
     %{
       Proc.new do |m|
@@ -16,12 +18,11 @@ module ButtonProcStrings
   end
 
   def peer_button_proc_string
-    # User.find_by(steam_id: p.account_id).telegram_username
     %{
       Proc.new do |p|
         win_percentage = (p.with_win.to_f / p.with_games * 100).round(2)
-        text = "\#{p.personaname}: " +
-        "\#{p.with_games} games, \#{win_percentage}% wr, " +
+        text = "\#{User.find_by(steam_id: p.account_id).telegram_username}: " +
+        "\#{p.with_games} games, \#{win_percentage}%, " +
         "last \#{time_ago_in_words(Time.at(p.last_played))} ago"
         callback = "matches_with:\#{p.account_id}"
         next text, callback
@@ -34,10 +35,12 @@ module ButtonProcStrings
       Proc.new do |h|
         games   = h.games
         winrate = (h.win / games.to_f * 100).round(2)
-        text = "\#{h.localized_name}: " +
-        "\#{games}, \#{winrate}% wr, " +
-        "last \#{time_ago_in_words(Time.at(h.last_played))} ago"
-        callback = "matcheswithhero:7\#{h.hero_id}"
+        text = "\#{h.localized_name}: \#{games} games"
+        if h.games > 0
+          text << ", \#{winrate}%, " +
+          "last \#{time_ago_in_words(Time.at(h.last_played))} ago"
+        end
+        callback = "matchesbyhero:\#{h.hero_id}"
         next text, callback
       end
     }
@@ -46,12 +49,13 @@ module ButtonProcStrings
   def hero_with_button_proc_string
     %{
       Proc.new do |h|
-        games   = h.games_with
-        winrate = (h.win_with / games.to_f * 100).round(2)
-        text = "\#{h.localized_name}: " +
-        "\#{games} with, \#{winrate}% wr, " +
-        "last \#{time_ago_in_words(Time.at(h.last_played))} ago"
-        callback = "matcheswithhero:7\#{h.hero_id}"
+        games   = h.with_games
+        winrate = (h.with_win / games.to_f * 100).round(2)
+        text = "\#{h.localized_name}: \#{games} with"
+        if h.with_games > 0
+          text << ", \#{winrate}%"
+        end
+        callback = "matchesbyhero:\#{h.hero_id}"
         next text, callback
       end
     }
@@ -60,12 +64,13 @@ module ButtonProcStrings
   def hero_against_button_proc_string
     %{
       Proc.new do |h|
-        games   = h.games_against
-        winrate = (h.win_against / games.to_f * 100).round(2)
-        text = "\#{h.localized_name}: " +
-        "\#{games} against, \#{winrate}% wr, " +
-        "last \#{time_ago_in_words(Time.at(h.last_played))} ago"
-        callback = "matcheswithhero:7\#{h.hero_id}"
+        games   = h.against_games
+        winrate = (h.against_win / games.to_f * 100).round(2)
+        text = "\#{h.localized_name}: \#{games} against"
+        if h.against_games > 0
+          text << ", \#{winrate}%"
+        end
+        callback = "matchesbyhero:\#{h.hero_id}"
         next text, callback
       end
     }
