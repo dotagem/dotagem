@@ -23,7 +23,7 @@ module MatchMessages
     if options[:included_account_id]
       accounts = []
       options[:included_account_id].each do |account|
-        accounts << Player.find_by(steam_id: account).telegram_username
+        accounts << User.find_by(steam_id: account).telegram_username
       end
       message << "With players: #{accounts.join(", ")}"
     end
