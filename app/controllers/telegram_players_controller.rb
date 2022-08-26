@@ -8,6 +8,7 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
   include Pagination
   include HeroPlayerOptions
   include ButtonProcStrings
+  include MessageSession
 
   before_action :logged_in_or_mentioning_player, only: [:matches!, :recents!,
                                                         :winrate!, :wl!,
@@ -157,25 +158,5 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
       respond_with :message, text: "That user has not completed their registration!"
       throw(:filtered)
     end
-  end
-
-  protected
-
-  def session_key
-    # If we're in a callback query, associate default session with message ID
-    if update['callback_query']
-      "#{bot_username}:#{chat['id']}:#{update['callback_query']['message']['message_id']}"
-    end
-  end
-
-  def message_session(message_id=nil)
-    @_message_session ||= self.class.build_session(chat && message_id &&
-                          "#{bot.username}:#{chat['id']}:#{message_id}")
-  end
-
-  def process_action(*)
-    super
-  ensure
-    message_session.commit if @_message_session
   end
 end
