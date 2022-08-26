@@ -1,7 +1,6 @@
 class TelegramHeroesController < Telegram::Bot::UpdatesController
   include Telegram::Bot::UpdatesController::MessageContext
   include Telegram::Bot::UpdatesController::CallbackQueryContext
-  include Telegram::Bot::UpdatesController::Session
   include ActionView::Helpers::TextHelper
 
   def alias!(*args)
