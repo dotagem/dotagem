@@ -126,7 +126,7 @@ module Pagination
       callback_data: "nothing:0"
     }
     row << {
-      text: "Played as",
+      text: "As",
       callback_data: "change_hero_mode:as"
     }
     row << {
@@ -140,7 +140,7 @@ module Pagination
     # Ensure the current mode is marked and does not callback
     case mode
     when "as"
-      row.second[:text] = "[Played as]"
+      row.second[:text] = "[As]"
       row.second[:callback_data] = "nothing:0"
     when "with"
       row.third[:text] = "[With]"

@@ -8,6 +8,7 @@ class ListMatch
   attribute :duration
   attribute :game_mode
   attribute :lobby_type
+  attribute :region
   attribute :hero_id
   attribute :start_time
   attribute :kills

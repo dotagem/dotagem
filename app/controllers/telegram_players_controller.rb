@@ -10,10 +10,11 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
   include ButtonProcStrings
   include MessageSession
 
-  before_action :logged_in_or_mentioning_player, only: [:matches!, :recents!,
-                                                        :winrate!, :wl!,
-                                                        :rank!,    :profile!,
-                                                        :peers!,   :heroes!]
+  before_action :logged_in_or_mentioning_player, only: [:matches!,   :recents!,
+                                                        :winrate!,   :wl!,
+                                                        :rank!,      :profile!,
+                                                        :peers!,     :heroes!,
+                                                        :lastmatch!]
 
   def matches!(*args)
     options = nil
@@ -135,7 +136,27 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
     respond_with :message, text: "#{@player.telegram_username}'s Steam profile is #{@player.steam_url}"
   end
 
+  def lastmatch!(*)
+    @match = @player.matches(limit: 1).first
+    respond_with :message, text: build_short_match_message(@match), reply_markup: {
+      keyboard: [[{
+        text: "Full match details", callback_data: "match:#{@match.match_id}"
+      }]]
+    }
+  end
+
   private
+
+  def build_short_match_message(m)
+    message = []
+    message << "#{Hero.find_by(m.hero_id).localized_name}"
+    message << "#{m.wl} in #{m.duration / 60} mins"
+    message << "#{GameMode.find_by(mode_id: m.game_mode).localized_name}, " +
+    "#{LobbyType.find_by(lobby_id: m.lobby_type)}, #{Region.find_by(region_id: m.region)}"
+    message << ""
+
+    message.join("\n")
+  end
 
   def build_win_loss_message(data, options=nil)
     message = ["Winrate:"]
