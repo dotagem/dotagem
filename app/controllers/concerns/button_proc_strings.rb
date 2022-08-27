@@ -24,7 +24,7 @@ module ButtonProcStrings
         text = "\#{User.find_by(steam_id: p.account_id).telegram_username}: " +
         "\#{p.with_games} games, \#{win_percentage}%, " +
         "last \#{time_ago_in_words(Time.at(p.last_played))} ago"
-        callback = "matches_with:\#{p.account_id}"
+        callback = "matches_with_player:\#{p.account_id}"
         next text, callback
       end
     }
@@ -40,7 +40,7 @@ module ButtonProcStrings
           text << ", \#{winrate}%, " +
           "last \#{time_ago_in_words(Time.at(h.last_played))} ago"
         end
-        callback = "matchesbyhero:\#{h.hero_id}"
+        callback = "matches_hero:\#{h.hero_id}"
         next text, callback
       end
     }
@@ -55,7 +55,7 @@ module ButtonProcStrings
         if h.with_games > 0
           text << ", \#{winrate}%"
         end
-        callback = "matchesbyhero:\#{h.hero_id}"
+        callback = "matches_hero:\#{h.hero_id}"
         next text, callback
       end
     }
@@ -70,7 +70,7 @@ module ButtonProcStrings
         if h.against_games > 0
           text << ", \#{winrate}%"
         end
-        callback = "matchesbyhero:\#{h.hero_id}"
+        callback = "matches_hero:\#{h.hero_id}"
         next text, callback
       end
     }

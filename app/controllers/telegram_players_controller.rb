@@ -55,6 +55,64 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
 
   alias_method :recents!, :matches!
 
+  def matches_with_player_callback_query(player_id)
+    player_id = player_id.to_i
+    player = session[:player]
+    session[:options] = {included_account_id: [player_id]}
+
+    session[:items] = player.matches(session[:options])
+    session[:page] = 1
+    session[:button] = match_button_proc_string
+
+    edit_message :text, text: build_matches_header(
+      session[:items], session[:options]
+    )
+    edit_message :reply_markup, reply_markup: {
+      inline_keyboard: build_paginated_buttons(
+        session[:items], session[:button], session[:page]
+      )
+    }
+
+    answer_callback_query ""
+  end
+
+  def matches_hero_callback_query(hero_id)
+    hero_id = hero_id.to_i
+    options = {}
+
+    
+    case session[:hero_mode]
+    when "with"
+      options[:with_hero_id] = [hero_id]
+    when "against"
+      options[:against_hero_id] = [hero_id]
+    else
+      # Assume default if hero_mode somehow isn't given
+      options[:hero_id] = hero_id
+    end
+
+    player = session[:player]
+    session[:options] = options
+    session[:items] = player.matches(session[:options])
+    session[:page] = 1
+    session[:button] = match_button_proc_string
+    
+    # These need to be nil or unintended buttons show up
+    session[:hero_mode] = nil
+    session[:hero_sort] = nil
+
+    edit_message :text, text: build_matches_header(
+      session[:items], session[:options]
+    )
+    edit_message :reply_markup, reply_markup: {
+      inline_keyboard: build_paginated_buttons(
+        session[:items], session[:button], session[:page]
+      )
+    }
+
+    answer_callback_query ""
+  end
+
   def winrate!(*args)
     if args.any?
       options = build_and_validate_options(args)
@@ -99,6 +157,7 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
       reply_markup: {inline_keyboard: build_paginated_buttons(data, peer_button_proc_string)}
     message_session(result['result']['message_id'])
     message_session[:items] = data
+    message_session[:player] = @player
     message_session[:page] = 1
     message_session[:button] = peer_button_proc_string
   end
@@ -123,6 +182,7 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
     message_session(result['result']['message_id'])
     message_session[:items]     = items
     message_session[:page]      = 1
+    message_session[:player]    = @player
     message_session[:button]    = hero_as_button_proc_string
     message_session[:hero_mode] = hero_mode
     message_session[:hero_sort] = hero_sort
