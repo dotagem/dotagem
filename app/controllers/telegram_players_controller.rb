@@ -2,6 +2,7 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
   include Telegram::Bot::UpdatesController::MessageContext
   include Telegram::Bot::UpdatesController::CallbackQueryContext
   include Telegram::Bot::UpdatesController::Session
+  include ActionView::Helpers::TextHelper
 
   include MatchMessages
   include AliasHandling
@@ -9,6 +10,7 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
   include HeroPlayerOptions
   include ButtonProcStrings
   include MessageSession
+  include OpendotaHelper
 
   before_action :logged_in_or_mentioning_player, only: [:matches!,   :recents!,
                                                         :winrate!,   :wl!,
@@ -199,7 +201,7 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
   def lastmatch!(*)
     @match = @player.matches(limit: 1).first
     respond_with :message, text: build_short_match_message(@match), reply_markup: {
-      keyboard: [[{
+      inline_keyboard: [[{
         text: "Full match details", callback_data: "match:#{@match.match_id}"
       }]]
     }
@@ -209,11 +211,14 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
 
   def build_short_match_message(m)
     message = []
-    message << "#{Hero.find_by(m.hero_id).localized_name}"
-    message << "#{m.wl} in #{m.duration / 60} mins"
-    message << "#{GameMode.find_by(mode_id: m.game_mode).localized_name}, " +
-    "#{LobbyType.find_by(lobby_id: m.lobby_type)}, #{Region.find_by(region_id: m.region)}"
-    message << ""
+    message << "Hero: #{Hero.find_by(hero_id: m.hero_id).localized_name}"
+    message << "Result: #{m.wl} in #{m.duration / 60} mins"
+    message << "Played #{time_ago_in_words(Time.at(m.start_time))} ago\n"
+    message << "KDA: #{m.kills}/#{m.deaths}/#{m.assists}, LH/D: #{m.last_hits}/#{m.denies}"
+    message << "Mode: #{GameMode.find_by(mode_id: m.game_mode).localized_name}, " +
+               "#{LobbyType.find_by(lobby_id: m.lobby_type).localized_name}, " +
+               "#{Region.find_by(region_id: m.region).localized_name}"
+    message << "Avg. rank: #{format_rank(m.average_rank)}, party of #{m.party_size}"
 
     message.join("\n")
   end
