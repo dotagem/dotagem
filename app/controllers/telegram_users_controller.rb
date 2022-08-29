@@ -1,6 +1,7 @@
 class TelegramUsersController < Telegram::Bot::UpdatesController
   include Telegram::Bot::UpdatesController::MessageContext
   include TelegramHelper
+  include LoginUrl
   # Mostly for making a signin button to the site
   # if you're looking for player data commands, check TelegramPlayersController
 
@@ -46,11 +47,5 @@ class TelegramUsersController < Telegram::Bot::UpdatesController
                                 }]
                               ]
                             }
-  end
-
-  private
-
-  def login_callback_url
-    "#{Rails.application.credentials.base_url}/auth/telegram/callback"
   end
 end
