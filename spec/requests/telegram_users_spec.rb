@@ -1,13 +1,20 @@
 RSpec.describe TelegramUsersController, telegram_bot: :rails do
   describe "#login!" do
+    it "should not care about arguments" do
+      expect {dispatch_message("/login a b c")}
+      .to respond_with_message(/To complete your registration/) 
+    end
+
     context "as a new account" do
       it 'should say to complete your registration' do
-        expect {dispatch_message("/login")}.to respond_with_message(/To complete your registration, /)
+        expect {dispatch_message("/login")}
+        .to respond_with_message(/To complete your registration, /)
       end
 
       it "should have an inline keyboard" do
         dispatch_message("/login")
-        expect(bot.requests[:sendMessage].last[:reply_markup][:inline_keyboard]).to be_present
+        expect(bot.requests[:sendMessage].last[:reply_markup][:inline_keyboard])
+        .to be_present
       end
     end
 
