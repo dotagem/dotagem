@@ -1,5 +1,6 @@
 # Gem of True Sight
 ##### A Telegram bot that fetches and displays stats and Dota 2 data
+![RSpec](https://github.com/cschuijt/dotagem/actions/workflows/rspec.yml/badge.svg)
 
 ---
 
