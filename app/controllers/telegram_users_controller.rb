@@ -37,12 +37,15 @@ class TelegramUsersController < Telegram::Bot::UpdatesController
     message = "To connect, disconnect or delete your account, use the button " +
               "below or go to #{Rails.application.credentials.base_url} " +
               "and log in."
-    respond_with  :message, text: message, reply_markup: { inline_keyboard: [
-                    [{
-                      text: "Log In",
-                      login_url: {url: login_callback_url}
-                    }]
-                  ]}
+    respond_with  :message, text: message,
+                            reply_markup: {
+                              inline_keyboard: [
+                                [{
+                                  text: "Log In",
+                                  login_url: {url: login_callback_url}
+                                }]
+                              ]
+                            }
   end
 
   private
