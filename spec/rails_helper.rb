@@ -68,4 +68,7 @@ RSpec.configure do |config|
 
   # Unstub the bot when we're done testing
   config.after { Telegram.bot.reset }
+
+  # Include factory_bot syntax
+  config.include FactoryBot::Syntax::Methods
 end
