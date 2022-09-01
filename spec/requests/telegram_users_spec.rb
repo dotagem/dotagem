@@ -59,9 +59,9 @@ RSpec.describe TelegramUsersController, telegram_bot: :rails do
   end
 
   describe "#account!" do
-    subject { -> { dispatch_command :account } }
     it "should tell you to go to the website" do
-      should respond_with_message(/To connect, disconnect or delete your account/)
+      expect {dispatch_command :account}
+      .to respond_with_message(/To connect, disconnect or delete your account/)
     end
 
     it "should have an inline keyboard" do
