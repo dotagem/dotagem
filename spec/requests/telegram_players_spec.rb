@@ -35,12 +35,11 @@ RSpec.describe TelegramPlayersController, telegram_bot: :rails do
       let (:user) { create(:user, :steam_registered) }
 
       it "should return the most recent matches" do
-        request_method = bot.method(:request)
-        expect(bot).to receive(:request) do |*args|
-          request_method.call(*args)
+        expect(bot).to receive(:request).and_wrap_original do |m, *args|
+          m.call(*args)
           {"ok"=>true, "result"=>{"message_id"=>50}}
         end
-
+        
         allow_any_instance_of(User).to receive(:matches) {build_list(:list_match, 4)}
 
         expect { dispatch_message("/matches", from: {id: user.telegram_id}) }
