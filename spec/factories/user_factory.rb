@@ -7,7 +7,7 @@ FactoryBot.define do
     trait :steam_registered do
       sequence(:steam_id) { |n| n + 17000000 }
       sequence(:steam_id64) { |n| n + 76000000000000000 }
-      steam_url { "https://steamcommunity.com/id/#{:steam_id64}" }
+      steam_url { "https://steamcommunity.com/id/#{steam_id64}" }
     end
   end
 end
