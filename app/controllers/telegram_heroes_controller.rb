@@ -5,19 +5,24 @@ class TelegramHeroesController < Telegram::Bot::UpdatesController
   include ActionView::Helpers::TextHelper
 
   def alias!(*args)
-    input = args.join(" ").downcase
-    aliases = Alias.where(name: input)
+    if args.any?
+      input = args.join(" ").downcase
+      aliases = Alias.where(name: input)
 
-    case aliases.count
-    when 0
-      respond_with :message, text: "Which hero do you want aliases for? Try \"/alias hero name\"!"
-    when 1
-      respond_with :message, text: build_alias_list_message(aliases.first.hero_id)
+      case aliases.count
+      when 0
+        respond_with :message, text: "I don't understand which hero you mean, sorry!"
+      when 1
+        respond_with :message, text: build_alias_list_message(aliases.first.hero_id)
+      else
+        intention = "alias_list"
+        result = respond_with :message,
+          text: build_single_alias_message(input, intention),
+          reply_markup: {inline_keyboard: build_single_alias_keyboard(input, intention)}
+      end
     else
-      intention = "alias_list"
-      result = respond_with :message,
-        text: build_single_alias_message(input, intention),
-        reply_markup: {inline_keyboard: build_single_alias_keyboard(input, intention)}
+      respond_with :message,
+        text: "Which hero do you want aliases for? Try \"/alias hero name\"!"
     end
   end
 
