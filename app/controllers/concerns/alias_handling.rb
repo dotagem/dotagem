@@ -4,11 +4,14 @@ module AliasHandling
 
   def build_alias_resolution_message(options, intention)
     message = []
+    category = ""
     if intention == "wl"
-      message << "Winrate"
+      category = "Winrate"
     elsif intention == "matches"
-      message << "Matches"
+      category = "Matches"
     end
+    category << " for #{@player.telegram_username}"
+    message << category
     message << build_options_message(options)
     message << "Which hero did you mean by the marked input?"
     message.join("\n")
@@ -33,6 +36,7 @@ module AliasHandling
   end
 
   def alias_callback_query(selection)
+    @player ||= User.find(session[:player])
     options = session[:options]
     unclear = options.deep_locate -> (key, _, object) { key == :query && !object[:result] }
     unclear.first[:result] = selection.to_i
@@ -46,10 +50,10 @@ module AliasHandling
     else
       # All set!
       if session[:intention] == "wl"
-        data = session[:player].win_loss(session[:options])
+        data = @player.win_loss(session[:options])
         edit_message :text, text: build_win_loss_message(data, session[:options])
       elsif session[:intention] == "matches"
-        session[:items] = session[:player].matches(session[:options])
+        session[:items] = @player.matches(session[:options])
         edit_message :text, text: build_matches_header(session[:items], session[:options])
         edit_message :reply_markup, reply_markup:
           {inline_keyboard: build_paginated_buttons(session[:items], session[:button], 1)}

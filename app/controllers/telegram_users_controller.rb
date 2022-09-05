@@ -1,6 +1,7 @@
 class TelegramUsersController < Telegram::Bot::UpdatesController
   include Telegram::Bot::UpdatesController::MessageContext
   include TelegramHelper
+  include LoginUrl
   # Mostly for making a signin button to the site
   # if you're looking for player data commands, check TelegramPlayersController
 
@@ -37,17 +38,14 @@ class TelegramUsersController < Telegram::Bot::UpdatesController
     message = "To connect, disconnect or delete your account, use the button " +
               "below or go to #{Rails.application.credentials.base_url} " +
               "and log in."
-    respond_with  :message, text: message, reply_markup: { inline_keyboard: [
-                    [{
-                      text: "Log In",
-                      login_url: {url: login_callback_url}
-                    }]
-                  ]}
-  end
-
-  private
-
-  def login_callback_url
-    "#{Rails.application.credentials.base_url}/auth/telegram/callback"
+    respond_with  :message, text: message,
+                            reply_markup: {
+                              inline_keyboard: [
+                                [{
+                                  text: "Log In",
+                                  login_url: {url: login_callback_url}
+                                }]
+                              ]
+                            }
   end
 end

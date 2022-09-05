@@ -32,7 +32,7 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
                  reply_markup: {inline_keyboard: build_alias_resolution_keyboard(options)}
         message_session(result['result']['message_id'])
         message_session[:options] = options
-        message_session[:player] = @player
+        message_session[:player] = @player.id
         message_session[:intention] = intention
         message_session[:button] = match_button_proc_string
         # We can't build a normal message yet so we throw out right now
@@ -50,6 +50,7 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
     message_session[:items] = @matches
     message_session[:page] = 1
     message_session[:button] = match_button_proc_string
+    message_session[:player] = @player.id
   end
 
   alias_method :recents!, :matches!
@@ -127,7 +128,7 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
         result = respond_with :message, text: build_alias_resolution_message(options, intention),
                  reply_markup: {inline_keyboard: build_alias_resolution_keyboard(options)}
         message_session(result['result']['message_id'])[:options] = options
-        message_session[:player] = @player
+        message_session[:player] = @player.id
         message_session[:intention] = intention
         # We can't build a normal message yet so we throw out right now
         throw(:filtered)
@@ -156,7 +157,7 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
       reply_markup: {inline_keyboard: build_paginated_buttons(data, peer_button_proc_string)}
     message_session(result['result']['message_id'])
     message_session[:items] = data
-    message_session[:player] = @player
+    message_session[:player] = @player.id
     message_session[:page] = 1
     message_session[:button] = peer_button_proc_string
   end
@@ -181,7 +182,7 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
     message_session(result['result']['message_id'])
     message_session[:items]     = items
     message_session[:page]      = 1
-    message_session[:player]    = @player
+    message_session[:player]    = @player.id
     message_session[:button]    = hero_as_button_proc_string
     message_session[:hero_mode] = hero_mode
     message_session[:hero_sort] = hero_sort
