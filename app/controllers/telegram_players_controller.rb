@@ -199,11 +199,11 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
   private
 
   def build_win_loss_message(data, options=nil)
-    message = ["Winrate:"]
+    message = ["Winrate for #{@player.telegram_username}:"]
     if options
       message << build_options_message(options)
     end
-    message << "#{data["win"]} wins, #{data["lose"]} losses"
+    message << "#{pluralize(data["win"], "win")}, #{pluralize(data["lose"], "loss")}"
     message.join("\n")
   end
 
