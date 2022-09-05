@@ -61,12 +61,5 @@ jobs:
           echo "  password: password" >> config/database.yml
           echo "  database: dotagem-test" >> config/database.yml
 
-      - name: Fill in master keys
-        run: |
-          touch config/master.key
-          echo ${{ secrets.RAILS_MASTER_KEY }} > config/master.key
-          touch config/credentials/test.key
-          echo ${{ secrets.RAILS_TEST_KEY }} > config/credentials/test.key
-
       - name: Run Rspec
         run: bundle exec rspec
