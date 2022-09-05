@@ -193,6 +193,7 @@ RSpec.describe "/matches", telegram_bot: :rails do
 
       expect(bot.requests[:sendMessage].last[:text])
       .to  include("Matches for #{user2.telegram_username}")
+      .and not_include("#{user.telegram_username}")
       .and include("Playing as Weaver")
       .and include("5 results")
     end
@@ -213,39 +214,128 @@ RSpec.describe "/matches", telegram_bot: :rails do
       )
 
       expect(bot.requests[:sendMessage].last[:text])
-      .to  not_include("Matches for #{user.telegram_username}")
+      .to  include("Matches for #{user.telegram_username}")
       .and include(">>\"es\"<<")
       .and include("Which hero did you mean")
+      .and not_include("result")
       expect(bot.requests[:sendMessage].last[:reply_markup][:inline_keyboard].to_s)
       .to  include("Earthshaker")
       .and include("Ember Spirit")
       .and include("\"alias:7\"")
     end
 
-    # it "should pick the correct hero after button press", :callback_query do
-    #   expect(bot).to receive(:request).and_wrap_original do |m, *args|
-    #     m.call(*args)
-    #     {"ok"=>true, "result"=>{"message_id"=>59}}
-    #   end
+    it "should pick the correct hero after button press" do
+      allow(bot).to receive(:request).and_wrap_original do |m, *args|
+        m.call(*args)
+        {"ok"=>true, "result"=>{"message_id"=>59}}
+      end
+      
+      allow_any_instance_of(User).to receive(:matches) {
+        build_list(:list_match, 5, hero_id: 7)
+      }
 
-    #   dispatch_message(
-    #     "/matches es",
-    #     from: {id: user.telegram_id}
-    #   )
+      dispatch_message(
+        "/matches es",
+        from: {id: user.telegram_id}
+      )
 
-    #   dispatch(callback_query: {
-    #     data: "alias:7", chat: {id: 456}, message_id: 59
-    #   })
+      dispatch(callback_query: {
+        data: "alias:7", message: {message_id: 59, chat: {id: 456}}
+      })
 
-    #   # expect(bot.requests.last)
-    # end
+      expect(bot.requests[:editMessageText].last[:text])
+      .to  include("Matches for #{user.telegram_username}")
+      .and include("Playing as Earthshaker")
+      .and not_include("\"es\"")
+      .and include("5 results")
+    end
 
-  #   it "should ask multiple times if necessary" do
+    it "should ask multiple times if necessary" do
+      allow(bot).to receive(:request).and_wrap_original do |m, *args|
+        m.call(*args)
+        {"ok"=>true, "result"=>{"message_id"=>60}}
+      end
 
-  #   end
+      allow_any_instance_of(User).to receive(:matches) {
+        build_list(:list_match, 4, hero_id: 7)
+      }
+      
+      dispatch_message(
+        "/matches es against vs",
+        from: {id: user.telegram_id}
+      )
 
-  #   it "should return a list of matches once everything is clear" do
+      expect(bot.requests[:sendMessage].last[:text])
+      .to  include("Matches for #{user.telegram_username}")
+      .and include(">>\"es\"<<")
+      .and include("\"vs\"")
 
-  #   end
+      dispatch(callback_query: {
+        data: "alias:7", message: {message_id: 60, chat: {id: 456}}
+      })
+
+      expect(bot.requests[:editMessageText].last[:text])
+      .to  include("Matches for #{user.telegram_username}")
+      .and not_include("result")
+      .and not_include("\"es\"")
+      .and include("Earthshaker")
+      .and include(">>\"vs\"<<")
+
+      expect(bot.requests[:editMessageReplyMarkup].last[:reply_markup][:inline_keyboard].to_s)
+      .to  include("Vengeful Spirit")
+      .and include("Void Spirit")
+
+      dispatch(callback_query: {
+        data: "alias:20", message: {message_id: 60, chat: {id: 456}}
+      })
+
+      expect(bot.requests[:editMessageText].last[:text])
+      .to  include("Matches for #{user.telegram_username}")
+      .and include("4 results")
+      .and include("Playing as Earthshaker")
+      .and include("Enemy heroes: Vengeful Spirit")
+      .and not_include("\"es\"")
+      .and not_include("\"vs\"")
+    end
+
+    it "should return a list of matches once everything is clear" do
+      allow(bot).to receive(:request).and_wrap_original do |m, *args|
+        m.call(*args)
+        {"ok"=>true, "result"=>{"message_id"=>61}}
+      end
+
+      allow_any_instance_of(User).to receive(:matches) {
+        build_list(:list_match, 12, hero_id: 7)
+      }
+      
+      dispatch_message(
+        "/matches es against vs",
+        from: {id: user.telegram_id}
+      )
+
+      dispatch(callback_query: {
+        data: "alias:7", message: {message_id: 61, chat: {id: 456}}
+      })
+
+      dispatch(callback_query: {
+        data: "alias:20", message: {message_id: 61, chat: {id: 456}}
+      })
+
+      expect(bot.requests[:editMessageText].last[:text])
+      .to  include("Earthshaker")
+      .and include("Vengeful Spirit")
+      .and include("12 results")
+
+      expect(bot.requests[:editMessageReplyMarkup].last[:reply_markup][:inline_keyboard].count)
+      .to eq(6)
+
+      expect(bot.requests[:editMessageReplyMarkup].last[:reply_markup][:inline_keyboard].first.to_s)
+      .to  include("Earthshaker")
+      .and include("10/3/5")
+
+      expect(bot.requests[:editMessageReplyMarkup].last[:reply_markup][:inline_keyboard].last.to_s)
+      .to  include("1 / 3")
+      .and include(">>|")
+    end
   end
 end
