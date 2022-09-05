@@ -10,7 +10,7 @@ class TelegramHeroesController < Telegram::Bot::UpdatesController
 
     case aliases.count
     when 0
-      respond_with :message, text: "I don't know which hero you mean, sorry!"
+      respond_with :message, text: "Which hero do you want aliases for? Try \"/alias hero name\"!"
     when 1
       respond_with :message, text: build_alias_list_message(aliases.first.hero_id)
     else
