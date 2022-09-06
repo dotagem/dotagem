@@ -38,4 +38,4 @@
 
 *.code-workspace
 
-/config/credentials/test.key
+/spec/examples.txt

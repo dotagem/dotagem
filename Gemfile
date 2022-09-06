@@ -29,7 +29,7 @@ gem "stimulus-rails"
 gem "jbuilder"
 
 # Use Redis adapter to run Action Cable in production
-gem "redis", "~> 4.8.0"
+gem "redis", "~> 5.0.2"
 
 # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
 # gem "kredis"
@@ -55,6 +55,7 @@ group :development, :test do
 
   # Use Rspec for testing
   gem 'rspec-rails', '~> 6.0.0.rc1'
+  gem 'factory_bot_rails', '~> 6.2.0'
 end
 
 group :development do

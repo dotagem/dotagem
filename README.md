@@ -1,5 +1,6 @@
 # Gem of True Sight
 ##### A Telegram bot that fetches and displays stats and Dota 2 data
+![RSpec](https://github.com/cschuijt/dotagem/actions/workflows/tests.yml/badge.svg)
 
 ---
 
@@ -25,7 +26,8 @@ Not nearly. Here's my incomplete checklist of doom:
 - [ ] Handle inline queries as well ⌨
 - [x] Configure session storage so we can paginate and clarify on the fly ✅
 - [ ] Make sure the bot performs over webhooks as well (dev environment uses the poller) ⚙
-- [ ] Write tests for everything 🧪
+- [x] Set up testing framework for everything 🧪
+- [ ] Actually write tests for everything
 - [x] Make an example credentials file 🔑
 - [ ] Pretty up the sign-in frontend 💻
 

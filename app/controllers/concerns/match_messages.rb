@@ -4,7 +4,7 @@ module MatchMessages
   PAGE_ITEMS = 5
 
   def build_matches_header(matches, options=nil)
-    message = ["Matches"]
+    message = ["Matches for #{@player.telegram_username}"]
     if options
       message << build_options_message(options)
     end
