@@ -13,8 +13,6 @@ class TelegramMatchesController < Telegram::Bot::UpdatesController
 
       result = respond_with :message, text: build_match_overview_message(@match),
         reply_markup: {inline_keyboard: build_match_overview_keyboard(@match)}
-      message_session(result['result']['message_id'])
-      message_session[:match] = @match
     else
       respond_with :message, text: "You need to specify a match ID! It may be" +
       " easier to use /matches to find the match you are looking for."
@@ -22,11 +20,11 @@ class TelegramMatchesController < Telegram::Bot::UpdatesController
   end
 
   def match_callback_query(match_id)
-    session[:match] = Match.from_api(match_id.to_i)
+    @match = Match.from_api(match_id.to_i)
 
-    edit_message :text, text: build_match_overview_message(session[:match])
+    edit_message :text, text: build_match_overview_message(@match)
     edit_message :reply_markup, reply_markup: {
-      inline_keyboard: build_match_overview_keyboard(session[:match])
+      inline_keyboard: build_match_overview_keyboard(@match)
     }
 
     answer_callback_query ""
@@ -38,6 +36,7 @@ class TelegramMatchesController < Telegram::Bot::UpdatesController
     message = []
     message << "Match #{m.match_id}"
     message << ""
+    message << "Final score: #{m.radiant_score} - #{m.dire_score}"
     message << "Result: #{m.radiant_win ? "Radiant" : "Dire"} victory " +
                "in #{m.duration / 60} minutes"
     message << "Mode: #{GameMode.find_by(mode_id: m.game_mode).localized_name}, " +
@@ -45,6 +44,7 @@ class TelegramMatchesController < Telegram::Bot::UpdatesController
                "#{Region.find_by(region_id: m.region).localized_name}"
     known_players = m.players.select { |p| p.known? }
     if known_players.any?
+      message << ""
       formatted_players = []
       known_players.each do |p|
         formatted_players << User.find_by(steam_id: p.account_id).telegram_username + 
