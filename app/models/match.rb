@@ -16,6 +16,7 @@ class Match
   attribute :picks_bans
   attribute :lobby_type
   attribute :game_mode
+  attribute :region
   attribute :version
   attribute :patch
 
