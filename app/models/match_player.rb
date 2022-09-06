@@ -19,7 +19,9 @@ class MatchPlayer
   attribute :backpack_2
   attribute :hero_damage
   attribute :hero_healing
+  attribute :tower_damage
   attribute :creeps_stacked
+  attribute :last_hits
   attribute :denies
   attribute :gold
   attribute :gold_per_min
@@ -27,7 +29,6 @@ class MatchPlayer
   attribute :level
   attribute :leaver_status
   attribute :permanent_buffs
-  attribute :tower_damage
   attribute :xp_per_min
 
   def self.from_data(data)
