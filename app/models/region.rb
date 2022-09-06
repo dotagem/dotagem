@@ -7,7 +7,7 @@ class Region < ApplicationRecord
         r = Region.new
         r.region_id      = region.first
         r.name           = region.second
-        r.localized_name = region.second.titleize
+        r.localized_name = region.second.downcase.titleize
 
         r.save
       end

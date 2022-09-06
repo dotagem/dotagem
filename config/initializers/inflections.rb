@@ -13,9 +13,8 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular 'hero', 'heroes'
 
   # Acronyms used in region names
-  inflect.acronym   'EU'
-  inflect.acronym   'US'
-  inflect.acronym   'PW'
+  inflect.acronym 'US'
+  inflect.acronym 'PW'
 end
 
 # These inflection rules are supported but not enabled by default:
