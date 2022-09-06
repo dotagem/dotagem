@@ -203,7 +203,8 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
     @match = @player.matches(limit: 1).first
     respond_with :message, text: build_short_match_message(@match), reply_markup: {
       inline_keyboard: [[{
-        text: "Full match details", callback_data: "match:#{@match.match_id}"
+        text: "Match details on OpenDota",
+        url: "https://opendota.com/matches/#{@match.match_id}"
       }]]
     }
   end
