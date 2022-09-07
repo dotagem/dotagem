@@ -20,7 +20,7 @@ Not nearly. Here's my incomplete checklist of doom:
 - [x] Make the data we get back from OpenDota quack like a Rails model 🦆
 - [x] Fetch and cache constants from OpenDota so we don't need to bother the API for things like hero names 📃
 - [x] Allow users to sign in through Steam and identify themselves 🔐
-- [ ] Build match commands 📅
+- [x] Build match commands 📅
 - [x] Build player commands 🤼
 - [ ] Build hero commands ⚔
 - [ ] Handle inline queries as well ⌨
