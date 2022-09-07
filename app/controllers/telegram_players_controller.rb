@@ -60,10 +60,10 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
 
   def matches_with_player_callback_query(player_id)
     player_id = player_id.to_i
-    player = session[:player]
+    @player = User.find(session[:player])
     session[:options] = {included_account_id: [player_id]}
 
-    session[:items] = player.matches(session[:options])
+    session[:items] = @player.matches(session[:options])
     session[:page] = 1
     session[:button] = match_button_proc_string
 
@@ -94,9 +94,9 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
       options[:hero_id] = hero_id
     end
 
-    player = session[:player]
+    @player = User.find(session[:player])
     session[:options] = options
-    session[:items] = player.matches(session[:options])
+    session[:items] = @player.matches(session[:options])
     session[:page] = 1
     session[:button] = match_button_proc_string
     
