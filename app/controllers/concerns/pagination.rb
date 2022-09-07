@@ -190,10 +190,6 @@ module Pagination
       text: "A-Z",
       callback_data: "change_hero_sort:alphabetical"
     }
-    row << {
-      text: "Last",
-      callback_data: "change_hero_sort:last_played"
-    }
     case sort
     when "games"
       row.second[:text]          = "[Games]"
@@ -204,9 +200,6 @@ module Pagination
     when "alphabetical"
       row.fourth[:text]          = "[A-Z]"
       row.fourth[:callback_data] = "nothing:0"
-    when "last_played"
-      row.last[:text]          = "[Last]"
-      row.last[:callback_data] = "nothing:0"
     end
 
     return row
@@ -302,8 +295,6 @@ module Pagination
       end
     when "alphabetical"
       sorted = items.sort_by {|i| i.localized_name}
-    when "last_played"
-      sorted = items.sort_by {|i| i.last_played}.reverse!
     end
 
     return sorted
