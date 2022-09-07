@@ -155,13 +155,29 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
 
   def peers!(*)
     data = @player.peers.select { |p| p.known? }
+    sort = "games"
+
+    if data.any?
+      data = sort_peers_by_mode(data, sort)
+      
+      if data.count > 1
+        keyboard =  [build_peer_sort_buttons(sort)]
+        keyboard += build_paginated_buttons(data, peer_button_proc_string)
+      else
+        keyboard = build_paginated_buttons(data, peer_button_proc_string)
+      end
+    else
+      keyboard = []
+    end
+  
     result = respond_with :message,
       text: "Peers of #{@player.telegram_username}\n#{pluralize(data.count, "result")}",
-      reply_markup: {inline_keyboard: build_paginated_buttons(data, peer_button_proc_string)}
+      reply_markup: {inline_keyboard: keyboard}
     message_session(result['result']['message_id'])
     message_session[:items] = data
     message_session[:player] = @player.id
     message_session[:page] = 1
+    message_session[:peer_sort] = sort
     message_session[:button] = peer_button_proc_string
   end
 

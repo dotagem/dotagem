@@ -61,6 +61,24 @@ module Pagination
     answer_callback_query ""
   end
 
+  def change_peer_sort_callback_query(target)
+    session[:page] = 1
+    session[:peer_sort] = target
+    session[:items] = sort_peers_by_mode(
+      session[:items], session[:peer_sort]
+    )
+
+    keyboard = []
+    keyboard << build_peer_sort_buttons(session[:peer_sort])
+    keyboard += build_paginated_buttons(session[:items], session[:button])
+
+    edit_message :reply_markup, reply_markup: {
+      inline_keyboard: keyboard
+    }
+
+    answer_callback_query ""
+  end
+
   private
   
   def build_paginated_buttons(items, button_builder, page=1)
@@ -172,6 +190,10 @@ module Pagination
       text: "A-Z",
       callback_data: "change_hero_sort:alphabetical"
     }
+    row << {
+      text: "Last",
+      callback_data: "change_hero_sort:last_played"
+    }
     case sort
     when "games"
       row.second[:text]          = "[Games]"
@@ -180,11 +202,72 @@ module Pagination
       row.third[:text]          = "[Win %]"
       row.third[:callback_data] = "nothing:0"
     when "alphabetical"
-      row.last[:text]          = "[A-Z]"
+      row.fourth[:text]          = "[A-Z]"
+      row.fourth[:callback_data] = "nothing:0"
+    when "last_played"
+      row.last[:text]          = "[Last]"
       row.last[:callback_data] = "nothing:0"
     end
 
     return row
+  end
+
+  def build_peer_sort_buttons(sort)
+    row = []
+    row << { 
+      text: "Sort:",
+      callback_data: "nothing:0"
+    }
+    row << {
+      text: "Games",
+      callback_data: "change_peer_sort:games"
+    }
+    row << {
+      text: "Win %",
+      callback_data: "change_peer_sort:win"
+    }
+    row << {
+      text: "A-Z",
+      callback_data: "change_peer_sort:alphabetical"
+    }
+    row << {
+      text: "Last",
+      callback_data: "change_peer_sort:last_played"
+    }
+    case sort
+    when "games"
+      row.second[:text]          = "[Games]"
+      row.second[:callback_data] = "nothing:0"
+    when "win"
+      row.third[:text]          = "[Win %]"
+      row.third[:callback_data] = "nothing:0"
+    when "alphabetical"
+      row.fourth[:text]          = "[A-Z]"
+      row.fourth[:callback_data] = "nothing:0"
+    when "last_played"
+      row.last[:text]          = "[Last]"
+      row.last[:callback_data] = "nothing:0"
+    end
+
+    return row
+  end
+
+  def sort_peers_by_mode(items, sort)
+    case sort
+    when "games"
+      sorted = items.sort_by {|i| i.with_games}.reverse!
+    when "win"
+      sorted = items.sort_by do |i|
+        res = i.with_win / i.with_games.to_f
+        res.nan? ? -1 : res
+      end.reverse!
+    when "alphabetical"
+      sorted = items.sort_by do |i|
+        User.find_by(steam_id: i.account_id).telegram_username
+      end
+    when "last_played"
+      sorted = items.sort_by {|i| i.last_played}.reverse!
+    end
   end
 
   # Sorting depends on both mode and sort, so here's a funny little matrix
@@ -219,7 +302,10 @@ module Pagination
       end
     when "alphabetical"
       sorted = items.sort_by {|i| i.localized_name}
+    when "last_played"
+      sorted = items.sort_by {|i| i.last_played}.reverse!
     end
+
     return sorted
   end
 end
