@@ -213,6 +213,8 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
 
   def build_short_match_message(m)
     message = []
+    message << "Last match for #{@player.telegram_username}"
+    message << ""
     message << "Hero: #{Hero.find_by(hero_id: m.hero_id).localized_name}"
     message << "Result: #{m.wl} in #{m.duration / 60} mins"
     message << "Played #{time_ago_in_words(Time.at(m.start_time))} ago\n"
