@@ -90,6 +90,7 @@ RSpec.describe "/peers", telegram_bot: :rails do
       .to  include("50.0%")
       .and include("100 games")
       .and include("last about 1 hour ago")
+      .and include("matches_with_player")
     end
 
     it "should be sortable" do
@@ -458,6 +459,41 @@ RSpec.describe "/peers", telegram_bot: :rails do
       expect(row.third.to_s)
       .to  include("\"5 / 5\"")
       .and include("\"nothing:0\"")
+    end
+  end
+
+  context "pressing the buttons" do
+    it "should lead to matches with that player" do
+      allow(bot).to receive(:request).and_wrap_original do |m, *args|
+        m.call(*args)
+        {"ok"=>true, "result"=>{"message_id"=>119}}
+      end
+
+      user2 = create(:user, :steam_registered)
+
+      allow_any_instance_of(User).to receive(:peers) {
+        [build(:peer, account_id: user2.steam_id)]
+      }
+
+      allow_any_instance_of(User).to receive(:matches) {
+        build_list(:list_match, 4)
+      }
+
+      dispatch_message("/peers", from: {id: user.telegram_id})
+
+      expect(bot.requests[:sendMessage].last[:reply_markup][:inline_keyboard].last.to_s)
+      .to include("\"matches_with_player:#{user2.steam_id}\"")
+
+      dispatch(callback_query: {
+        data: "matches_with_player:#{user2.steam_id}", message: {message_id: 119, chat: {id: 456}}
+      })
+
+      expect(bot.requests[:editMessageText].last[:text])
+      .to  include("Matches")
+      .and include("With players: #{user2.telegram_username}")
+
+      expect(bot.requests[:editMessageReplyMarkup].last[:reply_markup][:inline_keyboard].count)
+      .to eq(4)
     end
   end
 end
