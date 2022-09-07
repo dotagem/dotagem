@@ -22,6 +22,7 @@ FactoryBot.define do
     last_hits { 90 }
     denies { 10 }
     version { nil }
+    region { 2 }
 
     trait :dire do
       player_slot { 128 }
