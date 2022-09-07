@@ -489,7 +489,7 @@ RSpec.describe "/peers", telegram_bot: :rails do
       })
 
       expect(bot.requests[:editMessageText].last[:text])
-      .to  include("Matches")
+      .to  include("Matches for #{user.telegram_username}")
       .and include("With players: #{user2.telegram_username}")
 
       expect(bot.requests[:editMessageReplyMarkup].last[:reply_markup][:inline_keyboard].count)
