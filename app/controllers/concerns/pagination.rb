@@ -61,6 +61,24 @@ module Pagination
     answer_callback_query ""
   end
 
+  def change_peer_sort_callback_query(target)
+    session[:page] = 1
+    session[:peer_sort] = target
+    session[:items] = sort_peers_by_mode(
+      session[:items], session[:peer_sort]
+    )
+
+    keyboard = []
+    keyboard << build_peer_sort_buttons(session[:peer_sort])
+    keyboard += build_paginated_buttons(session[:items], session[:button])
+
+    edit_message :reply_markup, reply_markup: {
+      inline_keyboard: keyboard
+    }
+
+    answer_callback_query ""
+  end
+
   private
   
   def build_paginated_buttons(items, button_builder, page=1)
@@ -185,6 +203,55 @@ module Pagination
     end
 
     return row
+  end
+
+  def build_peer_sort_buttons(sort)
+    row = []
+    row << { 
+      text: "Sort:",
+      callback_data: "nothing:0"
+    }
+    row << {
+      text: "Games",
+      callback_data: "change_peer_sort:games"
+    }
+    row << {
+      text: "Win %",
+      callback_data: "change_peer_sort:win"
+    }
+    row << {
+      text: "A-Z",
+      callback_data: "change_peer_sort:alphabetical"
+    }
+    case sort
+    when "games"
+      row.second[:text]          = "[Games]"
+      row.second[:callback_data] = "nothing:0"
+    when "win"
+      row.third[:text]          = "[Win %]"
+      row.third[:callback_data] = "nothing:0"
+    when "alphabetical"
+      row.last[:text]          = "[A-Z]"
+      row.last[:callback_data] = "nothing:0"
+    end
+
+    return row
+  end
+
+  def sort_peers_by_mode(items, sort)
+    case sort
+    when "games"
+      sorted = items.sort_by {|i| i.with_games}.reverse!
+    when "win"
+      sorted = items.sort_by do |i|
+        res = i.with_win / i.with_games.to_f
+        res.nan? ? -1 : res
+      end
+    when "alphabetical"
+      sorted = items.sort_by do |i|
+        User.find_by(steam_id: i.account_id).telegram_username
+      end
+    end
   end
 
   # Sorting depends on both mode and sort, so here's a funny little matrix
