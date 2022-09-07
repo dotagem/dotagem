@@ -27,7 +27,7 @@ Not nearly. Here's my incomplete checklist of doom:
 - [x] Configure session storage so we can paginate and clarify on the fly ✅
 - [ ] Make sure the bot performs over webhooks as well (dev environment uses the poller) ⚙
 - [x] Set up testing framework for everything 🧪
-- [ ] Actually write tests for everything
+- [x] Actually write tests for everything
 - [x] Make an example credentials file 🔑
 - [ ] Pretty up the sign-in frontend 💻
 
