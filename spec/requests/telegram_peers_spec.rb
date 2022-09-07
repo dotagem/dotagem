@@ -169,10 +169,295 @@ RSpec.describe "/peers", telegram_bot: :rails do
   end
 
   context "sorting" do
-    
+    let(:user_games)   { create(:user, :steam_registered) }
+    let(:user_winrate) { create(:user, :steam_registered) }
+    let(:user_last)    { create(:user, :steam_registered) }
+    let(:user_name)    { create(:user, :steam_registered, telegram_username: "a_user") }
+
+    before(:example) do
+      allow_any_instance_of(User).to receive(:peers) { [
+        build(:peer, account_id: user_games.steam_id, with_games: 200),
+        build(:peer, account_id: user_winrate.steam_id, with_win: 99),
+        build(:peer, account_id: user_last.steam_id, last_played: 5.minutes.ago.to_i),
+        build(:peer, account_id: user_name.steam_id)
+      ] }
+    end
+
+    it "should sort by games played by default" do
+      expect(bot).to receive(:request).and_wrap_original do |m, *args|
+        m.call(*args)
+        {"ok"=>true, "result"=>{"message_id"=>108}}
+      end
+
+      dispatch_message("/peers", from: {id: user.telegram_id})
+
+      expect(bot.requests[:sendMessage].last[:reply_markup][:inline_keyboard].first.to_s)
+      .to  include("[Games]")
+      .and not_include("[Win %]")
+      .and not_include("[A-Z]")
+      .and not_include("[Last]")
+
+      expect(bot.requests[:sendMessage].last[:reply_markup][:inline_keyboard].second.to_s)
+      .to  include(user_games.telegram_username)
+      .and not_include(user_winrate.telegram_username)
+      .and not_include(user_last.telegram_username)
+      .and not_include(user_name.telegram_username)
+    end
+
+    it "should sort by winrate when the button is pressed" do
+      allow(bot).to receive(:request).and_wrap_original do |m, *args|
+        m.call(*args)
+        {"ok"=>true, "result"=>{"message_id"=>109}}
+      end
+
+      dispatch_message("/peers", from: {id: user.telegram_id})
+
+      expect(bot.requests[:sendMessage].last[:reply_markup][:inline_keyboard].first.to_s)
+      .to  include("[Games]")
+      .and not_include("[Win %]")
+
+      dispatch(callback_query: {
+        data: "change_peer_sort:win", message: {message_id: 109, chat: {id: 456}}
+      })
+
+      expect(bot.requests[:editMessageReplyMarkup].last[:reply_markup][:inline_keyboard].first.to_s)
+      .to  include("[Win %]")
+      .and not_include("[Games]")
+
+      expect(bot.requests[:editMessageReplyMarkup].last[:reply_markup][:inline_keyboard].second.to_s)
+      .to  include(user_winrate.telegram_username)
+      .and not_include(user_games.telegram_username)
+      .and not_include(user_last.telegram_username)
+      .and not_include(user_name.telegram_username)
+    end
+
+    it "should sort alphabetically when the button is pressed" do
+      allow(bot).to receive(:request).and_wrap_original do |m, *args|
+        m.call(*args)
+        {"ok"=>true, "result"=>{"message_id"=>110}}
+      end
+
+      dispatch_message("/peers", from: {id: user.telegram_id})
+
+      expect(bot.requests[:sendMessage].last[:reply_markup][:inline_keyboard].first.to_s)
+      .to  include("[Games]")
+      .and not_include("[A-Z]")
+
+      dispatch(callback_query: {
+        data: "change_peer_sort:alphabetical",
+        message: {message_id: 110, chat: {id: 456}}
+      })
+
+      expect(bot.requests[:editMessageReplyMarkup].last[:reply_markup][:inline_keyboard].first.to_s)
+      .to  include("[A-Z]")
+      .and not_include("[Games]")
+
+      expect(bot.requests[:editMessageReplyMarkup].last[:reply_markup][:inline_keyboard].second.to_s)
+      .to  include(user_name.telegram_username)
+      .and not_include(user_games.telegram_username)
+      .and not_include(user_last.telegram_username)
+      .and not_include(user_winrate.telegram_username)
+    end
+
+    it "should sort by last played when the button is pressed" do
+      allow(bot).to receive(:request).and_wrap_original do |m, *args|
+        m.call(*args)
+        {"ok"=>true, "result"=>{"message_id"=>111}}
+      end
+
+      dispatch_message("/peers", from: {id: user.telegram_id})
+
+      expect(bot.requests[:sendMessage].last[:reply_markup][:inline_keyboard].first.to_s)
+      .to  include("[Games]")
+      .and not_include("[Last]")
+
+      dispatch(callback_query: {
+        data: "change_peer_sort:last_played", message: {message_id: 111, chat: {id: 456}}
+      })
+
+      expect(bot.requests[:editMessageReplyMarkup].last[:reply_markup][:inline_keyboard].first.to_s)
+      .to  include("[Last]")
+      .and not_include("[Games]")
+
+      expect(bot.requests[:editMessageReplyMarkup].last[:reply_markup][:inline_keyboard].second.to_s)
+      .to  include(user_last.telegram_username)
+      .and not_include(user_games.telegram_username)
+      .and not_include(user_winrate.telegram_username)
+      .and not_include(user_name.telegram_username)
+    end
   end
 
   context "pagination" do
+    before(:example) do
+      allow_any_instance_of(User).to receive(:peers) {
+        build_list(:peer, 24)
+      }
+    end
 
+    it "should have the correct amount of pages" do
+      allow(bot).to receive(:request).and_wrap_original do |m, *args|
+        m.call(*args)
+        {"ok"=>true, "result"=>{"message_id"=>112}}
+      end
+
+      dispatch_message("/peers", from: {id: user.telegram_id})
+
+      expect(bot.requests[:sendMessage].last[:reply_markup][:inline_keyboard].last.to_s)
+      .to include("1 / 5")
+    end
+
+    it "should go to the next page when the next button is pressed" do
+      allow(bot).to receive(:request).and_wrap_original do |m, *args|
+        m.call(*args)
+        {"ok"=>true, "result"=>{"message_id"=>113}}
+      end
+
+      dispatch_message("/peers", from: {id: user.telegram_id})
+
+      dispatch(callback_query: {
+        data: "pagination:2", message: {message_id: 113, chat: {id: 456}}
+      })
+
+      expect(bot.requests[:editMessageReplyMarkup].last[:reply_markup][:inline_keyboard].last.to_s)
+      .to include("2 / 5")
+    end
+
+    it "should have the correct buttons on the first page" do
+      allow(bot).to receive(:request).and_wrap_original do |m, *args|
+        m.call(*args)
+        {"ok"=>true, "result"=>{"message_id"=>114}}
+      end
+
+      dispatch_message("/peers", from: {id: user.telegram_id})
+
+      row = bot.requests[:sendMessage].last[:reply_markup][:inline_keyboard].last
+
+      expect(row.count).to eq(3)
+      expect(row.first.to_s)
+      .to  include("1 / 5")
+      .and include("nothing:0")
+      expect(row.second.to_s)
+      .to  include("\">\"")
+      .and include("\"pagination:2\"")
+      expect(row.third.to_s)
+      .to  include("\">>|\"")
+      .and include("\"pagination:5\"")
+    end
+
+    it "should have the correct buttons on the second page" do
+      allow(bot).to receive(:request).and_wrap_original do |m, *args|
+        m.call(*args)
+        {"ok"=>true, "result"=>{"message_id"=>115}}
+      end
+
+      dispatch_message("/peers", from: {id: user.telegram_id})
+
+      dispatch(callback_query: {
+        data: "pagination:2", message: {message_id: 115, chat: {id: 456}}
+      })
+
+      row = bot.requests[:editMessageReplyMarkup].last[:reply_markup][:inline_keyboard].last
+      
+      expect(row.count).to eq(4)
+      expect(row.first.to_s)
+      .to  include("\"<\"")
+      .and include("\"pagination:1\"")
+      expect(row.second.to_s)
+      .to  include("2 / 5")
+      .and include("\"nothing:0\"")
+      expect(row.third.to_s)
+      .to  include("\">\"")
+      .and include("\"pagination:3\"")
+      expect(row.fourth.to_s)
+      .to  include("\">>|\"")
+      .and include("\"pagination:5\"")
+    end
+
+    it "should have the correct buttons on the third page" do
+      allow(bot).to receive(:request).and_wrap_original do |m, *args|
+        m.call(*args)
+        {"ok"=>true, "result"=>{"message_id"=>116}}
+      end
+
+      dispatch_message("/peers", from: {id: user.telegram_id})
+
+      dispatch(callback_query: {
+        data: "pagination:3", message: {message_id: 116, chat: {id: 456}}
+      })
+
+      row = bot.requests[:editMessageReplyMarkup].last[:reply_markup][:inline_keyboard].last
+      
+      expect(row.count).to eq(5)
+      expect(row.first.to_s)
+      .to  include("\"|<<\"")
+      .and include("\"pagination:1\"")
+      expect(row.second.to_s)
+      .to  include("\"<\"")
+      .and include("\"pagination:2\"")
+      expect(row.third.to_s)
+      .to  include("3 / 5")
+      .and include("\"nothing:0\"")
+      expect(row.fourth.to_s)
+      .to  include("\">\"")
+      .and include("\"pagination:4\"")
+      expect(row.fifth.to_s)
+      .to  include("\">>|\"")
+      .and include("\"pagination:5\"")
+    end
+
+    it "should have the correct buttons on the second to last page" do
+      allow(bot).to receive(:request).and_wrap_original do |m, *args|
+        m.call(*args)
+        {"ok"=>true, "result"=>{"message_id"=>117}}
+      end
+
+      dispatch_message("/peers", from: {id: user.telegram_id})
+
+      dispatch(callback_query: {
+        data: "pagination:4", message: {message_id: 117, chat: {id: 456}}
+      })
+
+      row = bot.requests[:editMessageReplyMarkup].last[:reply_markup][:inline_keyboard].last
+      
+      expect(row.count).to eq(4)
+      expect(row.first.to_s)
+      .to  include("\"|<<\"")
+      .and include("\"pagination:1\"")
+      expect(row.second.to_s)
+      .to  include("\"<\"")
+      .and include("\"pagination:3\"")
+      expect(row.third.to_s)
+      .to  include("\"4 / 5\"")
+      .and include("\"nothing:0\"")
+      expect(row.fourth.to_s)
+      .to  include("\">\"")
+      .and include("\"pagination:5\"")
+    end
+
+    it "should have the correct buttons on the last page" do
+      allow(bot).to receive(:request).and_wrap_original do |m, *args|
+        m.call(*args)
+        {"ok"=>true, "result"=>{"message_id"=>118}}
+      end
+
+      dispatch_message("/peers", from: {id: user.telegram_id})
+
+      dispatch(callback_query: {
+        data: "pagination:5", message: {message_id: 118, chat: {id: 456}}
+      })
+
+      row = bot.requests[:editMessageReplyMarkup].last[:reply_markup][:inline_keyboard].last
+      
+      expect(row.count).to eq(3)
+      expect(row.first.to_s)
+      .to  include("\"|<<\"")
+      .and include("\"pagination:1\"")
+      expect(row.second.to_s)
+      .to  include("\"<\"")
+      .and include("\"pagination:4\"")
+      expect(row.third.to_s)
+      .to  include("\"5 / 5\"")
+      .and include("\"nothing:0\"")
+    end
   end
 end
