@@ -391,4 +391,35 @@ RSpec.describe "/heroes", telegram_bot: :rails do
       .and include("\"nothing:0\"")
     end
   end
+
+  context "pressing buttons" do
+    it "should lead to a list of matches with that hero" do
+      allow(bot).to receive(:request).and_wrap_original do |m, *args|
+        m.call(*args)
+        {"ok"=>true, "result"=>{"message_id"=>127}}
+      end
+
+      allow_any_instance_of(User).to receive(:matches) {
+        build_list(:list_match, 5, hero_id: 106)
+      }
+
+      dispatch_message("/heroes", from: {id: user.telegram_id})
+
+      expect(bot.requests[:sendMessage].last[:reply_markup][:inline_keyboard].third.to_s)
+      .to  include("Ember Spirit")
+      .and include("\"matches_hero:106\"")
+
+      dispatch(callback_query: {
+        data: "matches_hero:106", message: {message_id: 127, chat: {id: 456}}
+      })
+
+      expect(bot.requests[:editMessageText].last[:text])
+      .to  include("Matches for #{user.telegram_username}")
+      .and include("Playing as Ember Spirit")
+      .and include("5 results")
+
+      expect(bot.requests[:editMessageReplyMarkup].last[:reply_markup][:inline_keyboard].count)
+      .to eq(5)
+    end
+  end
 end
