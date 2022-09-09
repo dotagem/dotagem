@@ -1,35 +1,16 @@
-<h1>Pages#home</h1>
-<p>Find me in app/views/pages/home.html.erb</p>
-<p>
-  <%= form_tag('/auth/steam', method: 'post', data: {turbo: false}) do %>
-    <button type='submit'>Login with Steam</button>
-  <% end %>
+<div class="flex columns-2 min-h-screen bg-gradient-to-b from-red-600 to-red-900">
+  <div class="container px-4 md:px-16 grid grid-cols-3 grid-rows-1 gap-4">
+    <div class="col-span-2 my-32">
+      <h1 class="text-6xl text-slate-100">Gem of True Sight</h1>
+      <h4 class="text-lg text-slate-200">A Telegram bot for Dota 2 match data and statistics</h4>
+    </div>
 
-  <%= form_tag('/auth/telegram', method: 'post', data: {turbo: false}) do %>
-    <button type='submit'>Login with Telegram</button>
-  <% end %>
-
-  <%= form_tag('/logout', method: 'delete') do %>
-    <button type='submit'>Log out</button>
-  <% end %>
-</p>
-<p>
-  <% if logged_in? %>
-    Signed in
-  <% else %>
-    Not signed in
-  <% end %>
-</p>
-<% if logged_in? && current_user.telegram_registered? %>
-  <p>
-    Telegram ID:
-    <%= current_user.telegram_id %>
-  </p>
-<% end %>
-
-<% if logged_in? && current_user.steam_registered? %>
-  <p>
-    Steam ID:
-    <%= current_user.steam_id64 %>
-  </p>
-<% end %>
+    <div class="col-span-1 my-32">
+      <div class="bg-slate-800 rounded-xl shadow-md overflow-hidden w-full h-52">
+        <div class="bg-cyan-500 w-full h-10 text-center text-white text-xl py-8">
+          <span class="inline-block align-middle">Telegram</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
