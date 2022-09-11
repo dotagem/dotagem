@@ -16,14 +16,16 @@
     </p>
   </div>
   <div class="grid pb-5">
-    <div class="m-auto text-center space-y-5">
-      <div class="relative">
-        <%= image_tag current_user.telegram_avatar, width: "128px", height: "128px", class: "rounded-full" %>
-        <div class="rounded-full absolute bottom-0 left-0 bg-cyan-400 p-1">
-          <%= image_tag "telegram_circle.png", width: "24px", height: "24px" %>
+    <div class="m-auto text-center space-y-2">
+      <div class="grid">
+        <div class="place-self-center">
+          <%= image_tag current_user.telegram_avatar, width: "72px", height: "72px", class: "rounded-full" %>
         </div>
       </div>
-      <h5 class="text-lg text-slate-100">@<%= current_user.telegram_username %></h5>
+      <h5 class="text-lg text-slate-100">
+        <%= image_tag "telegram_circle.png", width: "24px", height: "24px", class: "inline rounded-full bg-cyan-400 p-1 mr-1" %>
+        @<%= current_user.telegram_username %>
+      </h5>
     </div>
   </div>
   <div class="bg-slate-900 p-5 grid grid-cols-1 grid-rows-1 space-y-5">
@@ -38,7 +40,7 @@
     <div>
       <p class="text-gray-500 text-center text-sm">
         Or if you've changed your mind,
-        <%= link_to "click here", user_url(current_user), data: {"turbo-method": :delete}, class: "text-teal-300 hover:underline" %>
+        <%= link_to "click here", user_url(current_user), data: {"turbo-method": :delete, "turbo-confirm": "Are you sure?"}, class: "text-teal-300 hover:underline" %>
         to log out and remove yourself from the database.
       </p>
     </div>
