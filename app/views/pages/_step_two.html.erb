@@ -1,0 +1,35 @@
+<div class="bg-slate-800 rounded-xl shadow-md overflow-hidden w-full h-fit text-white">
+  <div class="bg-gradient-to-r from-cyan-400 to-gray-800 min-h-fit">
+    <div class="py-10 m-auto text-center">
+      <p class="text-7xl">
+      <%= image_tag "telegram.png", height: "60px", width: "60px", class: "inline mr-3" %>
+      +
+      <%= image_tag "steam.png", height: "60px", width: "60px", class: "inline ml-3" %>
+      </p>
+    </div>
+  </div>
+  <div class="px-5 py-10 space-y-5 text-center text-slate-400 text-base">
+    <h2 class="text-xl text-white font-semibold pb-1">Almost there!</h2>
+    <p>
+      To show your data in Telegram, we need to know which Steam account to use.
+      Log in below to complete your registration and get started!
+    </p>
+  </div>
+  <div class="bg-slate-900 p-5 grid grid-cols-1 grid-rows-1 space-y-5">
+    <div class="place-self-center">
+      <%= form_tag('/auth/steam', method: 'post', data: {turbo: false}) do %>
+        <button class="rounded-full bg-gray-700 hover:bg-gray-600 outline-2 outline-gray-200 text-white p-4 px-5" type="submit">
+          <%= image_tag "steam.png", height: "20px", width: "20px", class: "inline mr-2 pb-1" %>
+          Log in with Steam
+        </button>
+      <% end %>
+    </div>
+    <div>
+      <p class="text-gray-500 text-center text-sm">
+        Or if you've changed your mind,
+        <%= link_to "click here", user_url(current_user), data: {"turbo-method": :delete}, class: "text-teal-300 hover:underline" %>
+        to log out and remove yourself from the database.
+      </p>
+    </div>
+  </div>
+</div>
