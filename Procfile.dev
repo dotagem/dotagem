@@ -1,2 +1,2 @@
-web: bin/rails server -p 3000
+web: authbind --deep bin/rails s -b 'ssl://127.0.0.1:443?key=config/certs/localhost-key.pem&cert=config/certs/localhost.pem'
 css: bin/rails tailwindcss:watch
