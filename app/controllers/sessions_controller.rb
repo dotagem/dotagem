@@ -23,7 +23,7 @@ class SessionsController < ApplicationController
     auth = request.env['omniauth.auth']
 
     # Find and remove this steam account from users who aren't our current user
-    users_with_steamid = User.find_by(steam_id64: auth['uid'])
+    users_with_steamid = User.where(steam_id64: auth['uid'])
     unless users_with_steamid.nil?
       users_with_steamid.each do |u|
         unless current_user?(u)
@@ -41,7 +41,7 @@ class SessionsController < ApplicationController
     current_user.steam_id       = SteamID.from_string(auth['uid']).account_id
     current_user.steam_nickname = auth['info']['nickname']
     current_user.steam_url      = auth['info']['urls']['Profile']
-    current_user.steam_avatar   = auth['info']['image']
+    current_user.steam_avatar   = auth['extra']['raw_info']['avatarfull']
 
     current_user.save
     redirect_to '/'

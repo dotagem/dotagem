@@ -39,3 +39,6 @@
 *.code-workspace
 
 /spec/examples.txt
+
+/app/assets/builds/*
+!/app/assets/builds/.keep

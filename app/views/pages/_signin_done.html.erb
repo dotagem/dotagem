@@ -1,0 +1,52 @@
+<div class="bg-slate-800 rounded-xl text-center shadow-md overflow-hidden w-full h-fit text-white">
+  <div class="bg-gradient-to-r from-cyan-400 to-gray-800 min-h-fit">
+    <div class="py-10 text-center">
+      <%= image_tag "check.png", height: "60px", width: "60px", class: "m-auto" %>
+    </div>
+  </div>
+  <div class="px-5 py-10 space-y-5 text-center text-slate-400 text-base">
+    <h2 class="text-xl text-white font-semibold pb-1">All set!</h2>
+    <p>
+      You are now signed in with both Telegram and Steam.
+    </p>
+    <div class="grid grid-cols-2 gap-4 mx-4">
+      <div class="m-auto text-center space-y-5">
+        <div class="relative">
+          <%= image_tag current_user.telegram_avatar, width: "128px", height: "128px", class: "rounded-full" %>
+          <div class="rounded-full absolute bottom-0 left-0 bg-cyan-400 p-1">
+            <%= image_tag "telegram_circle.png", width: "24px", height: "24px" %>
+          </div>
+        </div>
+        <h5 class="text-lg text-slate-100">@<%= current_user.telegram_username %></h5>
+      </div>
+      <div class="m-auto text-center space-y-5">
+        <div class="relative">
+          <%= image_tag current_user.steam_avatar, width: "128px", height: "128px", class: "rounded-full" %>
+          <div class="rounded-full absolute bottom-0 left-0 bg-gray-800 p-1">
+            <%= image_tag "steam.png", width: "24px", height: "24px" %>
+          </div>
+        </div>
+        <h5 class="text-lg text-slate-100"><%= current_user.steam_nickname %></h5>
+      </div>
+    </div>
+    <div class="mb-5 text-center">
+      <p>
+        You should now be able to use the bot <%= link_to "commands", commands_url, class: "text-teal-300 hover:underline" %>.
+        If you have not yet <%= link_to "exposed match data", help_url, class: "text-teal-300 hover:underline" %>
+        in Dota 2, be sure to do so now!
+      </p>
+    </div>
+  </div>
+  <div class="bg-slate-900 p-5 space-y-5 text-gray-500 text-center text-sm">
+    <p>
+      If you want to link a different Steam account,
+      <%= link_to "click here", user_unlink_steam_url(current_user), data: {"turbo-method": :delete, "turbo-confirm": "Are you sure?"}, class: "text-teal-300 hover:underline" %>
+      to unlink your current one.
+    </p>
+    <p>
+      Or if you no longer want to use the bot,
+      <%= link_to "click here", user_url(current_user), data: {"turbo-method": :delete, "turbo-confirm": "Are you sure?"}, class: "text-teal-300 hover:underline" %>
+      to log out and remove yourself from the database.
+    </p>
+  </div>
+</div>

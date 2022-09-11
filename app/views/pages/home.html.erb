@@ -1,35 +1,68 @@
-<h1>Pages#home</h1>
-<p>Find me in app/views/pages/home.html.erb</p>
-<p>
-  <%= form_tag('/auth/steam', method: 'post', data: {turbo: false}) do %>
-    <button type='submit'>Login with Steam</button>
-  <% end %>
+<div class="flex bg-fixed bg-center bg-no-repeat bg-cover" style="background-image: url('<%= asset_path("background.png") %>');">
+  <div class="bg-gray-800 bg-opacity-50">
+  <div class="px-4 sm:px-8 md:px-16 grid grid-cols-3 lg:grid-cols-5 grid-rows-1 gap-4">
+    <div class="col-span-3 lg:col-span-3 py-16 place-self-center lg:pr-8">
+      <h1 class="text-6xl pb-4 text-slate-100">Gem of True Sight</h1>
+      <h4 class="text-lg text-slate-200">A Telegram bot for Dota 2 match data and statistics</h4>
+    </div>
 
-  <%= form_tag('/auth/telegram', method: 'post', data: {turbo: false}) do %>
-    <button type='submit'>Login with Telegram</button>
-  <% end %>
+    <div class="col-span-3 lg:col-span-2 py-16 place-self-center">
+      <% if !logged_in? %>
+        <%= render 'step_one' %>
+      <% elsif logged_in? && !current_user.steam_registered? %>
+        <%= render 'step_two' %>
+      <% else %>
+        <%= render 'signin_done' %>
+      <% end %>
+    </div>
+  </div>
+  </div>
+</div>
+<div class="flex bg-cover bg-slate-900 text-slate-300 px-4 sm:px-8 md:px-16">
+  <div class="container grid lg:grid-flow-col gap-6 space-y-5 mx-auto py-10">
+    <div class="space-y-5">
+      <h3 class="text-white text-xl font-bold text-center mt-5 pb-1">
+        What's this and what can I do with it?
+      </h3>
+      <p>
+        Gem (gembot, gem of true sight) is a Telegram bot which allows you to
+        show your Dota 2 match data, winrates, hero stats and more without leaving
+        the chat you are in. It is perfect for Dota 2 group chats, but also allows
+        you to type the bot's name in any chat to instantly paste matches into
+        there.
+      </p>
+      <p>
+        For a list of commands, check out the <%= link_to 'commands', 'commands', class: "text-teal-300 hover:underline" %>
+        page! If you would like to know what's new, check out the <a href="https://github.com/cschuijt/dotagem" class="text-teal-300 hover:underline">changelog</a> on Github. 
+      </p>
+    </div>
+    <div class="space-y-5">
+      <h3 class="text-white text-xl font-bold text-center pb-1">
+        Why do I need to log in?
+      </h3>
+      <p>
+        To be able to fetch your data, we need to know which Steam account belongs
+        to which Telegram account. This is why you need to log in with both Telegram
+        and Steam before being able to get your results out of the bot. No personal
+        details are shared with us, we just get a number representing your account
+        on both ends. And if you ever decide you do not need the bot anymore, you
+        can log out and remove your registration at any time.
+      </p>
+    </div>
+    <div class="space-y-5">
+      <h3 class="text-white text-xl font-bold text-center pb-1">
+        I have an idea for a feature/I've found a bug!
+      </h3>
+      <p>
+        The bot is completely open source under an MIT license, the code is available on
+        <a href="https://github.com/cschuijt/dotagem" class="text-teal-300 hover:underline">Github</a>.
+        If you've got an idea or if something is not working as expected, please
+        reach out and let me know! You can open an issue
+        <a href="https://github.com/cschuijt/dotagem/issues/new" class="text-teal-300 hover:underline">here</a>
+        or send me a message on Telegram at <a href="https://t.me/danvb" class="text-teal-300 hover:underline">@danvb</a>.
+      </p>
+    </div>
+  </div>
+</div>
 
-  <%= form_tag('/logout', method: 'delete') do %>
-    <button type='submit'>Log out</button>
-  <% end %>
-</p>
-<p>
-  <% if logged_in? %>
-    Signed in
-  <% else %>
-    Not signed in
-  <% end %>
-</p>
-<% if logged_in? && current_user.telegram_registered? %>
-  <p>
-    Telegram ID:
-    <%= current_user.telegram_id %>
-  </p>
-<% end %>
-
-<% if logged_in? && current_user.steam_registered? %>
-  <p>
-    Steam ID:
-    <%= current_user.steam_id64 %>
-  </p>
-<% end %>
+<%= render "shared/footer" %>

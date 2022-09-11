@@ -75,5 +75,5 @@ Rails.application.configure do
     { expires_in: 1.week }
 
   # Enable this if you want to test the Telegram one-click authentication
-  # config.force_ssl = true
+  config.force_ssl = true
 end
