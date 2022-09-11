@@ -1,8 +1,14 @@
 Rails.application.routes.draw do
-  get 'pages/home'
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
   
   root "pages#home"
+
+  get "commands", to: "pages#commands"
+  get "help",     to: "pages#help"
+
+  resources :users, only: [:destroy]
+  delete "users/:id/unlink", to: "users#unlink_steam", as: "user_unlink_steam"
+
   telegram_webhook TelegramWebhooksRouter
   
   # OmniAuth endpoints, Steam POSTs back instead of GET
