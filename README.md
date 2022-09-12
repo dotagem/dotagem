@@ -29,7 +29,7 @@ Not nearly. Here's my incomplete checklist of doom:
 - [x] Set up testing framework for everything 🧪
 - [x] Actually write tests for everything
 - [x] Make an example credentials file 🔑
-- [ ] Pretty up the sign-in frontend 💻
+- [x] Pretty up the sign-in frontend 💻
 
 ### Technical details and loosely related thoughts
 * [Telegram-bot](https://github.com/telegram-bot-rb/telegram-bot) behaves as Rails middleware, so we run a Rails app with it installed. The only thing we use the web frontend for is logging in through Steam and for a landing page in case people browse to our site.
