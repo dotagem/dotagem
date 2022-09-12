@@ -22,7 +22,7 @@ Not nearly. Here's my incomplete checklist of doom:
 - [x] Allow users to sign in through Steam and identify themselves 🔐
 - [x] Build match commands 📅
 - [x] Build player commands 🤼
-- [ ] Build hero commands ⚔
+- [x] Build hero commands ⚔
 - [ ] Handle inline queries as well ⌨
 - [x] Configure session storage so we can paginate and clarify on the fly ✅
 - [ ] Make sure the bot performs over webhooks as well (dev environment uses the poller) ⚙
