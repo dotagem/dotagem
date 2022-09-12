@@ -1,0 +1,418 @@
+<% content_for :title do "Commands" end %>
+
+<div class="flex bg-fixed bg-center bg-no-repeat bg-cover h-max" style="background-image: url('<%= asset_path("background.png") %>');">
+  <div class="bg-gray-800 text-slate-300 bg-opacity-50 h-full w-full pb-16">
+    <div class="container m-auto px-4 sm:px-8 md:px-16 grid grid-cols-2 gap-x-8 gap-y-12">
+      <div class="col-span-2">
+        <h1 class="pt-10 text-center text-white text-4xl font-bold m-auto">List of Commands</h1>
+      </div>
+      <div class="col-span-2">
+        <h2 class="text-white text-center text-2xl">Help commands</h2>
+      </div>
+
+      <div class="col-span-2 lg:col-span-1 rounded-xl bg-slate-700 overflow-hidden text-center shadow-md">
+        <div class="p-4 space-y-4 bg-slate-600">
+          <h3 class="text-slate-200 text-xl font-mono">
+            /help
+          </h3>
+          <p>
+            Shows help text and links to both the
+            <%= link_to "FAQ", help_url, class: "text-teal-300 hover:underline" %>
+            and this page.
+          </p>
+        </div>
+        <div class="p-4 space-y-4">
+          <h4 class="text-slate-200 text-lg">
+            Examples
+          </h4>
+          <p>
+            <code class="rounded-md bg-slate-500 p-1">/help</code>
+            to show the help text.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-span-2 lg:col-span-1 rounded-xl bg-slate-700 overflow-hidden text-center shadow-md">
+        <div class="p-4 space-y-4 bg-slate-600">
+          <h3 class="text-slate-200 text-xl font-mono">
+            /commands
+          </h3>
+          <p>
+            Shows help text and links to both the
+            <%= link_to "FAQ", help_url, class: "text-teal-300 hover:underline" %>
+            and this page.
+          </p>
+        </div>
+        <div class="p-4 space-y-4">
+          <h4 class="text-slate-200 text-lg">
+            Examples
+          </h4>
+          <p>
+            <code class="rounded-md bg-slate-500 p-1">/commands</code>
+            to show the help text.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-span-2 lg:col-span-1 rounded-xl bg-slate-700 overflow-hidden text-center shadow-md">
+        <div class="p-4 space-y-4 bg-slate-600">
+          <h3 class="text-slate-200 text-xl font-mono">
+            /start
+          </h3>
+          <p>
+            Sends an introduction message when someone starts talking to the
+            bot in a direct message.
+          </p>
+        </div>
+        <div class="p-4 space-y-4">
+          <h4 class="text-slate-200 text-lg">
+            Examples
+          </h4>
+          <p>
+            <code class="rounded-md bg-slate-500 p-1">/start</code>
+            to show the help text.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-span-2">
+        <h2 class="text-white text-center text-2xl">Account commands</h2>
+      </div>
+
+      <div class="col-span-2 lg:col-span-1 rounded-xl bg-slate-700 overflow-hidden text-center shadow-md">
+        <div class="p-4 space-y-4 bg-slate-600">
+          <h3 class="text-slate-200 text-xl font-mono">
+            /login
+          </h3>
+          <p>
+            Gives a button to instantly sign in with Telegram, skipping that step
+            in registration. If you are already registered, it will respond by telling
+            you so.
+          </p>
+        </div>
+        <div class="p-4 space-y-4">
+          <h4 class="text-slate-200 text-lg">
+            Examples
+          </h4>
+          <p>
+            <code class="rounded-md bg-slate-500 p-1">/login</code>
+            to show the help text and button.
+          </p>
+          <p>
+            <code class="rounded-md bg-slate-500 p-1">/login</code>
+            as a fully registered user to confirm that your account is working.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-span-2 lg:col-span-1 rounded-xl bg-slate-700 overflow-hidden text-center shadow-md">
+        <div class="p-4 space-y-4 bg-slate-600">
+          <h3 class="text-slate-200 text-xl font-mono">
+            /profile
+          </h3>
+          <p>
+            <span class="rounded-md bg-amber-500 text-white p-1">Registration required</span>
+          </p>
+          <p>
+            Links to the user's Steam profile, or to the profile of the user
+            mentioned in the command. The user whose Steam profile you try to
+            show must be registered. 
+          </p>
+        </div>
+        <div class="p-4 space-y-4">
+          <h4 class="text-slate-200 text-lg">
+            Examples
+          </h4>
+          <p>
+            <code class="rounded-md bg-slate-500 p-1">/profile</code>
+            to show a link to your Steam profile.
+          </p>
+          <p>
+            <code class="rounded-md bg-slate-500 p-1">/profile danvb</code>
+            to show a link to @danvb's Steam profile.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-span-2 lg:col-span-1 rounded-xl bg-slate-700 overflow-hidden text-center shadow-md">
+        <div class="p-4 space-y-4 bg-slate-600">
+          <h3 class="text-slate-200 text-xl font-mono">
+            /account
+          </h3>
+          <p>
+            Links to the
+            <%= link_to "home page", root_url, class: "text-teal-300 hover:underline" %>
+            to manage your account and tells you whether you are fully registered.
+          </p>
+        </div>
+        <div class="p-4 space-y-4">
+          <h4 class="text-slate-200 text-lg">
+            Examples
+          </h4>
+          <p>
+            <code class="rounded-md bg-slate-500 p-1">/account</code>
+            to show the help text and button.
+          </p>
+          <p>
+            <code class="rounded-md bg-slate-500 p-1">/account</code>
+            as a fully registered user to confirm that your account is working.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-span-2">
+        <h2 class="text-white text-center text-2xl">Match commands</h2>
+      </div>
+      
+      <div class="col-span-2 lg:col-span-1 rounded-xl bg-slate-700 overflow-hidden text-center shadow-md">
+        <div class="p-4 space-y-4 bg-slate-600">
+          <h3 class="text-slate-200 text-xl font-mono">
+            /lastmatch
+          </h3>
+          <p>
+            <span class="rounded-md bg-amber-500 text-white p-1">Registration required</span>
+          </p>
+          <p>
+            Sends a message summarizing the user's last match, with a link to
+            OpenDota for more details. The user whose
+            match you are trying to show must be registered.
+          </p>
+        </div>
+        <div class="p-4 space-y-4">
+          <h4 class="text-slate-200 text-lg">
+            Examples
+          </h4>
+          <p>
+            <code class="rounded-md bg-slate-500 p-1">/lastmatch</code>
+            to show your stats and the result of your last match.
+          </p>
+          <p>
+            <code class="rounded-md bg-slate-500 p-1">/lastmatch kittykirov</code>
+            to show @kittykirov's last match.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-span-2 lg:col-span-1 rounded-xl bg-slate-700 overflow-hidden text-center shadow-md">
+        <div class="p-4 space-y-4 bg-slate-600">
+          <h3 class="text-slate-200 text-xl font-mono">
+            /match [match ID]
+          </h3>
+          <p>
+            Sends a message summarizing the match, with a link to OpenDota for
+            more details and the full scoreboard. Must provide a match ID. If you
+            are looking for specific matches, using one of the player commands may
+            be easier than manually entering a match ID.
+          </p>
+        </div>
+        <div class="p-4 space-y-4">
+          <h4 class="text-slate-200 text-lg">
+            Examples
+          </h4>
+          <p>
+            <code class="rounded-md bg-slate-500 p-1">/match 6734663709</code>
+            to show the stats and result of match 6734663709.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-span-2">
+        <h2 class="text-white text-center text-2xl">Player commands</h2>
+      </div>
+
+      <div class="col-span-2 lg:col-span-1 rounded-xl bg-slate-700 overflow-hidden text-center shadow-md">
+        <div class="p-4 space-y-4 bg-slate-600">
+          <h3 class="text-slate-200 text-xl font-mono">
+            /matches
+          </h3>
+          <p class="leading-loose">
+            <span class="rounded-md bg-amber-500 text-white p-1">Registration required</span>
+            <span class="rounded-md bg-blue-600 text-white p-1">Paginated</span><br>
+            <span class="rounded-md bg-green-600 text-white p-1">Hero and Player arguments</span>
+          </p>
+          <p>
+            Sends a list of the user's matches that meet the criteria, sorted by
+            most recently played. Press the button to go to the OpenDota page
+            for that game. For a full list of all the arguments you can use, see
+            the <%= link_to "FAQ", help_url, class: "text-teal-300 hover:underline" %>.
+          </p>
+        </div>
+        <div class="p-4 space-y-4">
+          <h4 class="text-slate-200 text-lg">
+            Examples
+          </h4>
+          <p>
+            <code class="rounded-md bg-slate-500 p-1">/matches</code>
+            to show a list of your recent games.
+          </p>
+          <p>
+            <code class="rounded-md bg-slate-500 p-1">/matches weaver</code>
+            to show a list of your recent games where you played Weaver.
+          </p>
+          <p>
+            <code class="rounded-md bg-slate-500 p-1">/matches @underscorebagel against earthshaker</code>
+            to show a list of @underscorebagel's games where there was an
+            Earthshaker on the enemy team.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-span-2 lg:col-span-1 rounded-xl bg-slate-700 overflow-hidden text-center shadow-md">
+        <div class="p-4 space-y-4 bg-slate-600">
+          <h3 class="text-slate-200 text-xl font-mono">
+            /winrate
+          </h3>
+          <p class="leading-loose">
+            <span class="rounded-md bg-amber-500 text-white p-1">Registration required</span><br>
+            <span class="rounded-md bg-green-600 text-white p-1">Hero and Player arguments</span>
+          </p>
+          <p>
+            Shows the amount of wins and losses a user had that meet the criteria.
+            For a full list of all the arguments you can use, see the
+            <%= link_to "FAQ", help_url, class: "text-teal-300 hover:underline" %>.
+          </p>
+        </div>
+        <div class="p-4 space-y-4">
+          <h4 class="text-slate-200 text-lg">
+            Examples
+          </h4>
+          <p>
+            <code class="rounded-md bg-slate-500 p-1">/winrate</code>
+            to show your overall total wins and losses.
+          </p>
+          <p>
+            <code class="rounded-md bg-slate-500 p-1">/winrate venge</code>
+            to show your total wins and losses as Vengeful Spirit.
+          </p>
+          <p>
+            <code class="rounded-md bg-slate-500 p-1">/winrate with enigma and silencer</code>
+            to show your total wins and losses where you played with an Enigma
+            and a Silencer on your team.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-span-2 lg:col-span-1 rounded-xl bg-slate-700 overflow-hidden text-center shadow-md">
+        <div class="p-4 space-y-4 bg-slate-600">
+          <h3 class="text-slate-200 text-xl font-mono">
+            /heroes
+          </h3>
+          <p class="leading-loose">
+            <span class="rounded-md bg-amber-500 text-white p-1">Registration required</span><br>
+            <span class="rounded-md bg-blue-600 text-white p-1">Paginated</span>
+            <span class="rounded-md bg-violet-500 text-white p-1">Sortable</span>
+          </p>
+          <p>
+            Sends a list of heroes that user has played as and encountered.
+            Use the buttons at the top to change between showing games as, with
+            and against that hero, and to change the sorting between amount of
+            games, winrate and alphabetically. Press one of the buttons to get a
+            list of matches meeting those criteria.
+          </p>
+        </div>
+        <div class="p-4 space-y-4">
+          <h4 class="text-slate-200 text-lg">
+            Examples
+          </h4>
+          <p>
+            <code class="rounded-md bg-slate-500 p-1">/heroes</code>
+            to show a list of your heroes.
+          </p>
+          <p>
+            <code class="rounded-md bg-slate-500 p-1">/heroes danvb</code>
+            to show a list of @danvb's heroes.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-span-2 lg:col-span-1 rounded-xl bg-slate-700 overflow-hidden text-center shadow-md">
+        <div class="p-4 space-y-4 bg-slate-600">
+          <h3 class="text-slate-200 text-xl font-mono">
+            /peers
+          </h3>
+          <p class="leading-loose">
+            <span class="rounded-md bg-amber-500 text-white p-1">Registration required</span><br>
+            <span class="rounded-md bg-blue-600 text-white p-1">Paginated</span>
+            <span class="rounded-md bg-violet-500 text-white p-1">Sortable</span>
+          </p>
+          <p>
+            Sends a list of other registered users that user has played with. Use
+            the buttons at the top to sort the list by games, winrate, alphabetically
+            or by last played. Press one of the buttons to get a list of matches
+            with that player.
+          </p>
+        </div>
+        <div class="p-4 space-y-4">
+          <h4 class="text-slate-200 text-lg">
+            Examples
+          </h4>
+          <p>
+            <code class="rounded-md bg-slate-500 p-1">/peers</code>
+            to show a list of your peers.
+          </p>
+          <p>
+            <code class="rounded-md bg-slate-500 p-1">/peers roccfox</code>
+            to show a list of @roccfox's peers.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-span-2 lg:col-span-1 rounded-xl bg-slate-700 overflow-hidden text-center shadow-md">
+        <div class="p-4 space-y-4 bg-slate-600">
+          <h3 class="text-slate-200 text-xl font-mono">
+            /rank
+          </h3>
+          <p class="leading-loose">
+            <span class="rounded-md bg-amber-500 text-white p-1">Registration required</span>
+          </p>
+          <p>
+            Shows the user's rank medal and leaderboard position in the chat.
+            OpenDota's data on ranks can sometimes lag behind, but if the user
+            often plays ranked games, it should be up to date.
+          </p>
+        </div>
+        <div class="p-4 space-y-4">
+          <h4 class="text-slate-200 text-lg">
+            Examples
+          </h4>
+          <p>
+            <code class="rounded-md bg-slate-500 p-1">/rank</code>
+            to show your rank.
+          </p>
+          <p>
+            <code class="rounded-md bg-slate-500 p-1">/rank underscorebagel</code>
+            to show @underscorebagel's rank.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-span-2">
+        <h2 class="text-white text-center text-2xl">Hero commands</h2>
+      </div>
+
+      <div class="col-span-2 lg:col-span-1 rounded-xl bg-slate-700 overflow-hidden text-center shadow-md">
+        <div class="p-4 space-y-4 bg-slate-600">
+          <h3 class="text-slate-200 text-xl font-mono">
+            /alias [hero]
+          </h3>
+          <p>
+            Shows the aliases with which you can refer to that hero. For more
+            information, see the
+            <%= link_to "FAQ", help_url, class: "text-teal-300 hover:underline" %>.
+          </p>
+        </div>
+        <div class="p-4 space-y-4">
+          <h4 class="text-slate-200 text-lg">
+            Examples
+          </h4>
+          <p>
+            <code class="rounded-md bg-slate-500 p-1">/alias ember spirit</code>
+            to show Ember Spirit's aliases.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%= render "shared/footer" %>
