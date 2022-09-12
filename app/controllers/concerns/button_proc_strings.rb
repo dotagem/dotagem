@@ -75,4 +75,15 @@ module ButtonProcStrings
       end
     }
   end
+
+  def matchup_button_proc_string
+    %{
+      Proc.new do |h|
+        wilson = h.wilson_against.round(2)
+        text = "\#{h.localized_name}: \#{h.against_win}/\#{h.against_games} games, \#{wilson} score"
+        callback = "nothing:0"
+        next text, callback
+      end
+    }
+  end
 end
