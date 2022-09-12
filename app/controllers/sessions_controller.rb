@@ -24,7 +24,7 @@ class SessionsController < ApplicationController
 
     # Find and remove this steam account from users who aren't our current user
     users_with_steamid = User.where(steam_id64: auth['uid'])
-    unless users_with_steamid.nil?
+    unless users_with_steamid.empty?
       users_with_steamid.each do |u|
         unless current_user?(u)
           u.steam_id64     = nil
