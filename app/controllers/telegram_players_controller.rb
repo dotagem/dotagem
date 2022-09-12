@@ -4,7 +4,7 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
   include Telegram::Bot::UpdatesController::Session
   include ActionView::Helpers::TextHelper
 
-  include MatchMessages
+  include MatchesMessages
   include AliasHandling
   include Pagination
   include HeroPlayerOptions

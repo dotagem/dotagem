@@ -1,4 +1,4 @@
-module MatchMessages
+module MatchesMessages
   include ActionView::Helpers::DateHelper
 
   PAGE_ITEMS = 5
