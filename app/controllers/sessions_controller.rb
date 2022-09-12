@@ -51,4 +51,9 @@ class SessionsController < ApplicationController
     log_out
     redirect_to '/'
   end
+
+  def failure
+    flash[:warning] = "Login unsuccessful, please try again!"
+    redirect_to root_url
+  end
 end

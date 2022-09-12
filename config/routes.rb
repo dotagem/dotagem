@@ -14,5 +14,6 @@ Rails.application.routes.draw do
   # OmniAuth endpoints, Steam POSTs back instead of GET
   get    'auth/telegram/callback', to: 'sessions#telegram'
   post   'auth/steam/callback',    to: 'sessions#steam'
+  get    'auth/failure',           to: 'sessions#failure'
   delete 'logout',                 to: 'sessions#destroy'
 end
