@@ -5,7 +5,7 @@ module Pagination
   PAGE_ITEMS = 5
 
   def pagination_callback_query(page)
-    @player ||= User.find(session[:player])
+    @player ||= User.find(session[:player]) if session[:player]
     keyboard = []
     if session[:hero_mode] && session[:hero_sort]
       keyboard << build_hero_mode_buttons(session[:hero_mode])
