@@ -1,11 +1,13 @@
 class Hero < ApplicationRecord
-  attribute :last_played,   default: nil
-  attribute :games,         default: nil
-  attribute :win,           default: nil
-  attribute :with_games,    default: nil
-  attribute :with_win,      default: nil
-  attribute :against_games, default: nil
-  attribute :against_win,   default: nil
+  include Wilson
+
+  attribute :last_played,    default: nil
+  attribute :games,          default: nil
+  attribute :win,            default: nil
+  attribute :with_games,     default: nil
+  attribute :with_win,       default: nil
+  attribute :against_games,  default: nil
+  attribute :against_win,    default: nil
 
   has_many :aliases, primary_key: :hero_id
 
@@ -55,5 +57,31 @@ class Hero < ApplicationRecord
       self.aliases.create(name: words.first,  default: true)
       self.aliases.create(name: words.last,   default: true)
     end
+  end
+
+  def wilson
+    wilson_score(self.games, self.win)
+  end
+
+  def wilson_with
+    wilson_score(self.with_games, self.with_win)
+  end
+
+  def wilson_against
+    wilson_score(self.against_games, self.against_win)
+  end
+
+  def matchups
+    api = OpendotaHeroes.new(self.hero_id)
+    heroes = []
+    api.matchups.each do |hero|
+      h = Hero.find_by(hero_id: hero['hero_id'])
+      h.against_games  = hero['games_played']
+      h.against_win    = hero['wins']
+
+      heroes << h
+    end
+
+    return heroes
   end
 end
