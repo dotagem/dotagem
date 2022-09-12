@@ -1,0 +1,272 @@
+<% content_for :title do "FAQ" end %>
+
+<div class="flex bg-fixed bg-center bg-no-repeat bg-cover h-max" style="background-image: url('<%= asset_path("background.png") %>');">
+  <div class="bg-gray-800 text-slate-100 bg-opacity-70 h-full w-full pb-16">
+    <div class="container m-auto px-8 sm:px-16 md:px-32 py-32 space-y-6">
+      <h1 class="text-white text-4xl text-center pb-10 font-bold">
+        Frequently Asked Questions
+      </h1>
+
+      <h2 class="pt-6 text-white text-3xl text-center font-bold">
+        Accounts
+      </h2>
+
+      <div class="space-y-4">
+        <h2 class="text-slate-100 text-2xl">
+          Why should I register?
+        </h2>
+        <p>
+          If you register, you will be able to use all the commands on the
+          <%= link_to "commands page", commands_url, class: "text-teal-300 hover:underline" %>
+          that require you to be registered. You will also show up when recognized
+          in matches and as a peer of other users. It also makes sharing your
+          Steam profile on Telegram trivially easy!
+        </p>
+      </div>
+
+      <div class="space-y-4">
+        <h3 class="text-slate-100 text-2xl">
+          Why do I need to sign in with both Telegram and Steam?
+        </h3>
+        <p>
+          To be able to track your match data! The data we get back from OpenDota
+          uses Steam IDs, but on Telegram, you interact with your Telegram ID and
+          username. To be able to translate between those two things, we need to
+          know which Steam account belongs to which Telegram account, and vice versa.
+        </p>
+      </div>
+
+      <div class="space-y-4">
+        <h3 class="text-slate-100 text-2xl">
+          What data of mine do you store?
+        </h3>
+        <p>
+          No sensitive data is stored on our servers. The only thing we need to
+          remember is your account ID on both Telegram and Steam. Your account
+          ID is not sensitive data, anyone on Telegram or Steam can see it.
+          Any in-game data comes from
+          <a href="https://opendota.com" class="text-teal-300 hover:underline">OpenDota</a>
+          and is fetched when you ask for it.
+        </p>
+        <p>
+          If you want a closer look at how your data is handled, feel free to
+          check the <a href="https://github.com/cschuijt/dotagem" class="text-teal-300 hover:underline">source code</a>
+          and see for yourself!
+        </p>
+      </div>
+
+      <div class="space-y-4">
+        <h3 class="text-slate-100 text-2xl">
+          Can I unregister?
+        </h3>
+        <p>
+          You can remove your registration at any time by going to the
+          <%= link_to "homepage", root_url, class: "text-teal-300 hover:underline" %>
+          and clicking the link at the bottom of the account panel. This makes
+          the bot forget about you, meaning you will no longer be able to use
+          commands that require you to be registered or show up in other people's
+          command outputs.
+        </p>
+      </div>
+
+      <h2 class="pt-6 text-white text-3xl text-center font-bold">
+        Troubleshooting
+      </h2>
+
+      <div class="space-y-4">
+        <h3 class="text-slate-100 text-2xl">
+          I've registered, but my matches are not showing up!
+        </h3>
+        <p>
+          To see your matches, you will need to expose match data in Dota 2! By
+          default, your game data cannot be tracked by third party sites, like
+          OpenDota. To get your data on OpenDota (and this bot), follow these steps:
+        </p>
+        <ol class="list-decimal leading-loose">
+          <li>
+            Open the settings in Dota 2, and go to the "Social" tab
+          </li>
+          <li>
+            Tick the box that says "Expose Public Match Data"
+            <%= image_tag "matchdata.png", class: "my-2 lg:max-w-2xl" %>
+          </li>
+          <li>
+            Go to <a href="https://opendota.com" class="text-teal-300 hover:underline">OpenDota</a>
+            and log in with Steam, then click the "Refresh" button on your profile.
+            <%= image_tag "matchdata2.png", class: "my-2 lg:max-w-2xl" %>
+          </li>
+        </ol>
+        <p>
+          It may take some time for your matches to be refreshed, but if they
+          show up on OpenDota, they should also be available to the bot.
+        </p>
+      </div>
+
+      <div class="space-y-4">
+        <h3 class="text-slate-100 text-2xl">
+          Something else is going wrong and I don't know why!
+        </h3>
+        <p>
+          Send me a message on Telegram at
+          <a href="https://t.me/danvb" class="text-teal-300 hover:underline">@danvb</a>,
+          or open an issue on
+          <a href="https://github.com/cschuijt/dotagem/issues" class="text-teal-300 hover:underline">Github</a>
+          and we'll figure it out!
+        </p>
+      </div>
+
+      <h2 class="pt-6 text-white text-3xl text-center font-bold">
+        Commands
+      </h2>
+
+      <div class="space-y-4">
+        <h3 class="text-slate-100 text-2xl">
+          Where can I find a list of commands?
+        </h3>
+        <p>
+          There's a list on this site right
+          <%= link_to "here!", commands_url, class: "text-teal-300 hover:underline" %>
+        </p>
+      </div>
+
+      <div class="space-y-4">
+        <h3 class="text-slate-100 text-2xl">
+          What does "Registration required" mean?
+        </h3>
+        <p>
+          To use this command, you will need to be registered so the bot knows
+          which Steam account belongs to you. If you mention another user,
+          they will need to be registered instead.
+        </p>
+      </div>
+
+      <div class="space-y-4">
+        <h3 class="text-slate-100 text-2xl">
+          What does "Paginated" mean?
+        </h3>
+        <p>
+          These commands return a large amount of data, so their output is
+          divided into pages. You can use the buttons at the bottom to browse
+          back and forth!
+        </p>
+        <div class="grid grid-cols-5 grid-rows-2 text-center gap-4">
+          <div>
+            Go to the first page
+          </div>
+          <div>
+            Go back one page
+          </div>
+          <div>
+            Current page number
+          </div>
+          <div>
+            Go forward one page
+          </div>
+          <div>
+            Go to the last page
+          </div>
+          <div class="rounded-lg font-bold py-1 bg-slate-600">
+            |<<
+          </div>
+          <div class="rounded-lg font-bold py-1 bg-slate-600">
+            <
+          </div>
+          <div class="rounded-lg font-bold py-1 bg-slate-600">
+            4 / 20
+          </div>
+          <div class="rounded-lg font-bold py-1 bg-slate-600">
+            >
+          </div>
+          <div class="rounded-lg font-bold py-1 bg-slate-600">
+            >>|
+          </div>
+        </div>
+      </div>
+
+      <div class="space-y-4">
+        <h3 class="text-slate-100 text-2xl">
+          What does "Hero and Player arguments" mean?
+        </h3>
+        <p>
+          This command allows you to set a lot of different arguments. Here is
+          how it works:
+        </p>
+        <ul class="leading-loose list-disc">
+          <li>
+            <code class="rounded-md bg-slate-500 p-1">as [hero]</code>
+            to get matches where that player is playing that hero
+          </li>
+          <li>
+            <code class="rounded-md bg-slate-500 p-1">with [hero]</code>
+            to get matches where that player is playing with that hero
+            on their team
+          </li>
+          <li>
+            <code class="rounded-md bg-slate-500 p-1">against [hero]</code>
+            to get matches where that player is playing with that hero
+            on the enemy team
+          </li>
+          <li>
+            <code class="rounded-md bg-slate-500 p-1">with [user]</code>
+            to get matches where that player is playing with that user on
+            their team
+          </li>
+        </ul>
+        <p>
+          You can mix and match these at will, and use
+          <code class="rounded-md bg-slate-500 p-1">and</code> to chain
+          multiple heroes together. For example,
+          <code class="rounded-md bg-slate-500 p-1">/matches kittykirov as venomancer with danvb against zeus and spectre with treant</code>
+          will give you all of @kittykirov's matches where they played Venomancer,
+          @danvb was also on their team, someone on their team played Treant
+          Protector and Zeus and Spectre were on the enemy team.
+        </p>
+      </div>
+
+      <div class="space-y-4">
+        <h3 class="text-slate-100 text-2xl">
+          How do aliases work?
+        </h3>
+        <p>
+          Any command that allows you to ask for a hero by name will allow you to
+          use aliases to refer to that hero. For instance, instead of typing out
+          <code class="rounded-md bg-slate-500 p-1">/winrate outworld destroyer</code>,
+          you can just use <code class="rounded-md bg-slate-500 p-1">/winrate od</code>
+          and the bot will figure out what you mean.
+        </p>
+
+        <p>
+          The bot generates some aliases by default. As an example, here are all
+          of Bounty Hunter's default aliases:
+        </p>
+        <ul class="leading-loose list-disc">
+          <li>
+            The full name: <code class="rounded-md bg-slate-500 p-1">bounty hunter</code>
+          </li>
+          <li>
+            The first and last word: <code class="rounded-md bg-slate-500 p-1">bounty</code>, <code class="rounded-md bg-slate-500 p-1">hunter</code>
+          </li>
+          <li>
+            An abbreviation: <code class="rounded-md bg-slate-500 p-1">bh</code>
+          </li>
+          <li>
+            And some sensible defaults for how people usually refer to this hero: <code class="rounded-md bg-slate-500 p-1">gondar</code>
+          </li>
+        </ul>
+        <p>
+          If an alias matches multiple heroes (like "es" matching Earthshaker, 
+          Ember Spirit and Earth Spirit), the bot will ask which hero you meant
+          before answering the original command. If multiple aliases are unclear,
+          it will go over each of them.
+        </p>
+        <p>
+          If you want a list of aliases for a specific hero, you can use the
+          <code class="rounded-md bg-slate-500 p-1">/alias</code> command!
+          And of course, using aliases is possible there as well.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%= render "shared/footer" %>
