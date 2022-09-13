@@ -11,6 +11,7 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
   include ButtonProcStrings
   include MessageSession
   include OpendotaHelper
+  include MatchMessages
 
   before_action :logged_in_or_mentioning_player, only: [:matches!,   :recents!,
                                                         :winrate!,   :wl!,
@@ -226,22 +227,6 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
   end
 
   private
-
-  def build_short_match_message(m)
-    message = []
-    message << "Last match for #{@player.telegram_username}"
-    message << ""
-    message << "Hero: #{Hero.find_by(hero_id: m.hero_id).localized_name}"
-    message << "Result: #{m.wl} in #{m.duration / 60} mins"
-    message << "Played #{time_ago_in_words(Time.at(m.start_time))} ago\n"
-    message << "KDA: #{m.kills}/#{m.deaths}/#{m.assists}, LH/D: #{m.last_hits}/#{m.denies}"
-    message << "Mode: #{GameMode.find_by(mode_id: m.game_mode).localized_name}, " +
-               "#{LobbyType.find_by(lobby_id: m.lobby_type).localized_name}, " +
-               "#{Region.find_by(region_id: m.region).localized_name}"
-    message << "Avg. rank: #{format_rank(m.average_rank)}, party of #{m.party_size}"
-
-    message.join("\n")
-  end
 
   def build_win_loss_message(data, options=nil)
     message = ["Winrate for #{@player.telegram_username}:"]

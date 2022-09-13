@@ -30,7 +30,7 @@ RSpec.describe "/lastmatch", telegram_bot: :rails do
       dispatch_message("/lastmatch", from: {id: user.telegram_id})
 
       expect(bot.requests[:sendMessage].last[:text])
-      .to  include("Last match for #{user.telegram_username}")
+      .to  include("Recent match for #{user.telegram_username}")
       .and include("W in 30 mins")
       .and include("Avg. rank: Legend 1")
       .and include("10/3/5")

@@ -1,6 +1,24 @@
 module MatchMessages
+  include ActionView::Helpers::DateHelper
+  include OpendotaHelper
 
   private
+
+  def build_short_match_message(m)
+    message = []
+    message << "Recent match for #{@player.telegram_username}"
+    message << ""
+    message << "Hero: #{Hero.find_by(hero_id: m.hero_id).localized_name}"
+    message << "Result: #{m.wl} in #{m.duration / 60} mins"
+    message << "Played #{time_ago_in_words(Time.at(m.start_time))} ago\n"
+    message << "KDA: #{m.kills}/#{m.deaths}/#{m.assists}, LH/D: #{m.last_hits}/#{m.denies}"
+    message << "Mode: #{GameMode.find_by(mode_id: m.game_mode).localized_name}, " +
+               "#{LobbyType.find_by(lobby_id: m.lobby_type).localized_name}, " +
+               "#{Region.find_by(region_id: m.region).localized_name}"
+    message << "Avg. rank: #{format_rank(m.average_rank)}, party of #{m.party_size}"
+
+    message.join("\n")
+  end
 
   def build_match_overview_message(m)
     message = []
