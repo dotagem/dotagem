@@ -9,7 +9,7 @@ module ConstantsHelper
 
   def item_name(item_id=nil)
     if item_id
-      Item.find_by(item_id: item_id).localized_name
+      Item.find_by(item_id: item_id).dname
     else
       "Unknown Item"
     end
