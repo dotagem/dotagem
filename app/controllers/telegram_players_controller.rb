@@ -13,11 +13,14 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
   include OpendotaHelper
   include MatchMessages
 
-  before_action :logged_in_or_mentioning_player, only: [:matches!,   :recents!,
-                                                        :winrate!,   :wl!,
-                                                        :rank!,      :profile!,
+  before_action :logged_in_or_mentioning_player, only: [:rank!,      :profile!,
                                                         :peers!,     :heroes!,
                                                         :lastmatch!]
+  
+  before_action :permissive_logged_in_or_mentioning_player, only: [:matches!,
+                                                                   :recents!,
+                                                                   :winrate!,
+                                                                   :wl!]
 
   def matches!(*args)
     options = nil
@@ -239,13 +242,37 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
 
   def logged_in_or_mentioning_player
     _, args = Telegram::Bot::UpdatesController::Commands.command_from_text(payload['text'], bot_username)
+    if args.any?
+      args[0] = args[0].tr("@", "")
+      @player = User.find_by(telegram_username: args[0])
+      if @player.nil?
+        respond_with :message, text: "Can't find that user!"
+        throw(:filtered)
+      elsif !@player.steam_registered?
+        respond_with :message, text: "That user has not completed their registration!"
+        throw(:filtered)
+      end
+    else
+      @player = User.find_by(telegram_id: from["id"])
+      if @player.nil?
+        respond_with :message, text: "You need to register before you can use that command!"
+        throw(:filtered)
+      elsif !@player.steam_registered?
+        respond_with :message, text: "You need to complete your registration before you can use that command!"
+        throw(:filtered)
+      end
+    end
+  end
+
+  def permissive_logged_in_or_mentioning_player
+    _, args = Telegram::Bot::UpdatesController::Commands.command_from_text(payload['text'], bot_username)
     args[0] = args[0].tr("@", "") if args.any?
     @player = User.find_by(telegram_username: args[0]) ||
               User.find_by(telegram_id: from["id"])
     if @player.nil?
       respond_with :message, text: "Can't find that user!"
       throw(:filtered)
-    elsif @player.steam_registered? == false
+    elsif !@player.steam_registered?
       respond_with :message, text: "That user has not completed their registration!"
       throw(:filtered)
     end

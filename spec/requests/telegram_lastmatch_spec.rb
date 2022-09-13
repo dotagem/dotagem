@@ -10,18 +10,18 @@ RSpec.describe "/lastmatch", telegram_bot: :rails do
   let(:user) { create(:user, :steam_registered) }
 
   context "from an unregistered account" do
-    it "should say that user can't be found" do
+    it "should say you need to register" do
       expect{ dispatch_message("/lastmatch") }
-      .to respond_with_message(/Can't find that user/)
+      .to respond_with_message(/You need to register before you can use/)
     end
   end
 
   context "from an incomplete account" do
-    it "should tell that user they are not registered" do
+    it "should say you need to complete your registration" do
       user = create(:user)
 
       expect { dispatch_message("/lastmatch", from: {id: user.telegram_id}) }
-      .to respond_with_message(/That user has not completed their registration/)
+      .to respond_with_message(/You need to complete your registration/)
     end
   end
 
