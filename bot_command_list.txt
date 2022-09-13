@@ -1,0 +1,12 @@
+help - Get a link to the help page
+commands - Get a list of commands
+lastmatch - Get player's last match result
+matches - Get player's recent matches
+winrate - Get player's winrate
+peers - Get stats of games played with other registered players
+profile - Get a link to player's Steam profile
+heroes - Get a list of player's heroes
+match - Get results of a given match ID
+matchups - Get a hero's best and worst matchups in pro games
+rank - Get player's rank medal
+login - Send a link to sign in with Telegram
