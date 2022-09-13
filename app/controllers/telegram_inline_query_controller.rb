@@ -3,6 +3,7 @@ class TelegramInlineQueryController < Telegram::Bot::UpdatesController
 
   include MatchMessages
   include LoginUrl
+  include ConstantsHelper
 
   def inline_query(query, _offset)
     @player ||= User.find_by(telegram_id: from['id'])

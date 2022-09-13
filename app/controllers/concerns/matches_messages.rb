@@ -1,5 +1,6 @@
 module MatchesMessages
   include ActionView::Helpers::DateHelper
+  include ConstantsHelper
 
   PAGE_ITEMS = 5
 
@@ -49,7 +50,7 @@ module MatchesMessages
   def hero_name_or_alias(input)
     case input
     when Integer
-      Hero.find_by(hero_id: input).localized_name
+      hero_name(input)
     else # Expecting hash
       @unresolved ||= 0
       @unresolved = @unresolved + 1

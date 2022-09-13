@@ -6,6 +6,7 @@ class TelegramHeroesController < Telegram::Bot::UpdatesController
   include Pagination
   include ButtonProcStrings
   include MessageSession
+  include ConstantsHelper
 
   def alias!(*args)
     if args.any?
@@ -86,7 +87,7 @@ class TelegramHeroesController < Telegram::Bot::UpdatesController
     message = []
     aliases = Alias.where(hero_id: hero_id).order(:name)
     message << "#{pluralize(aliases.count, "alias")} for " +
-    "#{Hero.find_by(hero_id: hero_id).localized_name}:"
+    "#{hero_name(hero_id)}:"
     aliases.each do |a|
       str = "- #{a.name}"
       str << " [A]" if a.default?
@@ -118,7 +119,7 @@ class TelegramHeroesController < Telegram::Bot::UpdatesController
     aliases.each do |a|
       keyboard << [
         {
-          text: Hero.find_by(hero_id: a.hero_id).localized_name,
+          text: hero_name(a.hero_id),
           callback_data: "#{intention}:#{a.hero_id}"
         }
       ]
