@@ -31,7 +31,7 @@ RSpec.describe "/lastmatch", telegram_bot: :rails do
 
       expect(bot.requests[:sendMessage].last[:text])
       .to  include("Recent match for #{user.telegram_username}")
-      .and include("W in 30 mins")
+      .and include("Win in 30 mins")
       .and include("Avg. rank: Legend 1")
       .and include("10/3/5")
       .and include("Anti-Mage")
@@ -48,7 +48,7 @@ RSpec.describe "/lastmatch", telegram_bot: :rails do
       dispatch_message("/lastmatch", from: {id: user.telegram_id})
 
       expect(bot.requests[:sendMessage].last[:text])
-      .to  include("L in 30 mins")
+      .to  include("Loss in 30 mins")
     end
 
     it "should return a button to OpenDota" do

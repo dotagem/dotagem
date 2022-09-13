@@ -9,13 +9,14 @@ module MatchMessages
     message << "Recent match for #{@player.telegram_username}"
     message << ""
     message << "Hero: #{Hero.find_by(hero_id: m.hero_id).localized_name}"
-    message << "Result: #{m.wl} in #{m.duration / 60} mins"
+    message << "Result: #{m.won? ? "Win" : "Loss"} in #{m.duration / 60} mins"
     message << "Played #{time_ago_in_words(Time.at(m.start_time))} ago\n"
     message << "KDA: #{m.kills}/#{m.deaths}/#{m.assists}, LH/D: #{m.last_hits}/#{m.denies}"
     message << "Mode: #{GameMode.find_by(mode_id: m.game_mode).localized_name}, " +
                "#{LobbyType.find_by(lobby_id: m.lobby_type).localized_name}, " +
                "#{Region.find_by(region_id: m.region).localized_name}"
-    message << "Avg. rank: #{format_rank(m.average_rank)}, party of #{m.party_size}"
+    message << "Avg. rank: #{format_rank(m.average_rank)}"
+    message << "Party of #{m.party_size || 1}"
 
     message.join("\n")
   end
