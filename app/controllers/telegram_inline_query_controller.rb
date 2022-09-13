@@ -6,9 +6,10 @@ class TelegramInlineQueryController < Telegram::Bot::UpdatesController
 
   def inline_query(query, _offset)
     @player ||= User.find_by(telegram_id: from['id'])
-    results = []
     
     if @player && @player.steam_registered?
+      results = []
+
       # Figure out aliases
       if query.blank?
         @matches = @player.matches(limit: 10)
@@ -33,29 +34,18 @@ class TelegramInlineQueryController < Telegram::Bot::UpdatesController
       @matches.each do |lm|
         results << build_inline_result(lm)
       end
-    else
-      results << {
-        type: "article",
-        id: 1,
-        title: "You need to sign in before I can show your recent matches!",
-        description: "Go to dotagem.net or send this message and sign in with Steam.",
-        input_message_content: {
-          message_text: "To use the bot, I will need to know which Telegram account" + 
-          " belongs to which Steam account. Use the button below to sign in, then" +
-          " sign in with Steam as well and I will be able to show your matches!"
-        },
-        reply_markup: {
-          inline_keyboard: [[
-            {
-              text: "Log In",
-              login_url: {url: login_callback_url}
-            }
-          ]]
-        }
-      }
-    end
 
-    answer_inline_query(results)
+      answer_inline_query(results, is_personal: true)
+    else
+      answer_inline_query(
+        [],
+        is_personal:         true,
+        # Should not be kept for long, user will want to try again after logging in
+        cache_time:          10,
+        switch_pm_text:      "Log in with Steam",
+        switch_pm_parameter: "login"
+      )
+    end
   end
 end
 
