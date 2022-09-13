@@ -6,14 +6,31 @@ class TelegramInlineQueryController < Telegram::Bot::UpdatesController
 
   def inline_query(query, _offset)
     @player ||= User.find_by(telegram_id: from['id'])
-    results = []
-
+    
     if @player && @player.steam_registered?
-      # Figure out alias
-
-      @matches = @player.matches(limit: 10)
+      # Figure out aliases
+      if query.blank?
+        @matches = @player.matches(limit: 10)
+      else
+        aliases = Alias.where(name: query.downcase)
+        case aliases.count
+        when 0
+          @matches = @player.matches(limit: 10)
+        when 1
+          @matches = @player.matches(limit: 10, hero_id: aliases.first.hero.hero_id)
+        else
+          matcharray = []
+          aliases.each do |a|
+            matcharray += @player.matches(limit: 10, hero_id: a.hero.hero_id)
+          end
+          matcharray.sort_by! { |m| m.start_time }.reverse!
+          @matches = matcharray[0..9]
+        end
+      end
 
       # Build results
+      results = []
+
       @matches.each do |lm|
         results << build_inline_result(lm)
       end
@@ -50,7 +67,7 @@ def build_inline_result(lm)
     type: "article",
     id: lm.match_id,
     thumb_url: Hero.find_by(hero_id: lm.hero_id).icon_url,
-    title: "#{lm.won? ? "Win" : "Loss"} as #{Hero.find_by(hero_id: lm.hero_id).localized_name}",
+    title: "#{lm.won? ? "Win" : "Loss"} as #{hero_name(lm.hero_id)}",
     description: "#{lm.kills}/#{lm.deaths}/#{lm.assists} in #{lm.duration / 60} min\n" + 
     "#{time_ago_in_words(Time.at(lm.start_time))} ago",
     input_message_content: {
