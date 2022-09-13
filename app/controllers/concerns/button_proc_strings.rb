@@ -9,7 +9,7 @@ module ButtonProcStrings
       Proc.new do |m|
         duration = m.duration / 60
         text = "\#{m.wl} \#{duration}min \#{m.rd} \#{m.kills}/\#{m.deaths}/\#{m.assists} " +
-        "\#{Hero.find_by(hero_id: m.hero_id).localized_name} " +
+        "\#{hero_name(m.hero_id)} " +
         "\#{time_ago_in_words(Time.at(m.start_time))} ago"
         callback = "nothing:0"
         next text, callback
