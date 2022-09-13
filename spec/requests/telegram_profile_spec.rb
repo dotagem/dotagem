@@ -8,17 +8,17 @@ RSpec.describe "/profile", telegram_bot: :rails do
   end
 
   context "as an unregistered user" do
-    it "should tell the user they're not registered" do
+    it "should say you need to register" do
       expect {dispatch_message("/profile")}
-      .to respond_with_message(/Can't find that user/)
+      .to respond_with_message(/You need to register before/)
     end
   end
 
   context "as an incomplete user" do
-    it "should tell the user to complete their registration" do
+    it "should say you need to complete your registration" do
       user = create(:user)
       expect {dispatch_message("/profile", from: {id: user.telegram_id})}
-      .to respond_with_message(/That user has not completed their registration/)
+      .to respond_with_message(/You need to complete your registration/)
     end
   end
 
@@ -53,10 +53,11 @@ RSpec.describe "/profile", telegram_bot: :rails do
   end
 
   context "with invalid arguments" do
-    it "should assume the current user" do
+    it "should say it can't find that user" do
       user = create(:user, :steam_registered)
       dispatch_message("/profile asdsfgflkdg wehjkr", from: {id: user.telegram_id})
-      expect(bot.requests[:sendMessage].last[:text]).to include(user.steam_url)
+      expect(bot.requests[:sendMessage].last[:text])
+      .to include("Can't find that user")
     end
   end
 end

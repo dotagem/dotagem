@@ -41,29 +41,29 @@ RSpec.describe "/heroes", telegram_bot: :rails do
   let(:user) { create(:user, :steam_registered) }
 
   context "as an unregistered user" do
-    it "should say that user can't be found" do
+    it "should say you need to register" do
       expect { dispatch_message("/heroes") }
-      .to respond_with_message(/Can't find that user/)
+      .to respond_with_message(/You need to register before/)
     end
   end
 
   context "as an incomplete user" do
-    it "should say that user needs to complete their registration" do
+    it "should say that you need to complete their registration" do
       user = create(:user)
       expect { dispatch_message("/heroes", from: {id: user.telegram_id}) }
-      .to respond_with_message(/That user has not completed their registration/)
+      .to respond_with_message(/You need to complete your registration/)
     end
   end
 
   context "mentioning an unknown user" do
-    it "should fall back to the current user" do
+    it "should say that user can't be found" do
       expect(bot).to receive(:request).and_wrap_original do |m, *args|
         m.call(*args)
         {"ok"=>true, "result"=>{"message_id"=>120}}
       end
 
       expect { dispatch_message("/heroes asdfsf", from: {id: user.telegram_id}) }
-      .to respond_with_message(/Heroes for #{user.telegram_username}/)
+      .to respond_with_message(/Can't find that user/)
     end
   end
   

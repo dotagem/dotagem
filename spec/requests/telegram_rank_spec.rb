@@ -10,17 +10,17 @@ RSpec.describe "/rank", telegram_bot: :rails do
   end
   
   context "as an unregistered user" do
-    it "should say that user can't be found" do
+    it "should say you need to register" do
       expect { dispatch_message("/rank") }
-      .to respond_with_message(/Can't find that user/)
+      .to respond_with_message(/You need to register before/)
     end
   end
 
   context "as an incomplete user" do
-    it "should tell that user to complete their registration" do
+    it "should say you need to complete their registration" do
       user = create(:user)
       expect { dispatch_message("/rank", from: {id: user.telegram_id}) }
-      .to respond_with_message(/has not completed their registration/)
+      .to respond_with_message(/You need to complete your registration/)
     end
   end
   
@@ -71,13 +71,11 @@ RSpec.describe "/rank", telegram_bot: :rails do
   end
 
   context "with an unknown user in args" do
-    it "should fall back to the original user" do
+    it "should say it can't find that user" do
       dispatch_message("/rank sdfkjsdkfsd", from: {id: user.telegram_id})
 
       expect(bot.requests[:sendMessage].last[:text])
-      .to  include("Legend 5")
-      .and include("@#{user.telegram_username}")
-      .and not_include("Can't find that user")
+      .to  include("Can't find that user")
     end
   end
 
