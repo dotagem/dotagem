@@ -1,6 +1,6 @@
 module ConstantsHelper
   def hero_name(hero_id=nil)
-    if hero_id
+    if hero_id && Hero.find_by(hero_id: hero_id)
       Hero.find_by(hero_id: hero_id).localized_name
     else
       "Unknown Hero"
@@ -8,7 +8,7 @@ module ConstantsHelper
   end
 
   def item_name(item_id=nil)
-    if item_id
+    if item_id && Item.find_by(item_id: item_id)
       Item.find_by(item_id: item_id).dname
     else
       "Unknown Item"
@@ -16,7 +16,7 @@ module ConstantsHelper
   end
 
   def lobby_type_name(lobby_id=nil)
-    if lobby_id
+    if lobby_id && LobbyType.find_by(lobby_id: lobby_id)
       LobbyType.find_by(lobby_id: lobby_id).localized_name
     else
       "Unknown Lobby Type"
@@ -24,7 +24,7 @@ module ConstantsHelper
   end
 
   def patch_name(patch_id=nil)
-    if patch_id
+    if patch_id && Patch.find_by(patch_id: patch_id)
       Patch.find_by(patch_id: patch_id).name
     else
       "Unknown Patch"
@@ -32,7 +32,7 @@ module ConstantsHelper
   end
 
   def region_name(region_id=nil)
-    if region_id
+    if region_id && Region.find_by(region_id: region_id)
       Region.find_by(region_id: region_id).localized_name
     else
       "Unknown Region"
@@ -40,7 +40,7 @@ module ConstantsHelper
   end
 
   def game_mode_name(mode_id=nil)
-    if mode_id
+    if mode_id && GameMode.find_by(mode_id: mode_id)
       GameMode.find_by(mode_id: mode_id).localized_name
     else
       "Unknown Mode"
