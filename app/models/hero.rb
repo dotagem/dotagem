@@ -37,7 +37,7 @@ class Hero < ApplicationRecord
         h.icon           = hero['icon']
 
         # This was reported wrong in the dataset a whole year ago now:
-        h.name = "Outworld Destroyer" if h.name == "Outworld Devourer"
+        h.localized_name = "Outworld Destroyer" if h.localized_name == "Outworld Devourer"
         
         h.save
         h.generate_default_aliases
