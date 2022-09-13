@@ -6,11 +6,26 @@ class TelegramHelpController < Telegram::Bot::UpdatesController
 
   def help!(*)
     respond_with :message,
-    text: "For a list of commands, check " +
-    "#{Rails.application.credentials.base_url}/commands"
+    text: "Click the buttons below for the help page, and a list of commands!",
+    reply_markup: { inline_keyboard: [
+      [
+        {text: "Help", url: "#{Rails.application.credentials.base_url}/help"}
+      ],
+      [
+        {text: "Commands", url: "#{Rails.application.credentials.base_url}/commands"}
+      ]
+    ]}
   end
 
-  alias_method :commands!, :help!
+  def commands!(*)
+    respond_with :message,
+    text: "Click the button below for a list of commands!",
+    reply_markup: { inline_keyboard: [
+      [
+        {text: "Commands", url: "#{Rails.application.credentials.base_url}/commands"}
+      ]
+    ]}
+  end
 
   # For buttons that aren't supposed to do anything
   def nothing_callback_query(*)
