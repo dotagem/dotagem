@@ -6,6 +6,7 @@ class TelegramInlineQueryController < Telegram::Bot::UpdatesController
 
   def inline_query(query, _offset)
     @player ||= User.find_by(telegram_id: from['id'])
+    results = []
     
     if @player && @player.steam_registered?
       # Figure out aliases
@@ -29,8 +30,6 @@ class TelegramInlineQueryController < Telegram::Bot::UpdatesController
       end
 
       # Build results
-      results = []
-
       @matches.each do |lm|
         results << build_inline_result(lm)
       end
