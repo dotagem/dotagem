@@ -3,6 +3,11 @@
 <div class="flex bg-fixed bg-center bg-no-repeat bg-cover h-max" style="background-image: url('<%= asset_path("background.png") %>');">
   <div class="bg-gray-800 text-slate-300 bg-opacity-50 h-full w-full pb-16">
     <div class="container m-auto px-4 sm:px-8 md:px-16 grid grid-cols-2 gap-x-8 gap-y-12">
+      <div class="relative top-16">
+        <%= link_to root_url do %>
+          <%= image_tag "arrow_left.png", height: "64px", width: "64px", alt: "Back" %>
+        <% end %>
+      </div>
       <div class="col-span-2">
         <h1 class="pt-10 text-center text-white text-4xl font-bold m-auto">List of Commands</h1>
       </div>
@@ -408,6 +413,30 @@
           <p>
             <code class="rounded-md bg-slate-500 p-1">/alias ember spirit</code>
             to show Ember Spirit's aliases.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-span-2 lg:col-span-1 rounded-xl bg-slate-700 overflow-hidden text-center shadow-md">
+        <div class="p-4 space-y-4 bg-slate-600">
+          <h3 class="text-slate-200 text-xl font-mono">
+            /matchups [hero]
+          </h3>
+          <p class="leading-loose">
+            <span class="rounded-md bg-blue-600 text-white p-1">Paginated</span>
+          </p>
+          <p>
+            Shows the matches and wins of that hero against other heroes, along
+            with a Wilson score to rank them from best to worst matchup.
+          </p>
+        </div>
+        <div class="p-4 space-y-4">
+          <h4 class="text-slate-200 text-lg">
+            Examples
+          </h4>
+          <p>
+            <code class="rounded-md bg-slate-500 p-1">/matchups underlord</code>
+            to show Underlord's matchups, ranked from best to worst.
           </p>
         </div>
       </div>
