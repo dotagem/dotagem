@@ -3,6 +3,11 @@
 <div class="flex bg-fixed bg-center bg-no-repeat bg-cover h-max" style="background-image: url('<%= asset_path("background.png") %>');">
   <div class="bg-gray-800 text-slate-300 bg-opacity-50 h-full w-full pb-16">
     <div class="container m-auto px-4 sm:px-8 md:px-16 grid grid-cols-2 gap-x-8 gap-y-12">
+      <div class="relative top-16">
+        <%= link_to root_url do %>
+          <%= image_tag "arrow_left.png", height: "64px", width: "64px", alt: "Back" %>
+        <% end %>
+      </div>
       <div class="col-span-2">
         <h1 class="pt-10 text-center text-white text-4xl font-bold m-auto">List of Commands</h1>
       </div>

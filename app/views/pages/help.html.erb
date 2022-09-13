@@ -3,6 +3,11 @@
 <div class="flex bg-fixed bg-center bg-no-repeat bg-cover h-max" style="background-image: url('<%= asset_path("background.png") %>');">
   <div class="bg-gray-800 text-slate-100 bg-opacity-70 h-full w-full pb-16">
     <div class="container m-auto px-8 sm:px-16 md:px-32 py-32 space-y-6">
+      <div class="relative top-0 lg:top-16">
+        <%= link_to root_url do %>
+          <%= image_tag "arrow_left.png", height: "64px", width: "64px", alt: "Back" %>
+        <% end %>
+      </div>
       <h1 class="text-white text-4xl text-center pb-10 font-bold">
         Frequently Asked Questions
       </h1>
