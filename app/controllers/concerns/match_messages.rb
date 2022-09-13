@@ -1,7 +1,7 @@
 module MatchMessages
   include ActionView::Helpers::DateHelper
   include OpendotaHelper
-  include MatchDataHelper
+  include ConstantsHelper
 
   private
 

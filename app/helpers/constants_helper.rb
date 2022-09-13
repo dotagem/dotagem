@@ -1,4 +1,4 @@
-module MatchDataHelper
+module ConstantsHelper
   def hero_name(hero_id=nil)
     if hero_id
       Hero.find_by(hero_id: hero_id).localized_name
