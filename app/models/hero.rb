@@ -1,6 +1,8 @@
 class Hero < ApplicationRecord
   include Wilson
 
+  CDN_BASE_URL = "https://cdn.cloudflare.steamstatic.com"
+
   attribute :last_played,    default: nil
   attribute :games,          default: nil
   attribute :win,            default: nil
@@ -21,14 +23,22 @@ class Hero < ApplicationRecord
       Alias.destroy_by(default: true)
 
       # Iterate over heroes OpenDota knows about and add them to our database
-      OpendotaHeroes.all.each do |hero|
+      OpendotaConstants.new("heroes").all.each_pair do |_, hero|
         h = self.new
-        hero.each_pair do |k, v|
-          k = "hero_id" if k == "id"
-          # This was reported wrong in the dataset a whole year ago now:
-          v = "Outworld Destroyer" if v == "Outworld Devourer"
-          h[k] = v
-        end
+        
+        h.hero_id        = hero['id']
+        h.name           = hero['name']
+        h.localized_name = hero['localized_name']
+        h.primary_attr   = hero['primary_attr']
+        h.attack_type    = hero['attack_type']
+        h.roles          = hero['roles']
+        h.legs           = hero['legs']
+        h.image          = hero['img']
+        h.icon           = hero['icon']
+
+        # This was reported wrong in the dataset a whole year ago now:
+        h.name = "Outworld Destroyer" if h.name == "Outworld Devourer"
+        
         h.save
         h.generate_default_aliases
       end
@@ -69,6 +79,14 @@ class Hero < ApplicationRecord
 
   def wilson_against
     wilson_score(self.against_games, self.against_win)
+  end
+
+  def image_url
+    CDN_BASE_URL + self.image
+  end
+
+  def icon_url
+    CDN_BASE_URL + self.icon
   end
 
   def matchups
