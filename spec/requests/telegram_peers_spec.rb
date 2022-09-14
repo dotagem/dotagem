@@ -493,6 +493,13 @@ RSpec.describe "/peers", telegram_bot: :rails do
 
       expect(bot.requests[:editMessageReplyMarkup].last[:reply_markup][:inline_keyboard].count)
       .to eq(4)
+
+      expect(bot.requests[:editMessageReplyMarkup].last[:reply_markup][:inline_keyboard].first.to_s)
+      .to  include("Anti-Mage")
+      .and include("W 30min")
+      .and include("\"https://opendota.com/matches/")
+      .and include(":url")
+      .and not_include(":callback_data")
     end
   end
 end

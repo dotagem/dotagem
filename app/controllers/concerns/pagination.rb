@@ -11,7 +11,11 @@ module Pagination
       keyboard << build_hero_mode_buttons(session[:hero_mode])
       keyboard << build_hero_sort_buttons(session[:hero_sort])
     end
-    keyboard += build_paginated_buttons(session[:items], session[:button], page.to_i)
+    if session[:intention] && session[:intention] == "matches"
+      keyboard += build_paginated_url_buttons(session[:items], session[:button], page.to_i)
+    else
+      keyboard += build_paginated_buttons(session[:items], session[:button], page.to_i)
+    end
     edit_message :reply_markup, reply_markup:
           {inline_keyboard: keyboard}
     session[:page] = page
@@ -96,7 +100,38 @@ module Pagination
         }
       ]
     end
+    
+    if items.count > PAGE_ITEMS
+      keyboard << build_pagination_buttons_row(items, page)
+    end
 
+    return keyboard
+  end
+
+  def build_paginated_url_buttons(items, button_builder, page=1)
+    i = (page - 1) * PAGE_ITEMS
+    subset = items[i..i+PAGE_ITEMS-1]
+    builder = eval button_builder
+
+    keyboard = []
+    subset.each do |item|
+      t, u = builder.call(item)
+      keyboard << [
+        {
+          text: t,
+          url: u 
+        }
+      ]
+    end
+    
+    if items.count > PAGE_ITEMS
+      keyboard << build_pagination_buttons_row(items, page)
+    end
+
+    return keyboard
+  end
+
+  def build_pagination_buttons_row(items, page=1)
     pages = items.count / PAGE_ITEMS
     if (items.count % PAGE_ITEMS) > 0
       pages = pages + 1
@@ -132,10 +167,9 @@ module Pagination
           }
         end
       end
-      keyboard << row
-    end
 
-    return keyboard
+      return row
+    end
   end
 
   def build_hero_mode_buttons(mode)

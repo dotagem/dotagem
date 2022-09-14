@@ -49,6 +49,50 @@ RSpec.describe "/matches", telegram_bot: :rails do
       .to eq(4)
     end
 
+    it "should link to OpenDota with the buttons" do
+      allow(bot).to receive(:request).and_wrap_original do |m, *args|
+        m.call(*args)
+        {"ok"=>true, "result"=>{"message_id"=>62}}
+      end
+
+      listmatch = build(:list_match)
+
+      allow_any_instance_of(User).to receive(:matches) {
+        [listmatch]
+      }
+
+      dispatch_message("/matches", from: {id: user.telegram_id} )
+
+      expect(bot.requests[:sendMessage].last[:reply_markup][:inline_keyboard].first.to_s)
+      .to  include("https://opendota.com/matches/#{listmatch.match_id}")
+      .and include("url")
+      .and not_include("callback_data")
+    end
+
+    it "should also link to OpenDota on other pages" do
+      allow(bot).to receive(:request).and_wrap_original do |m, *args|
+        m.call(*args)
+        {"ok"=>true, "result"=>{"message_id"=>63}}
+      end
+
+      listmatch = build(:list_match)
+
+      allow_any_instance_of(User).to receive(:matches) {
+        build_list(:list_match, 5) << listmatch
+      }
+
+      dispatch_message("/matches", from: {id: user.telegram_id} )
+
+      dispatch(callback_query: {
+        data: "pagination:2", message: {message_id: 63, chat: {id: 456}}
+      })
+
+      expect(bot.requests[:editMessageReplyMarkup].last[:reply_markup][:inline_keyboard].first.to_s)
+      .to  include("https://opendota.com/matches/#{listmatch.match_id}")
+      .and include("url")
+      .and not_include("callback_data")
+    end
+
     it "should paginate more than 5 results" do
       expect(bot).to receive(:request).and_wrap_original do |m, *args|
         m.call(*args)
