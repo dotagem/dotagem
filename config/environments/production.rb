@@ -96,4 +96,6 @@ Rails.application.configure do
     { expires_in: 1.month }
 
   config.force_ssl = true
+
+  routes.default_url_options = {host: 'dotagem.net', protocol: 'https'}
 end
