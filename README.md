@@ -47,7 +47,8 @@ This is also why Authbind is required: if the webserver is not running HTTPS, Te
 For your convenience, the list of commands I pass to BotFather is also available in the repo as `bot_command_list.txt`.
 
 #### Development process
-* `bin/dev` to run the poller (Telegram), Puma (web) and Tailwind-builder in one window. They all live refresh, so you shouldn't need to restart them unless you make config changes.
+* **For bot work:** `rails telegram:bot:poller` to run the bot poller. I prefer not to include it in Foreman, because Puma doesn't handle hard crashes very well, and the poller will just die when it encounters a syntax error.
+* **For web/frontend work:** `bin/dev` to run Puma and Tailwind-builder in one window. They both live refresh, so you shouldn't need to restart them unless you make config changes.
 * Make your changes
 * `rspec` to run the test suite
 * Commit, push and submit a pull request!
