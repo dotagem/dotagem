@@ -52,9 +52,10 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
     end
 
     result = respond_with :message, text: build_matches_header(@matches, options),
-             reply_markup: {inline_keyboard: build_paginated_buttons(@matches, match_button_proc_string)}
+             reply_markup: {inline_keyboard: build_paginated_url_buttons(@matches, match_button_proc_string)}
     message_session(result['result']['message_id'])
     message_session[:items] = @matches
+    message_session[:intention] = "matches"
     message_session[:page] = 1
     message_session[:button] = match_button_proc_string
     message_session[:player] = @player.id
@@ -70,12 +71,13 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
     session[:items] = @player.matches(session[:options])
     session[:page] = 1
     session[:button] = match_button_proc_string
+    session[:intention] = "matches"
 
     edit_message :text, text: build_matches_header(
       session[:items], session[:options]
     )
     edit_message :reply_markup, reply_markup: {
-      inline_keyboard: build_paginated_buttons(
+      inline_keyboard: build_paginated_url_buttons(
         session[:items], session[:button], session[:page]
       )
     }
@@ -103,6 +105,7 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
     session[:items] = @player.matches(session[:options])
     session[:page] = 1
     session[:button] = match_button_proc_string
+    session[:intention] = "matches"
     
     # These need to be nil or unintended buttons show up
     session[:hero_mode] = nil
@@ -112,7 +115,7 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
       session[:items], session[:options]
     )
     edit_message :reply_markup, reply_markup: {
-      inline_keyboard: build_paginated_buttons(
+      inline_keyboard: build_paginated_url_buttons(
         session[:items], session[:button], session[:page]
       )
     }

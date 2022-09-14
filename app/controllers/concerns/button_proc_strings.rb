@@ -11,8 +11,8 @@ module ButtonProcStrings
         text = "\#{m.wl} \#{duration}min \#{m.rd} \#{m.kills}/\#{m.deaths}/\#{m.assists} " +
         "\#{hero_name(m.hero_id)} " +
         "\#{time_ago_in_words(Time.at(m.start_time))} ago"
-        callback = "nothing:0"
-        next text, callback
+        url = "https://opendota.com/matches/\#{m.match_id}"
+        next text, url
       end
     }
   end
