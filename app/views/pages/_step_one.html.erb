@@ -18,7 +18,7 @@
   </div>
   <div class="bg-slate-900 p-5 grid grid-cols-1 grid-rows-1">
     <div class="place-self-center">
-      <script async src="https://telegram.org/js/telegram-widget.js?19" data-telegram-login="dotagem_test_bot" data-size="large" data-auth-url="<%= url_for "auth/telegram/callback" %>"></script>
+      <script async src="https://telegram.org/js/telegram-widget.js?19" data-telegram-login="<%= Rails.application.credentials.telegram.bot.username %>" data-size="large" data-auth-url="<%= url_for "auth/telegram/callback" %>"></script>
     </div>
   </div>
 </div>
