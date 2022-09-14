@@ -1,6 +1,8 @@
 class TelegramWebhooksRouter < Telegram::Bot::UpdatesController
   include Telegram::Bot::UpdatesController::MessageContext
 
+  include LoginUrl
+
   # Dispatch the message to each Telegram controller,
   # until one of them handles it. If none handle it, super
   # to run the global action_missing here in the router.
@@ -28,6 +30,88 @@ class TelegramWebhooksRouter < Telegram::Bot::UpdatesController
   def action_missing(*)
     respond_with :message, text:
                  "I don't know how to handle that command, sorry!" 
+  end
+
+  # Update: {
+  #   "update_id":628403483,
+  #   "my_chat_member":{
+  #     "chat":{
+  #       "id":-642505617,
+  #       "title":"gfdgs",
+  #       "type":"group",
+  #       "all_members_are_administrators":true
+  #     },
+  #     "from":{
+  #       "id":151769956,
+  #       "is_bot":false,
+  #       "first_name":"Daniel 💎",
+  #       "username":"danvb",
+  #       "language_code":"en"
+  #     },
+  #     "date":1663157593,
+  #     "old_chat_member":{
+  #       "user":{
+  #         "id":5427946583,
+  #         "is_bot":true,
+  #         "first_name":"Gem Test",
+  #         "username":"dotagem_test_bot"
+  #       },
+  #       "status":"left"
+  #     },
+  #     "new_chat_member":{
+  #       "user":{
+  #         "id":5427946583,
+  #         "is_bot":true,
+  #         "first_name":"Gem Test",
+  #         "username":"dotagem_test_bot"
+  #       },
+  #       "status":"member"
+  #     }
+  #   }
+  # }
+
+  # Situations to handle:
+  # Someone joins a chat the bot is in and gets an introduction
+  def my_chat_member(*)
+    if update["my_chat_member"]["new_chat_member"]
+      respond_with :message,
+      text: "Hello! I can fetch your Dota 2 match data and statistics " +
+      "and display them in chats.\n" +
+      "\nTo let me show your stats, I will need to know which Steam account " +
+      "belongs to which Telegram account. If you want to use my commands, you " +
+      "need to log in with the button below and complete your registration.",
+      reply_markup: {
+        inline_keyboard: [
+          [{
+            text: "Log In",
+            login_url: {url: login_callback_url}
+          }]
+        ]
+      }
+    end
+  end
+
+  def message(*)
+    catch(:it_was_me_all_along) do
+      if update["message"]["new_chat_member"]
+        throw(:it_was_me_all_along) if update["message"]["new_chat_member"]["username"] == bot.username
+
+        unless User.find_by(telegram_id: update["message"]["new_chat_member"]["id"]) &&
+               User.find_by(telegram_id: update["message"]["new_chat_member"]["id"]).steam_registered?
+          respond_with :message, text: "Welcome! I can fetch your Dota 2 match data" +
+          " and statistics and display them in this chat. If that sounds interesting, " +
+          "use the button below to log in with your Steam account and get started.",
+          reply_markup: {inline_keyboard: [
+            [{
+              text: "Log In",
+              login_url: {url: login_callback_url}
+            }]
+          ]}
+        end
+      elsif from["id"] == chat["id"]
+        respond_with :message, text: "I don't know how to handle that command, sorry!" 
+      end
+    end
   end
 
   private
