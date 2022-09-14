@@ -418,8 +418,16 @@ RSpec.describe "/heroes", telegram_bot: :rails do
       .and include("Playing as Ember Spirit")
       .and include("5 results")
 
+      
       expect(bot.requests[:editMessageReplyMarkup].last[:reply_markup][:inline_keyboard].count)
       .to eq(5)
+
+      expect(bot.requests[:editMessageReplyMarkup].last[:reply_markup][:inline_keyboard].first.to_s)
+      .to  include("Ember Spirit")
+      .and include("W 30min")
+      .and include("\"https://opendota.com/matches/")
+      .and include(":url")
+      .and not_include(":callback_data")
     end
   end
 end
