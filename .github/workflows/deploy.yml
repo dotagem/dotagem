@@ -12,7 +12,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  test:
+  deploy:
     runs-on: ubuntu-latest
 
     # Steps represent a sequence of tasks that will be executed as part of the job
@@ -41,4 +41,4 @@ jobs:
           bundler-cache: true
 
       - name: Run Capistrano
-        run: cap production deploy
+        run: bundle exec cap production deploy
