@@ -89,3 +89,5 @@ gem 'steam-id2', '~> 0.4.5'
 gem 'hashie', '~> 5.0.0'
 
 gem "tailwindcss-rails", "~> 2.0"
+
+gem "rexml"
