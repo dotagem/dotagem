@@ -16,3 +16,4 @@ append :linked_dirs,  'log',           'tmp/pids',      'tmp/cache',
 append :linked_files, 'config/master.key'
 
 set :rbenv_type, :user
+set :rbenv_prefix, "RBENV_ROOT=#{fetch(:rbenv_path)} /usr/bin/rbenv exec"
