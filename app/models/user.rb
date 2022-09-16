@@ -3,7 +3,8 @@ class User < ApplicationRecord
 
   validates :telegram_id,       presence: true,
                                 uniqueness: true
-  validates :telegram_username, uniqueness: true
+  validates :telegram_username, presence: true,
+                                uniqueness: true
   validates :steam_id,          format: {
                                   with: /\A[0-9]+\z/,
                                   message: "must be numerical"
