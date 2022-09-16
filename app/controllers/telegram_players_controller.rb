@@ -247,7 +247,7 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
     _, args = Telegram::Bot::UpdatesController::Commands.command_from_text(payload['text'], bot_username)
     if args.any?
       args[0] = args[0].tr("@", "")
-      @player = User.find_by(telegram_username: args[0])
+      @player = User.find_by(telegram_username: args[0].downcase)
       if @player.nil?
         respond_with :message, text: "Can't find that user!"
         throw(:filtered)
@@ -269,9 +269,12 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
 
   def permissive_logged_in_or_mentioning_player
     _, args = Telegram::Bot::UpdatesController::Commands.command_from_text(payload['text'], bot_username)
-    args[0] = args[0].tr("@", "") if args.any?
-    @player = User.find_by(telegram_username: args[0]) ||
-              User.find_by(telegram_id: from["id"])
+    if args.any?
+      args[0] = args[0].tr("@", "")
+      @player = User.find_by(telegram_username: args[0].downcase)
+    end
+    @player ||= User.find_by(telegram_id: from["id"])
+    
     if @player.nil?
       respond_with :message, text: "Can't find that user!"
       throw(:filtered)

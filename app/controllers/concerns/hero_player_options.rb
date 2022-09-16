@@ -84,7 +84,7 @@ module HeroPlayerOptions
   end
 
   def hero_or_player(string)
-    Alias.find_by(name: string) || User.find_by(telegram_username: string)
+    Alias.find_by(name: string.downcase) || User.find_by(telegram_username: string.downcase)
   end
 
   def resolve_alias(string)
