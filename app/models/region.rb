@@ -1,4 +1,9 @@
 class Region < ApplicationRecord
+  validates :region_id,      presence: true,
+                             uniqueness: true
+  validates :name,           presence: true
+  validates :localized_name, presence: true
+  
   def self.refresh
     ActiveRecord::Base.transaction do
       self.destroy_all
