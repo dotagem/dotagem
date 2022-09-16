@@ -19,14 +19,22 @@ RSpec.describe "/rank", telegram_bot: :rails do
   context "as an incomplete user" do
     it "should say you need to complete their registration" do
       user = create(:user)
-      expect { dispatch_message("/rank", from: {id: user.telegram_id}) }
+      expect { dispatch_message("/rank", from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          }) }
       .to respond_with_message(/You need to complete your registration/)
     end
   end
   
   context "with no arguments" do
     it "should return the user's rank" do
-      expect { dispatch_message("/rank", from: {id: user.telegram_id}) }
+      expect { dispatch_message("/rank", from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          }) }
       .to  respond_with_message(/@#{user.telegram_username}/)
       .and respond_with_message(/rank is Legend 5/)
     end
@@ -39,7 +47,11 @@ RSpec.describe "/rank", telegram_bot: :rails do
         }
       }
 
-      expect { dispatch_message("/rank", from: {id: user.telegram_id}) }
+      expect { dispatch_message("/rank", from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          }) }
       .to  respond_with_message(/@#{user.telegram_username}/)
       .and respond_with_message(/Uncalibrated/)
     end
@@ -52,7 +64,11 @@ RSpec.describe "/rank", telegram_bot: :rails do
         }
       }
 
-      expect { dispatch_message("/rank", from: {id: user.telegram_id}) }
+      expect { dispatch_message("/rank", from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          }) }
       .to  respond_with_message(/@#{user.telegram_username}/)
       .and respond_with_message(/Immortal 1234/)
     end
@@ -65,14 +81,22 @@ RSpec.describe "/rank", telegram_bot: :rails do
         }
       }
 
-      expect { dispatch_message("/rank", from: {id: user.telegram_id}) }
+      expect { dispatch_message("/rank", from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          }) }
       .to  respond_with_message("@#{user.telegram_username}'s rank is Immortal")
     end
   end
 
   context "with an unknown user in args" do
     it "should say it can't find that user" do
-      dispatch_message("/rank sdfkjsdkfsd", from: {id: user.telegram_id})
+      dispatch_message("/rank sdfkjsdkfsd", from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          })
 
       expect(bot.requests[:sendMessage].last[:text])
       .to  include("Can't find that user")
@@ -85,7 +109,11 @@ RSpec.describe "/rank", telegram_bot: :rails do
 
       dispatch_message(
         "/rank #{user2.telegram_username}",
-        from: {id: user.telegram_id}
+        from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          }
       )
 
       expect(bot.requests[:sendMessage].last[:text])
@@ -101,7 +129,11 @@ RSpec.describe "/rank", telegram_bot: :rails do
 
       dispatch_message(
         "/rank #{user2.telegram_username}",
-        from: {id: user.telegram_id}
+        from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          }
       )
 
       expect(bot.requests[:sendMessage].last[:text])

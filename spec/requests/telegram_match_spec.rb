@@ -39,7 +39,11 @@ RSpec.describe "/match", telegram_bot: :rails do
 
   context "with valid arguments" do
     it "should respond with a valid match message" do
-      expect { dispatch_message("/match 123456", from: {id: user.telegram_id}) }
+      expect { dispatch_message("/match 123456", from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          }) }
       .to  respond_with_message(/Match/)
       .and respond_with_message(/40 - 20/)
       .and respond_with_message(/Radiant victory in 30 minutes/)
@@ -70,7 +74,11 @@ RSpec.describe "/match", telegram_bot: :rails do
         build(:match, match_id: 12345)
       end
 
-      dispatch_message("/match 12345", from: {id: user.telegram_id})
+      dispatch_message("/match 12345", from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          })
 
       expect(bot.requests[:sendMessage].last[:reply_markup][:inline_keyboard].to_s)
       .to  include("Match details on OpenDota")

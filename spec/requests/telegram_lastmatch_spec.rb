@@ -20,14 +20,22 @@ RSpec.describe "/lastmatch", telegram_bot: :rails do
     it "should say you need to complete your registration" do
       user = create(:user)
 
-      expect { dispatch_message("/lastmatch", from: {id: user.telegram_id}) }
+      expect { dispatch_message("/lastmatch", from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          }) }
       .to respond_with_message(/You need to complete your registration/)
     end
   end
 
   context "from a valid account" do
     it "should return a valid message" do
-      dispatch_message("/lastmatch", from: {id: user.telegram_id})
+      dispatch_message("/lastmatch", from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          })
 
       expect(bot.requests[:sendMessage].last[:text])
       .to  include("Recent match for #{user.telegram_username}")
@@ -45,14 +53,22 @@ RSpec.describe "/lastmatch", telegram_bot: :rails do
         ]
       end
 
-      dispatch_message("/lastmatch", from: {id: user.telegram_id})
+      dispatch_message("/lastmatch", from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          })
 
       expect(bot.requests[:sendMessage].last[:text])
       .to  include("Loss in 30 mins")
     end
 
     it "should return a button to OpenDota" do
-      dispatch_message("/lastmatch", from: {id: user.telegram_id})
+      dispatch_message("/lastmatch", from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          })
 
       expect(bot.requests[:sendMessage].last[:reply_markup][:inline_keyboard].to_s)
       .to  include("Match details on OpenDota")
@@ -73,7 +89,11 @@ RSpec.describe "/lastmatch", telegram_bot: :rails do
 
       expect { dispatch_message(
         "/lastmatch #{user2.telegram_username}",
-        from: {id: user.telegram_id}
+        from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          }
       ) }
       .to respond_with_message(/That user has not completed their registration/)
     end
@@ -85,7 +105,11 @@ RSpec.describe "/lastmatch", telegram_bot: :rails do
 
       dispatch_message(
         "/lastmatch #{user2.telegram_username}",
-        from: {id: user.telegram_id}
+        from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          }
       )
 
       expect(bot.requests[:sendMessage].last[:text])

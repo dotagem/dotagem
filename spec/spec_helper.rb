@@ -93,5 +93,6 @@ RSpec.configure do |config|
 
   config.before(:suite) do
     RSpec::Matchers.define_negated_matcher :not_include, :include
+    RSpec::Matchers.define_negated_matcher :not_eq,      :eq
   end
 end

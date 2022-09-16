@@ -50,7 +50,11 @@ RSpec.describe "/heroes", telegram_bot: :rails do
   context "as an incomplete user" do
     it "should say that you need to complete their registration" do
       user = create(:user)
-      expect { dispatch_message("/heroes", from: {id: user.telegram_id}) }
+      expect { dispatch_message("/heroes", from: {
+        id: user.telegram_id,
+        username: user.telegram_username,
+        first_name: user.telegram_name
+      }) }
       .to respond_with_message(/You need to complete your registration/)
     end
   end
@@ -62,7 +66,11 @@ RSpec.describe "/heroes", telegram_bot: :rails do
         {"ok"=>true, "result"=>{"message_id"=>120}}
       end
 
-      expect { dispatch_message("/heroes asdfsf", from: {id: user.telegram_id}) }
+      expect { dispatch_message("/heroes asdfsf", from: {
+        id: user.telegram_id,
+        username: user.telegram_username,
+        first_name: user.telegram_name
+      }) }
       .to respond_with_message(/Can't find that user/)
     end
   end
@@ -71,7 +79,11 @@ RSpec.describe "/heroes", telegram_bot: :rails do
     it "should say that user needs to complete their registration" do
       user2 = create(:user)
       expect { dispatch_message(
-        "/heroes #{user2.telegram_username}", from: {id: user.telegram_id}
+        "/heroes #{user2.telegram_username}", from: {
+          id: user.telegram_id,
+          username: user.telegram_username,
+          first_name: user.telegram_name
+        }
       ) }
       .to respond_with_message(/That user has not completed their registration/)
     end
@@ -84,7 +96,11 @@ RSpec.describe "/heroes", telegram_bot: :rails do
         {"ok"=>true, "result"=>{"message_id"=>122}}
       end
 
-      dispatch_message("/heroes", from: {id: user.telegram_id})
+      dispatch_message("/heroes", from: {
+        id: user.telegram_id,
+        username: user.telegram_username,
+        first_name: user.telegram_name
+      })
     end
 
     it "should return a valid message" do
@@ -152,7 +168,11 @@ RSpec.describe "/heroes", telegram_bot: :rails do
         {"ok"=>true, "result"=>{"message_id"=>124}}
       end
 
-      dispatch_message("/heroes", from: {id: user.telegram_id})
+      dispatch_message("/heroes", from: {
+        id: user.telegram_id,
+        username: user.telegram_username,
+        first_name: user.telegram_name
+      })
     end
 
     it "should start by games played as" do
@@ -285,7 +305,11 @@ RSpec.describe "/heroes", telegram_bot: :rails do
         array
       end
 
-      dispatch_message("/heroes", from: {id: user.telegram_id})
+      dispatch_message("/heroes", from: {
+        id: user.telegram_id,
+        username: user.telegram_username,
+        first_name: user.telegram_name
+      })
     end
 
     it "should have the correct amount of pages" do
@@ -403,7 +427,11 @@ RSpec.describe "/heroes", telegram_bot: :rails do
         build_list(:list_match, 5, hero_id: 106)
       }
 
-      dispatch_message("/heroes", from: {id: user.telegram_id})
+      dispatch_message("/heroes", from: {
+        id: user.telegram_id,
+        username: user.telegram_username,
+        first_name: user.telegram_name
+      })
 
       expect(bot.requests[:sendMessage].last[:reply_markup][:inline_keyboard].third.to_s)
       .to  include("Ember Spirit")

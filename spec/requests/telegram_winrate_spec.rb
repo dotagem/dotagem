@@ -10,7 +10,11 @@ RSpec.describe "/winrate", telegram_bot: :rails do
     it "should tell the user that they are not registered" do
       user = create(:user)
 
-      expect { dispatch_message("/winrate", from: {id: user.telegram_id}) }
+      expect { dispatch_message("/winrate", from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          }) }
       .to respond_with_message(/That user has not completed their registration/)
     end
   end
@@ -41,7 +45,11 @@ RSpec.describe "/winrate", telegram_bot: :rails do
     let(:user) { create(:user, :steam_registered) }
 
     it "should give a global winrate" do
-      expect { dispatch_message("/winrate", from: {id: user.telegram_id}) }
+      expect { dispatch_message("/winrate", from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          }) }
       .to  respond_with_message(/Winrate for #{user.telegram_username}:/)
       .and respond_with_message(/999 wins, 123 losses/)
     end
@@ -51,7 +59,11 @@ RSpec.describe "/winrate", telegram_bot: :rails do
         {"win" => 1, "lose" => 1}
       }
 
-      expect { dispatch_message("/winrate", from: {id: user.telegram_id}) }
+      expect { dispatch_message("/winrate", from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          }) }
       .to respond_with_message(/1 win, 1 loss/)
     end
   end
@@ -69,7 +81,11 @@ RSpec.describe "/winrate", telegram_bot: :rails do
 
       expect { dispatch_message(
         "/winrate weaver against razor with faceless void and spectre against dazzle",
-        from: {id: user.telegram_id}
+        from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          }
       )}
       .to  respond_with_message(/Winrate for #{user.telegram_username}:/)
       .and respond_with_message(/Playing as Weaver/)
@@ -82,7 +98,11 @@ RSpec.describe "/winrate", telegram_bot: :rails do
       user3 = create(:user, :steam_registered)
       expect { dispatch_message(
         "/winrate with #{user2.telegram_username} and #{user3.telegram_username}",
-        from: {id: user.telegram_id}
+        from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          }
       )}
       .to  respond_with_message(/Winrate for #{user.telegram_username}:/)
       .and respond_with_message(
@@ -106,7 +126,11 @@ RSpec.describe "/winrate", telegram_bot: :rails do
         {"ok"=>true, "result"=>{"message_id"=>80}}
       end
 
-      dispatch_message("/winrate void", from: {id: user.telegram_id})
+      dispatch_message("/winrate void", from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          })
 
       expect(bot.requests[:sendMessage].last[:text])
       .to  include("Winrate for #{user.telegram_username}")
@@ -127,7 +151,11 @@ RSpec.describe "/winrate", telegram_bot: :rails do
         {"ok"=>true, "result"=>{"message_id"=>81}}
       end
 
-      dispatch_message("/winrate void against es", from: {id: user.telegram_id})
+      dispatch_message("/winrate void against es", from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          })
 
       expect(bot.requests[:sendMessage].last[:text])
       .to include(">>\"void\"<<")
@@ -149,7 +177,11 @@ RSpec.describe "/winrate", telegram_bot: :rails do
         {"ok"=>true, "result"=>{"message_id"=>82}}
       end
 
-      dispatch_message("/winrate void against es", from: {id: user.telegram_id})
+      dispatch_message("/winrate void against es", from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          })
 
       dispatch(callback_query: {
         data: "alias:41", message: {message_id: 82, chat: {id: 456}}
