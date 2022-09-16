@@ -1,0 +1,9 @@
+<% if flash[:error] %>
+  <div class="bg-red-800 bg-opacity-60 px-6 py-2 text-center text-white rounded-lg border-2 border-red-600">
+    <b>Error:</b> <%= flash[:error] %>
+  </div>
+<% elsif flash[:notice] %>
+  <div class="bg-blue-800 bg-opacity-60 px-6 py-2 text-center text-white rounded-lg border-2 border-blue-600">
+    <b>Notice:</b> <%= flash[:notice] %>
+  </div>
+<% end %>

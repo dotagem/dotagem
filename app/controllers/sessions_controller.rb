@@ -53,7 +53,7 @@ class SessionsController < ApplicationController
   end
 
   def failure
-    flash[:warning] = "Login unsuccessful, please try again!"
+    flash[:error] = "Login unsuccessful, please try again!"
     redirect_to root_url
   end
 end

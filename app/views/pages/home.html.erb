@@ -1,21 +1,27 @@
 <div class="flex bg-fixed bg-center bg-no-repeat bg-cover" style="background-image: url('<%= asset_path("background.png") %>');">
   <div class="bg-gray-800 bg-opacity-50">
-  <div class="px-4 sm:px-8 md:px-16 grid grid-cols-3 lg:grid-cols-5 grid-rows-1 gap-4">
-    <div class="col-span-3 lg:col-span-3 py-16 place-self-center lg:pr-8">
-      <h1 class="text-6xl pb-4 text-slate-100">Gem of True Sight</h1>
-      <h4 class="text-lg text-slate-200">A Telegram bot for Dota 2 match data and statistics</h4>
-    </div>
+    <% if flash.any? %>
+      <div class="px-4 sm:px-8 md:px-16 pt-4">
+        <%= render 'shared/flash' %>
+      </div>
+    <% end %>
 
-    <div class="col-span-3 lg:col-span-2 py-16 place-self-center">
-      <% if !logged_in? %>
-        <%= render 'step_one' %>
-      <% elsif logged_in? && !current_user.steam_registered? %>
-        <%= render 'step_two' %>
-      <% else %>
-        <%= render 'signin_done' %>
-      <% end %>
+    <div class="px-4 sm:px-8 md:px-16 grid grid-cols-3 lg:grid-cols-5 grid-rows-1 gap-4">
+      <div class="col-span-3 lg:col-span-3 py-16 place-self-center lg:pr-8">
+        <h1 class="text-6xl pb-4 text-slate-100">Gem of True Sight</h1>
+        <h4 class="text-lg text-slate-200">A Telegram bot for Dota 2 match data and statistics</h4>
+      </div>
+
+      <div class="col-span-3 lg:col-span-2 py-16 place-self-center">
+        <% if !logged_in? %>
+          <%= render 'step_one' %>
+        <% elsif logged_in? && !current_user.steam_registered? %>
+          <%= render 'step_two' %>
+        <% else %>
+          <%= render 'signin_done' %>
+        <% end %>
+      </div>
     </div>
-  </div>
   </div>
 </div>
 <div class="flex bg-cover bg-slate-900 text-slate-300 px-4 sm:px-8 md:px-16">

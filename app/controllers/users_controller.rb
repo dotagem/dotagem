@@ -12,13 +12,13 @@ class UsersController < ApplicationController
 
     @user.save
     
-    flash[:info] = "Your Steam account has been unlinked, feel free to link a different one!"
+    flash[:notice] = "Your Steam account has been unlinked, feel free to link a different one!"
     redirect_to root_url, status: 303
   end
 
   def destroy
     User.find(params[:id]).destroy
-    flash[:info] = "Your registration has been removed. Feel free to log in again if you change your mind!"
+    flash[:notice] = "Your registration has been removed. Feel free to log in again if you change your mind!"
     redirect_to root_url, status: 303
   end
 
