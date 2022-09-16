@@ -15,6 +15,26 @@ class TelegramWebhooksRouter < Telegram::Bot::UpdatesController
   # Monkey patching action_missing will 'catch' all
   # non-matching commands in your controller, breaking others.
   def self.dispatch(bot, update)
+    # Update the user's details if we can
+    if update["message"]
+      from = update["message"]["from"]
+    elsif update["inline_query"]
+      from = update["inline_query"]["from"]
+    elsif update["callback_query"]
+      from = update["callback_query"]["from"]
+    end
+
+    if defined?(from) && User.find_by(telegram_id: from["id"])
+      user = User.find_by(telegram_id: from["id"])
+      user.telegram_username = from["username"].downcase
+      if from["last_name"]
+        user.telegram_name = [from["first_name"], from["last_name"]].join(" ")
+      else
+        user.telegram_name = from["first_name"]
+      end
+      user.save
+    end
+
     catch :filtered do
       result = nil
       
@@ -31,44 +51,6 @@ class TelegramWebhooksRouter < Telegram::Bot::UpdatesController
     respond_with :message, text:
                  "I don't know how to handle that command, sorry!" 
   end
-
-  # Update: {
-  #   "update_id":628403483,
-  #   "my_chat_member":{
-  #     "chat":{
-  #       "id":-642505617,
-  #       "title":"gfdgs",
-  #       "type":"group",
-  #       "all_members_are_administrators":true
-  #     },
-  #     "from":{
-  #       "id":151769956,
-  #       "is_bot":false,
-  #       "first_name":"Daniel 💎",
-  #       "username":"danvb",
-  #       "language_code":"en"
-  #     },
-  #     "date":1663157593,
-  #     "old_chat_member":{
-  #       "user":{
-  #         "id":5427946583,
-  #         "is_bot":true,
-  #         "first_name":"Gem Test",
-  #         "username":"dotagem_test_bot"
-  #       },
-  #       "status":"left"
-  #     },
-  #     "new_chat_member":{
-  #       "user":{
-  #         "id":5427946583,
-  #         "is_bot":true,
-  #         "first_name":"Gem Test",
-  #         "username":"dotagem_test_bot"
-  #       },
-  #       "status":"member"
-  #     }
-  #   }
-  # }
 
   # Situations to handle:
   # Someone joins a chat the bot is in and gets an introduction
