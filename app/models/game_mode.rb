@@ -1,5 +1,6 @@
 class GameMode < ApplicationRecord
-  validates :mode_id,        presence: true
+  validates :mode_id,        presence: true,
+                             uniqueness: true
   validates :name,           presence: true
   validates :localized_name, presence: true
   
