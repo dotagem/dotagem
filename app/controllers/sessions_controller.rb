@@ -9,7 +9,7 @@ class SessionsController < ApplicationController
 
     # Refresh user data if they're known, else create new user
     user = User.find_or_create_by(telegram_id: auth['uid'])
-    user.telegram_username = auth['info']['nickname']
+    user.telegram_username = auth['info']['nickname'].downcase
     user.telegram_avatar   = auth['info']['image']
     user.telegram_name     = auth['info']['name']
     user.save
