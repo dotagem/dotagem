@@ -1,5 +1,18 @@
 class User < ApplicationRecord
   include OpendotaHelper
+
+  validates :telegram_id,       presence: true,
+                                uniqueness: true
+  validates :telegram_username, presence: true,
+                                uniqueness: true
+  validates :steam_id,          format: {
+                                  with: /\A[0-9]+\z/,
+                                  message: "must be numerical"
+                                },
+                                uniqueness: true,
+                                allow_nil: true
+  validates :steam_id64,        uniqueness: true
+
   DEFAULT_MATCH_OPTS = {project: ListMatch.attribute_names, limit: 500}
 
   def telegram_registered?

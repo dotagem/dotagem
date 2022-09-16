@@ -12,6 +12,16 @@ class SessionsController < ApplicationController
     user.telegram_username = auth['info']['nickname'].downcase
     user.telegram_avatar   = auth['info']['image']
     user.telegram_name     = auth['info']['name']
+
+    # Solve a specific race condition where two users can have the same Telegram username
+    if User.where(telegram_username: user.telegram_username).any?
+      User.where(telegram_username: user.telegram_username).each do |u|
+        unless user == u
+          u.telegram_username = "[#{u.telegram_id}]"
+          u.save
+        end
+      end
+    end
     user.save
 
     log_out if logged_in?

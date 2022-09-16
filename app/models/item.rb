@@ -1,4 +1,7 @@
 class Item < ApplicationRecord
+  validates :item_id, presence: true
+  validates :name,    presence: true
+
   serialize :components
 
   def self.refresh

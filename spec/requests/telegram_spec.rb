@@ -75,7 +75,7 @@ RSpec.describe "Telegram bot", telegram_bot: :rails do
       )
 
       expect(user.reload.telegram_username).to eq("hehexd")
-      expect(user.reload.telegram_name).to eq("Lol Lmao")
+      expect(user.telegram_name).to eq("Lol Lmao")
     end
   end
 

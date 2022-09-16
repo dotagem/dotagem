@@ -3,6 +3,11 @@ class Hero < ApplicationRecord
 
   CDN_BASE_URL = "https://cdn.cloudflare.steamstatic.com"
 
+  validates :hero_id,        presence: true,
+                             uniqueness: true
+  validates :name,           presence: true
+  validates :localized_name, presence: true
+
   attribute :last_played,    default: nil
   attribute :games,          default: nil
   attribute :win,            default: nil

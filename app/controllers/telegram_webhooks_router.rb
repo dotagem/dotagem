@@ -32,6 +32,16 @@ class TelegramWebhooksRouter < Telegram::Bot::UpdatesController
       else
         user.telegram_name = from["first_name"]
       end
+
+      if User.where(telegram_username: user.telegram_username).any?
+        User.where(telegram_username: user.telegram_username).each do |u|
+          unless user == u
+            u.telegram_username = "[#{u.telegram_id}]"
+            u.save
+          end
+        end
+      end
+      
       user.save
     end
 

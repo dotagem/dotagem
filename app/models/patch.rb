@@ -1,4 +1,8 @@
 class Patch < ApplicationRecord
+  validates :patch_id, presence: true,
+                       uniqueness: true
+  validates :name,     presence: true
+
   def self.refresh
     ActiveRecord::Base.transaction do
       self.destroy_all
