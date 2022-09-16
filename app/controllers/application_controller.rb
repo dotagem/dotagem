@@ -4,7 +4,7 @@ class ApplicationController < ActionController::Base
   private
     def logged_in_user
       unless logged_in?
-        flash[:danger] = "You need to sign in with Telegram first!"
+        flash[:error] = "You need to sign in with Telegram first!"
         redirect_to '/' 
       end
     end
