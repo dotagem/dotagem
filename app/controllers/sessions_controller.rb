@@ -13,6 +13,7 @@ class SessionsController < ApplicationController
     user.telegram_avatar   = auth['info']['image']
     user.telegram_name     = auth['info']['name']
 
+    # Solve a specific race condition where two users can have the same Telegram username
     if User.where(telegram_username: user.telegram_username).any?
       User.where(telegram_username: user.telegram_username).each do |u|
         unless user == u
