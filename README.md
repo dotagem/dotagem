@@ -1,6 +1,21 @@
 # 💎 Gem of True Sight
 ##### A Telegram bot that fetches and displays stats and Dota 2 data
+
 ![RSpec](https://github.com/cschuijt/dotagem/actions/workflows/tests.yml/badge.svg)
+
+
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/cschuijt/dotagem?label=latest%20release)
+![GitHub Release Date](https://img.shields.io/github/release-date/cschuijt/dotagem?label=release%20date)
+![Deploy](https://github.com/cschuijt/dotagem/actions/workflows/deploy.yml/badge.svg)
+
+
+![GitHub last commit](https://img.shields.io/github/last-commit/cschuijt/dotagem)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/w/cschuijt/dotagem)
+![GitHub commits since latest release (by date)](https://img.shields.io/github/commits-since/cschuijt/dotagem/latest)
+
+
+![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/cschuijt/dotagem)
+![GitHub repo size](https://img.shields.io/github/repo-size/cschuijt/dotagem)
 
 ---
 
@@ -21,7 +36,28 @@ Feel free to open an [issue](https://github.com/cschuijt/dotagem/issues) here an
 
 ---
 
-### Technical information
+### 👨‍🎓 Skills I honed by working on this
+I want to put this project in a portfolio on the long term, so I've tried to branch
+out and make it as feature complete as possible. List of things of note, if you
+ask me:
+
+* App features:
+  * Fetching data from an external JSON API, organizing endpoints, normalizing data
+  * Caching large datasets in Redis so only one API call is required
+  * Monolith design: app serves both Telegram bot API requests and web requests without the need for containers or multi-server deploys
+* DevOps features:
+  * Testing suite for all chat commands, complete with factories and mocks for API data
+  * CI and branch protection to ensure the main branch always passes tests
+  * Continuous deployment: tagging a new version will automatically deploy to server
+  * Modifying the default setup for `rails s` in development to be able to test all HTTPS-dependent Telegram features, without the need to install Nginx
+* Server features
+  * Passenger + Nginx, with the app code living under a non-sudo user account
+  * Strict HTTPS with auto-renewing certificates
+  * Capistrano ensures the server is only updated on successful deploy and rollbacks are always possible
+
+---
+
+### ⚙ Technical information
 
 #### Requirements
 * Ruby 3.1.2
@@ -53,7 +89,7 @@ For your convenience, the list of commands I pass to BotFather is also available
 * `rspec` to run the test suite
 * Commit, push and submit a pull request!
 
-### Under the hood
+### 👩‍💻 Under the hood
 * The bot runs on Rails, with the Telegram part acting as middleware. The server is set up as a monolith. Exporting components should be possible too (database, redis) but it's written with the intention to keep everything in one place.
 * To be able to juggle all the bot's commands, a global controller handles the initial request, then tries the sub-controllers one by one until one of them handles the message. This strikes a good balance in terms of spreading the code across multiple files, at the expense of invoking each subsequent controller until the right one is found.
 * The OpenDota API is not JSON-api compliant, so we interact with it through [HTTParty](https://github.com/jnunemaker/httparty), then use database-less models to normalize the data we get back. This way, our controllers/the chatbot code will never have to touch the API directly, the heavy lifting is handled in the model and API files. To see how the API endpoints work under the hood, check out the `app/apis` directory.
