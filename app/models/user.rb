@@ -40,7 +40,7 @@ class User < ApplicationRecord
 
     heroes = []
     p.heroes(opts).each do |hero|
-      h = Hero.find_by(hero_id: hero['hero_id'])
+      h = Hero.find_by(hero_id: hero['hero_id'].to_i)
       h.last_played =   hero['last_played']
       h.games =         hero['games']
       h.win =           hero['win']
