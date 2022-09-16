@@ -35,7 +35,11 @@ RSpec.describe "Inline query", telegram_bot: :rails do
       dispatch(
         inline_query: {
           id:   "310",
-          from: {id: user.telegram_id},
+          from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          },
           query: ""
         }
       )
@@ -66,7 +70,11 @@ RSpec.describe "Inline query", telegram_bot: :rails do
       dispatch(
         inline_query: {
           id:   "320",
-          from: {id: user.telegram_id},
+          from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          },
           query: ""
         }
       )
@@ -129,7 +137,11 @@ RSpec.describe "Inline query", telegram_bot: :rails do
       dispatch(
         inline_query: {
           id:   "330",
-          from: {id: user.telegram_id},
+          from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          },
           query: "dfsdfsd"
         }
       )
@@ -146,7 +158,11 @@ RSpec.describe "Inline query", telegram_bot: :rails do
       dispatch(
         inline_query: {
           id:   "340",
-          from: {id: user.telegram_id},
+          from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          },
           query: "gondar"
         }
       )
@@ -190,7 +206,11 @@ RSpec.describe "Inline query", telegram_bot: :rails do
       dispatch(
         inline_query: {
           id:   "340",
-          from: {id: user.telegram_id},
+          from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          },
           query: "spirit"
         }
       )
@@ -200,7 +220,11 @@ RSpec.describe "Inline query", telegram_bot: :rails do
       dispatch(
         inline_query: {
           id:   "345",
-          from: {id: user.telegram_id},
+          from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          },
           query: "spirit"
         }
       )
@@ -222,7 +246,11 @@ RSpec.describe "Inline query", telegram_bot: :rails do
       dispatch(
         inline_query: {
           id:   "347",
-          from: {id: user.telegram_id},
+          from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          },
           query: "spirit"
         }
       )
@@ -248,7 +276,11 @@ RSpec.describe "Inline query", telegram_bot: :rails do
       dispatch(
         inline_query: {
           id:   "347",
-          from: {id: user.telegram_id},
+          from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          },
           query: "spirit"
         }
       )

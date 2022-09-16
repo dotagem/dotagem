@@ -2,7 +2,11 @@ RSpec.describe "/profile", telegram_bot: :rails do
   context "as a registered user" do
     it "should respond with their steam url" do
       user = create(:user, :steam_registered)
-      dispatch_message("/profile", from: {id: user.telegram_id})
+      dispatch_message("/profile", from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          })
       expect(bot.requests[:sendMessage].last[:text]).to include(user.steam_url)
     end
   end
@@ -17,7 +21,11 @@ RSpec.describe "/profile", telegram_bot: :rails do
   context "as an incomplete user" do
     it "should say you need to complete your registration" do
       user = create(:user)
-      expect {dispatch_message("/profile", from: {id: user.telegram_id})}
+      expect {dispatch_message("/profile", from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          })}
       .to respond_with_message(/You need to complete your registration/)
     end
   end
@@ -32,7 +40,11 @@ RSpec.describe "/profile", telegram_bot: :rails do
     it "should not respond with the caller's steam link" do
       user  = create(:user, :steam_registered)
       user2 = create(:user, :steam_registered)
-      dispatch_message("/profile #{user2.telegram_username}", from: {id: user.telegram_id})
+      dispatch_message("/profile #{user2.telegram_username}", from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          })
       expect(bot.requests[:sendMessage].last[:text]).not_to include(user.steam_url)
     end
   end
@@ -55,7 +67,11 @@ RSpec.describe "/profile", telegram_bot: :rails do
   context "with invalid arguments" do
     it "should say it can't find that user" do
       user = create(:user, :steam_registered)
-      dispatch_message("/profile asdsfgflkdg wehjkr", from: {id: user.telegram_id})
+      dispatch_message("/profile asdsfgflkdg wehjkr", from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          })
       expect(bot.requests[:sendMessage].last[:text])
       .to include("Can't find that user")
     end

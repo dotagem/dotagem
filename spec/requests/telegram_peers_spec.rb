@@ -17,7 +17,11 @@ RSpec.describe "/peers", telegram_bot: :rails do
   context "as an incomplete user" do
     it "should say you need to complete your registration" do
       user = create(:user)
-      expect { dispatch_message("/peers", from: {id: user.telegram_id}) }
+      expect { dispatch_message("/peers", from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          }) }
       .to respond_with_message(/You need to complete your registration/)
     end
   end
@@ -29,7 +33,11 @@ RSpec.describe "/peers", telegram_bot: :rails do
         {"ok"=>true, "result"=>{"message_id"=>100}}
       end
 
-      expect { dispatch_message("/peers asdfsf", from: {id: user.telegram_id}) }
+      expect { dispatch_message("/peers asdfsf", from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          }) }
       .to  respond_with_message(/Can't find that user/)
     end
   end
@@ -38,7 +46,11 @@ RSpec.describe "/peers", telegram_bot: :rails do
     it "should say that user needs to complete their registration" do
       user2 = create(:user)
       expect { dispatch_message(
-        "/peers #{user2.telegram_username}", from: {id: user.telegram_id}
+        "/peers #{user2.telegram_username}", from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          }
       ) }
       .to respond_with_message(/That user has not completed their registration/)
     end
@@ -51,7 +63,11 @@ RSpec.describe "/peers", telegram_bot: :rails do
         {"ok"=>true, "result"=>{"message_id"=>101}}
       end
 
-      expect { dispatch_message("/peers", from: {id: user.telegram_id}) }
+      expect { dispatch_message("/peers", from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          }) }
       .to  respond_with_message(/Peers of #{user.telegram_username}/)
       .and respond_with_message(/4 results/)
     end
@@ -66,7 +82,11 @@ RSpec.describe "/peers", telegram_bot: :rails do
         build_list(:peer, 1)
       }
 
-      dispatch_message("/peers", from: {id: user.telegram_id})
+      dispatch_message("/peers", from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          })
       
       expect(bot.requests[:sendMessage].last[:text])
       .to  include("Peers of #{user.telegram_username}")
@@ -80,7 +100,11 @@ RSpec.describe "/peers", telegram_bot: :rails do
         {"ok"=>true, "result"=>{"message_id"=>103}}
       end
 
-      dispatch_message("/peers", from: {id: user.telegram_id})
+      dispatch_message("/peers", from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          })
 
       expect(bot.requests[:sendMessage].last[:reply_markup][:inline_keyboard].count)
       .to eq(5)
@@ -98,7 +122,11 @@ RSpec.describe "/peers", telegram_bot: :rails do
         {"ok"=>true, "result"=>{"message_id"=>104}}
       end
 
-      dispatch_message("/peers", from: {id: user.telegram_id})
+      dispatch_message("/peers", from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          })
 
       expect(bot.requests[:sendMessage].last[:reply_markup][:inline_keyboard].first.to_s)
       .to  include("Sort:")
@@ -118,7 +146,11 @@ RSpec.describe "/peers", telegram_bot: :rails do
         build_list(:peer, 1)
       }
 
-      dispatch_message("/peers", from: {id: user.telegram_id})
+      dispatch_message("/peers", from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          })
 
       expect(bot.requests[:sendMessage].last[:reply_markup][:inline_keyboard].first.to_s)
       .to  not_include("Sort:")
@@ -138,7 +170,11 @@ RSpec.describe "/peers", telegram_bot: :rails do
         build_list(:peer, 12)
       }
 
-      dispatch_message("/peers", from: {id: user.telegram_id})
+      dispatch_message("/peers", from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          })
 
       expect(bot.requests[:sendMessage].last[:reply_markup][:inline_keyboard].count)
       .to eq(7)
@@ -155,7 +191,11 @@ RSpec.describe "/peers", telegram_bot: :rails do
         {"ok"=>true, "result"=>{"message_id"=>107}}
       end
 
-      dispatch_message("/peers", from: {id: user.telegram_id})
+      dispatch_message("/peers", from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          })
 
       expect(bot.requests[:sendMessage].last[:reply_markup][:inline_keyboard].count)
       .to eq(5)
@@ -189,7 +229,11 @@ RSpec.describe "/peers", telegram_bot: :rails do
         {"ok"=>true, "result"=>{"message_id"=>108}}
       end
 
-      dispatch_message("/peers", from: {id: user.telegram_id})
+      dispatch_message("/peers", from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          })
 
       expect(bot.requests[:sendMessage].last[:reply_markup][:inline_keyboard].first.to_s)
       .to  include("[Games]")
@@ -210,7 +254,11 @@ RSpec.describe "/peers", telegram_bot: :rails do
         {"ok"=>true, "result"=>{"message_id"=>109}}
       end
 
-      dispatch_message("/peers", from: {id: user.telegram_id})
+      dispatch_message("/peers", from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          })
 
       expect(bot.requests[:sendMessage].last[:reply_markup][:inline_keyboard].first.to_s)
       .to  include("[Games]")
@@ -237,7 +285,11 @@ RSpec.describe "/peers", telegram_bot: :rails do
         {"ok"=>true, "result"=>{"message_id"=>110}}
       end
 
-      dispatch_message("/peers", from: {id: user.telegram_id})
+      dispatch_message("/peers", from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          })
 
       expect(bot.requests[:sendMessage].last[:reply_markup][:inline_keyboard].first.to_s)
       .to  include("[Games]")
@@ -265,7 +317,11 @@ RSpec.describe "/peers", telegram_bot: :rails do
         {"ok"=>true, "result"=>{"message_id"=>111}}
       end
 
-      dispatch_message("/peers", from: {id: user.telegram_id})
+      dispatch_message("/peers", from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          })
 
       expect(bot.requests[:sendMessage].last[:reply_markup][:inline_keyboard].first.to_s)
       .to  include("[Games]")
@@ -300,7 +356,11 @@ RSpec.describe "/peers", telegram_bot: :rails do
         {"ok"=>true, "result"=>{"message_id"=>112}}
       end
 
-      dispatch_message("/peers", from: {id: user.telegram_id})
+      dispatch_message("/peers", from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          })
 
       expect(bot.requests[:sendMessage].last[:reply_markup][:inline_keyboard].last.to_s)
       .to include("1 / 5")
@@ -312,7 +372,11 @@ RSpec.describe "/peers", telegram_bot: :rails do
         {"ok"=>true, "result"=>{"message_id"=>113}}
       end
 
-      dispatch_message("/peers", from: {id: user.telegram_id})
+      dispatch_message("/peers", from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          })
 
       dispatch(callback_query: {
         data: "pagination:2", message: {message_id: 113, chat: {id: 456}}
@@ -328,7 +392,11 @@ RSpec.describe "/peers", telegram_bot: :rails do
         {"ok"=>true, "result"=>{"message_id"=>114}}
       end
 
-      dispatch_message("/peers", from: {id: user.telegram_id})
+      dispatch_message("/peers", from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          })
 
       row = bot.requests[:sendMessage].last[:reply_markup][:inline_keyboard].last
 
@@ -350,7 +418,11 @@ RSpec.describe "/peers", telegram_bot: :rails do
         {"ok"=>true, "result"=>{"message_id"=>115}}
       end
 
-      dispatch_message("/peers", from: {id: user.telegram_id})
+      dispatch_message("/peers", from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          })
 
       dispatch(callback_query: {
         data: "pagination:2", message: {message_id: 115, chat: {id: 456}}
@@ -379,7 +451,11 @@ RSpec.describe "/peers", telegram_bot: :rails do
         {"ok"=>true, "result"=>{"message_id"=>116}}
       end
 
-      dispatch_message("/peers", from: {id: user.telegram_id})
+      dispatch_message("/peers", from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          })
 
       dispatch(callback_query: {
         data: "pagination:3", message: {message_id: 116, chat: {id: 456}}
@@ -411,7 +487,11 @@ RSpec.describe "/peers", telegram_bot: :rails do
         {"ok"=>true, "result"=>{"message_id"=>117}}
       end
 
-      dispatch_message("/peers", from: {id: user.telegram_id})
+      dispatch_message("/peers", from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          })
 
       dispatch(callback_query: {
         data: "pagination:4", message: {message_id: 117, chat: {id: 456}}
@@ -440,7 +520,11 @@ RSpec.describe "/peers", telegram_bot: :rails do
         {"ok"=>true, "result"=>{"message_id"=>118}}
       end
 
-      dispatch_message("/peers", from: {id: user.telegram_id})
+      dispatch_message("/peers", from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          })
 
       dispatch(callback_query: {
         data: "pagination:5", message: {message_id: 118, chat: {id: 456}}
@@ -478,7 +562,11 @@ RSpec.describe "/peers", telegram_bot: :rails do
         build_list(:list_match, 4)
       }
 
-      dispatch_message("/peers", from: {id: user.telegram_id})
+      dispatch_message("/peers", from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          })
 
       expect(bot.requests[:sendMessage].last[:reply_markup][:inline_keyboard].last.to_s)
       .to include("\"matches_with_player:#{user2.steam_id}\"")

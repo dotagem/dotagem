@@ -24,7 +24,7 @@ class TelegramWebhooksRouter < Telegram::Bot::UpdatesController
       from = update["callback_query"]["from"]
     end
 
-    if defined?(from) && User.find_by(telegram_id: from["id"])
+    if defined?(from) && from && User.find_by(telegram_id: from["id"])
       user = User.find_by(telegram_id: from["id"])
       user.telegram_username = from["username"].downcase
       if from["last_name"]

@@ -10,7 +10,11 @@ RSpec.describe "/matches", telegram_bot: :rails do
     it "should tell the user they are not registered" do
       user = create(:user)
 
-      expect { dispatch_message("/matches", from: {id: user.telegram_id}) }
+      expect { dispatch_message("/matches", from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          }) }
       .to respond_with_message(/That user has not completed their registration/)
     end
   end
@@ -41,7 +45,11 @@ RSpec.describe "/matches", telegram_bot: :rails do
       
       allow_any_instance_of(User).to receive(:matches) {build_list(:list_match, 4)}
 
-      expect { dispatch_message("/matches", from: {id: user.telegram_id}) }
+      expect { dispatch_message("/matches", from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          }) }
       .to respond_with_message(/4 results/)
       expect(bot.requests[:sendMessage].last[:reply_markup][:inline_keyboard].first.to_s)
       .to match(/Anti-Mage about 1 hour ago/)
@@ -61,7 +69,11 @@ RSpec.describe "/matches", telegram_bot: :rails do
         [listmatch]
       }
 
-      dispatch_message("/matches", from: {id: user.telegram_id} )
+      dispatch_message("/matches", from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          } )
 
       expect(bot.requests[:sendMessage].last[:reply_markup][:inline_keyboard].first.to_s)
       .to  include("https://opendota.com/matches/#{listmatch.match_id}")
@@ -81,7 +93,11 @@ RSpec.describe "/matches", telegram_bot: :rails do
         build_list(:list_match, 5) << listmatch
       }
 
-      dispatch_message("/matches", from: {id: user.telegram_id} )
+      dispatch_message("/matches", from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          } )
 
       dispatch(callback_query: {
         data: "pagination:2", message: {message_id: 63, chat: {id: 456}}
@@ -101,7 +117,11 @@ RSpec.describe "/matches", telegram_bot: :rails do
 
       allow_any_instance_of(User).to receive(:matches) {build_list(:list_match, 38)}
 
-      expect { dispatch_message("/matches", from: {id: user.telegram_id}) }
+      expect { dispatch_message("/matches", from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          }) }
       .to respond_with_message(/38 results/)
       expect(bot.requests[:sendMessage].last[:reply_markup][:inline_keyboard].count)
       .to eq(6)
@@ -118,7 +138,11 @@ RSpec.describe "/matches", telegram_bot: :rails do
 
       allow_any_instance_of(User).to receive(:matches) {build_list(:list_match, 5)}
 
-      expect { dispatch_message("/matches", from: {id: user.telegram_id}) }
+      expect { dispatch_message("/matches", from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          }) }
       .to respond_with_message(/5 results/)
       expect(bot.requests[:sendMessage].last[:reply_markup][:inline_keyboard].count)
       .to eq(5)
@@ -142,7 +166,11 @@ RSpec.describe "/matches", telegram_bot: :rails do
         build_list(:list_match, 5, hero_id: 63)
       }
 
-      dispatch_message("/matches weaver", from: {id: user.telegram_id})
+      dispatch_message("/matches weaver", from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          })
 
       expect(bot.requests[:sendMessage].last[:text])
       .to  include("Matches for #{user.telegram_username}")
@@ -164,7 +192,11 @@ RSpec.describe "/matches", telegram_bot: :rails do
 
       dispatch_message(
         "/matches against venomancer with spectre as weaver",
-        from: {id: user.telegram_id}
+        from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          }
       )
 
       expect(bot.requests[:sendMessage].last[:text])
@@ -186,7 +218,11 @@ RSpec.describe "/matches", telegram_bot: :rails do
 
       dispatch_message(
         "/matches weaver with earthshaker against venomancer and spectre with mars",
-        from: {id: user.telegram_id}
+        from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          }
       )
 
       expect(bot.requests[:sendMessage].last[:text])
@@ -210,7 +246,11 @@ RSpec.describe "/matches", telegram_bot: :rails do
 
       dispatch_message(
         "/matches with #{user2.telegram_username}",
-        from: {id: user.telegram_id}
+        from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          }
       )
 
       expect(bot.requests[:sendMessage].last[:text])
@@ -232,7 +272,11 @@ RSpec.describe "/matches", telegram_bot: :rails do
 
       dispatch_message(
         "/matches #{user2.telegram_username} as weaver",
-        from: {id: user.telegram_id}
+        from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          }
       )
 
       expect(bot.requests[:sendMessage].last[:text])
@@ -254,7 +298,11 @@ RSpec.describe "/matches", telegram_bot: :rails do
 
       dispatch_message(
         "/matches es",
-        from: {id: user.telegram_id}
+        from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          }
       )
 
       expect(bot.requests[:sendMessage].last[:text])
@@ -280,7 +328,11 @@ RSpec.describe "/matches", telegram_bot: :rails do
 
       dispatch_message(
         "/matches es",
-        from: {id: user.telegram_id}
+        from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          }
       )
 
       dispatch(callback_query: {
@@ -306,7 +358,11 @@ RSpec.describe "/matches", telegram_bot: :rails do
       
       dispatch_message(
         "/matches es against vs",
-        from: {id: user.telegram_id}
+        from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          }
       )
 
       expect(bot.requests[:sendMessage].last[:text])
@@ -354,7 +410,11 @@ RSpec.describe "/matches", telegram_bot: :rails do
       
       dispatch_message(
         "/matches es against vs",
-        from: {id: user.telegram_id}
+        from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          }
       )
 
       dispatch(callback_query: {
