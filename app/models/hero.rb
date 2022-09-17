@@ -16,7 +16,7 @@ class Hero < ApplicationRecord
   attribute :against_games,  default: nil
   attribute :against_win,    default: nil
 
-  has_many :aliases, primary_key: :hero_id
+  has_many :nicknames, primary_key: :hero_id
 
   serialize :roles
 
@@ -25,7 +25,7 @@ class Hero < ApplicationRecord
     ActiveRecord::Base.transaction do
       self.destroy_all
       # We're regenerating default aliases too
-      Alias.destroy_by(default: true)
+      Nickname.destroy_by(default: true)
 
       # Iterate over heroes OpenDota knows about and add them to our database
       OpendotaConstants.new("heroes").all.each_pair do |_, hero|
@@ -45,20 +45,20 @@ class Hero < ApplicationRecord
         h.localized_name = "Outworld Destroyer" if h.localized_name == "Outworld Devourer"
         
         h.save
-        h.generate_default_aliases
+        h.generate_default_nicknames
       end
     end
   end
 
-  def generate_default_aliases
+  def generate_default_nicknames
     name  = self.localized_name.downcase
     words = name.split(/[\s-]/)
 
     # The hero's full name
-    self.aliases.create(name: name, default: true)
+    self.nicknames.create(name: name, default: true)
 
     if name.include?("-")
-      self.aliases.create(name: name.tr("-", ""), default: true)
+      self.nicknames.create(name: name.tr("-", ""), default: true)
     end
 
     # If the hero's name consists of more than 2 words, an abbreviation,
@@ -68,9 +68,9 @@ class Hero < ApplicationRecord
       words.each do |word|
         abbreviation << word.chr
       end
-      self.aliases.create(name: abbreviation, default: true)
-      self.aliases.create(name: words.first,  default: true)
-      self.aliases.create(name: words.last,   default: true)
+      self.nicknames.create(name: abbreviation, default: true)
+      self.nicknames.create(name: words.first,  default: true)
+      self.nicknames.create(name: words.last,   default: true)
     end
   end
 

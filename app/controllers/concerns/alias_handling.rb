@@ -22,7 +22,7 @@ module AliasHandling
       key == :query && !object[:result] 
     end
     to_match = to_match.first[:query]
-    possible_matches = Alias.where(name: to_match).includes(:hero).order("heroes.localized_name")
+    possible_matches = Nickname.where(name: to_match).includes(:hero).order("heroes.localized_name")
     keyboard = []
     possible_matches.each do |match|
       keyboard << [
