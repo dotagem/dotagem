@@ -1,0 +1,6 @@
+<%= turbo_frame_tag "hero_#{params[:hero_id]}_new_nickname" do %>
+  <%= form_for @nickname, url: hero_nicknames_url(params[:hero_id]) do |f| %>
+    <%= f.text_field :name %>
+    <%= f.submit %>
+  <% end %>
+<% end %>

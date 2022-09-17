@@ -1,0 +1,13 @@
+<%= turbo_frame_tag "nickname_#{nickname.id}" do %>
+  <div>
+    <%= nickname.name %>
+    <% if nickname.default? %>
+      (Default)
+    <% end %>
+    <% if nickname.from_seed? %>
+      (Seed)
+    <% end %>
+    <%= link_to "Edit", edit_nickname_url(nickname) %>
+    <%= link_to "Delete", nickname_url(nickname), data: {"turbo-method": :delete, "turbo-confirm": "Are you sure?"} %>
+  </div>
+<% end %>

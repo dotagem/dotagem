@@ -1,0 +1,4 @@
+<%= turbo_stream.append "hero_#{params[:hero_id]}_nicknames" do %>
+  <%= render @nickname %>
+<% end %>
+<%= turbo_stream.update "hero_#{params[:hero_id]}_new_nickname", "" %>

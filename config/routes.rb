@@ -8,6 +8,13 @@ Rails.application.routes.draw do
   get "faq",      to: "pages#help"
   get "admin",    to: "pages#admin"
 
+  scope "/admin" do
+    resources :heroes, only: [:index] do
+      resources :nicknames, only: [:new, :create]
+    end
+    resources :nicknames, except: [:new, :create]
+  end
+
   resources :users, only: [:destroy]
   delete "users/:id/unlink", to: "users#unlink_steam", as: "user_unlink_steam"
 

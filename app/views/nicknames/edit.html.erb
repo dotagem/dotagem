@@ -1,0 +1,6 @@
+<%= turbo_frame_tag @nickname do %>
+  <%= form_for @nickname do |f| %>
+    <%= f.text_field :name %>
+    <%= f.submit %>
+  <% end %>
+<% end %>

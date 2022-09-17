@@ -1,0 +1,20 @@
+<h1>Aliases</h1>
+
+<% @heroes.each do |hero| %>
+  <h2>
+    <%= image_tag hero.image_url %>
+    <%= hero.localized_name %>
+  </h2>
+
+  <div class="grid grid-cols-1">
+    <%= turbo_frame_tag "hero_#{hero.id}_nicknames" do %>
+      <%= render hero.nicknames %>
+    <% end %>
+    <%= turbo_frame_tag "hero_#{hero.id}_new_nickname" %>
+    <div>
+        <%= link_to "New", new_hero_nickname_url(hero), data: {turbo_frame: "hero_#{hero.id}_new_nickname"} %>
+    </div>
+  </div>
+
+  <hr>
+<% end %>

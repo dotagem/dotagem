@@ -12,7 +12,7 @@ class PagesController < ApplicationController
   end
 
   def admin
-    @aliases     = Alias.count
+    @aliases     = Nickname.count
     @heroes      = Hero.count
     @game_modes  = GameMode.count
     @heroes      = Hero.count
