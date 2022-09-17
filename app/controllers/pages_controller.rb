@@ -12,13 +12,14 @@ class PagesController < ApplicationController
   end
 
   def admin
-    @aliases     = Nickname.count
-    @heroes      = Hero.count
-    @game_modes  = GameMode.count
-    @heroes      = Hero.count
-    @items       = Item.count
-    @lobby_types = LobbyType.count
-    @patches     = Patch.count
-    @regions     = Region.count
-  end
+    @nickname_count     = Nickname.count
+    @game_mode_count    = GameMode.count
+    @hero_count         = Hero.count
+    @hero_last          = Hero.last.localized_name
+    @item_count         = Item.count
+    @lobby_type_count   = LobbyType.count
+    @patch_count        = Patch.count
+    @patch_last         = Patch.last.name
+    @region_count       = Region.count
+  end 
 end
