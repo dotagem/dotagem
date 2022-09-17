@@ -1,12 +1,17 @@
 class NicknamesController < ApplicationController
   before_action :admin_user
-  
+
   def index
     @heroes = Hero.order(:localized_name).includes(:nicknames)
   end
 
   def new
     @nickname = Hero.find(params[:hero_id]).nicknames.new
+  end
+
+  def show
+    @nickname = Nickname.find(params[:id])
+    render @nickname
   end
 
   def create

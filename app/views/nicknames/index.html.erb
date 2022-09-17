@@ -1,20 +1,46 @@
-<h1>Aliases</h1>
+<% content_for :title do "Aliases" end %>
 
-<% @heroes.each do |hero| %>
-  <h2>
-    <%= image_tag hero.image_url %>
-    <%= hero.localized_name %>
-  </h2>
+<div class="flex bg-fixed bg-center bg-no-repeat bg-cover h-max" style="background-image: url('<%= asset_path("background.png") %>');">
+  <div class="bg-gray-800 text-slate-100 bg-opacity-70 h-full w-full pb-16">
+    <div class="container m-auto px-8 sm:px-16 md:px-32 py-8 space-y-6">
+      <% if flash.any? %>
+        <div class="px-4 sm:px-8 md:px-16 pt-4">
+          <%= render 'shared/flash' %>
+        </div>
+      <% end %>
 
-  <div class="grid grid-cols-1">
-    <%= turbo_frame_tag "hero_#{hero.id}_nicknames" do %>
-      <%= render hero.nicknames %>
-    <% end %>
-    <%= turbo_frame_tag "hero_#{hero.id}_new_nickname" %>
-    <div>
-        <%= link_to "New", new_hero_nickname_url(hero), data: {turbo_frame: "hero_#{hero.id}_new_nickname"} %>
+      <div class="text-white text-center">
+        <h1 class="text-3xl">Aliases</h1>
+      </div>
+
+      <% @heroes.each do |hero| %>
+        <div class="space-y-4">
+          <h2 class="text-white text-2xl">
+            <%= image_tag hero.image_url, width: "80px", class: "inline" %>
+            <%= hero.localized_name %>
+          </h2>
+
+          <div class="grid grid-cols-1 border-t">
+            <%= turbo_frame_tag "hero_#{hero.id}_nicknames" do %>
+              <%= render hero.nicknames %>
+            <% end %>
+
+            <%= turbo_frame_tag "hero_#{hero.id}_new_nickname" %>
+
+            <div class="border-b py-4 mb-6 text-center">
+              <%=
+                link_to new_hero_nickname_url(hero),
+                        data: {turbo_frame: "hero_#{hero.id}_new_nickname"},
+                        class: "bg-slate-600 rounded-lg p-2" do
+              %>
+                <%= image_tag "plus.png", height: "28px", width: "28px", class: "inline pr-2" %>
+                Add alias for <%= hero.localized_name %>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      <% end %>
     </div>
+    <%= render "shared/footer" %>
   </div>
-
-  <hr>
-<% end %>
+</div>
