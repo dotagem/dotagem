@@ -19,6 +19,8 @@ Rails.application.routes.draw do
   delete "users/:id/unlink", to: "users#unlink_steam", as: "user_unlink_steam"
 
   telegram_webhook TelegramWebhooksRouter
+
+  patch "admin/refresh_constants", to: "constants#refresh", as: "refresh_constants"
   
   # OmniAuth endpoints, Steam POSTs back instead of GET
   get    'auth/telegram/callback', to: 'sessions#telegram'
