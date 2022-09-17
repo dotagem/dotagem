@@ -1,4 +1,6 @@
 class NicknamesController < ApplicationController
+  before_action :admin_user
+  
   def index
     @heroes = Hero.order(:localized_name).includes(:nicknames)
   end
