@@ -12,7 +12,8 @@ class PagesController < ApplicationController
   end
 
   def admin
-    @nickname_count     = Nickname.count
+    @nickname_count         = Nickname.count
+    @default_nickname_count = @nickname_count - Nickname.where(default: false, from_seed: false).count
     @game_mode_count    = GameMode.count
     @hero_count         = Hero.count
     @hero_last          = Hero.last.localized_name
