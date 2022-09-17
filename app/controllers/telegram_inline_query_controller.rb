@@ -15,7 +15,7 @@ class TelegramInlineQueryController < Telegram::Bot::UpdatesController
       if query.blank?
         @matches = @player.matches(limit: 10)
       else
-        aliases = Alias.where(name: query.downcase)
+        aliases = Nickname.where(name: query.downcase)
         case aliases.count
         when 0
           @matches = @player.matches(limit: 10)

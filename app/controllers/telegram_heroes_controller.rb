@@ -11,7 +11,7 @@ class TelegramHeroesController < Telegram::Bot::UpdatesController
   def alias!(*args)
     if args.any?
       input = args.join(" ").downcase
-      aliases = Alias.where(name: input)
+      aliases = Nickname.where(name: input)
 
       case aliases.count
       when 0
@@ -40,7 +40,7 @@ class TelegramHeroesController < Telegram::Bot::UpdatesController
   def matchups!(*args)
     if args.any?
       input = args.join(" ").downcase
-      aliases = Alias.where(name: input)
+      aliases = Nickname.where(name: input)
 
       case aliases.count
       when 0
@@ -85,7 +85,7 @@ class TelegramHeroesController < Telegram::Bot::UpdatesController
 
   def build_alias_list_message(hero_id)
     message = []
-    aliases = Alias.where(hero_id: hero_id).order(:name)
+    aliases = Nickname.where(hero_id: hero_id).order(:name)
     message << "#{pluralize(aliases.count, "alias")} for " +
     "#{hero_name(hero_id)}:"
     aliases.each do |a|
@@ -114,7 +114,7 @@ class TelegramHeroesController < Telegram::Bot::UpdatesController
   end
 
   def build_single_alias_keyboard(input, intention)
-    aliases = Alias.where(name: input).includes(:hero).order("heroes.localized_name")
+    aliases = Nickname.where(name: input).includes(:hero).order("heroes.localized_name")
     keyboard = []
     aliases.each do |a|
       keyboard << [
