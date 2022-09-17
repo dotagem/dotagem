@@ -84,11 +84,11 @@ module HeroPlayerOptions
   end
 
   def hero_or_player(string)
-    Alias.find_by(name: string.downcase) || User.find_by(telegram_username: string.downcase)
+    Nickname.find_by(name: string.downcase) || User.find_by(telegram_username: string.downcase)
   end
 
   def resolve_alias(string)
-    aliases = Alias.where(name: string)
+    aliases = Nickname.where(name: string)
     if aliases.any?
       if aliases.count == 1
         aliases.first.hero.hero_id

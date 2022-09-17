@@ -1,4 +1,4 @@
-class Alias < ApplicationRecord
+class Nickname < ApplicationRecord
   validates :hero_id, presence: true
   validates :name,  presence: true,
                     format: { with: /\A[a-z\- ]+\z/, message: "must be lowercase letters only" },
