@@ -1,0 +1,19 @@
+changelog:
+  exclude:
+    labels:
+      - no-changelog
+    authors:
+      - dependabot
+  categories:
+    - title: General changes
+      labels:
+        - enhancement
+    - title: Command Changes
+      labels:
+        - bot commands
+    - title: Web changes
+      labels:
+        - website
+    - title: Other Changes
+      labels:
+        - "*"
