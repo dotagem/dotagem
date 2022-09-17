@@ -10,20 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_09_13_085358) do
+ActiveRecord::Schema[7.0].define(version: 2022_09_17_115059) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
-
-  create_table "aliases", force: :cascade do |t|
-    t.bigint "hero_id", null: false
-    t.string "name", null: false
-    t.boolean "default", default: false
-    t.boolean "from_seed", default: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["hero_id"], name: "index_aliases_on_hero_id"
-    t.index ["name"], name: "index_aliases_on_name"
-  end
 
   create_table "game_modes", force: :cascade do |t|
     t.integer "mode_id", null: false
@@ -75,6 +64,17 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_13_085358) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["lobby_id"], name: "index_lobby_types_on_lobby_id", unique: true
+  end
+
+  create_table "nicknames", force: :cascade do |t|
+    t.bigint "hero_id", null: false
+    t.string "name", null: false
+    t.boolean "default", default: false
+    t.boolean "from_seed", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["hero_id"], name: "index_nicknames_on_hero_id"
+    t.index ["name"], name: "index_nicknames_on_name"
   end
 
   create_table "patches", force: :cascade do |t|
