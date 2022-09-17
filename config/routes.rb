@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   get "commands", to: "pages#commands"
   get "help",     to: "pages#help"
   get "faq",      to: "pages#help"
+  get "admin",    to: "pages#admin"
 
   resources :users, only: [:destroy]
   delete "users/:id/unlink", to: "users#unlink_steam", as: "user_unlink_steam"
