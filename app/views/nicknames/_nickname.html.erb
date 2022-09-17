@@ -1,0 +1,28 @@
+<%= turbo_frame_tag "nickname_#{nickname.id}" do %>
+  <div class="flex border-b border-teal-400 py-4 gap-2 px-4">
+    <div class="grow">
+      <%= nickname.name %>
+      <% if nickname.default? %>
+        <span class="ml-2 text-sm rounded-md p-1 text-white bg-amber-500">Default</span>
+      <% end %>
+      <% if nickname.from_seed? %>
+        <span class="ml-2 text-sm rounded-md p-1 text-white bg-blue-600">Seed</span>
+      <% end %>
+    </div>
+    <div>
+      <%= link_to edit_nickname_url(nickname),
+          class: "p-2 bg-slate-600 rounded-lg text-white" do %>
+        <%= image_tag "edit.png", width: "20px", height: "20px", class: "inline" %>
+        <span class="hidden lg:inline ml-2">Edit</span>
+      <% end %>
+    </div>
+    <div>
+      <%= link_to nickname_url(nickname),
+          class: "p-2 bg-slate-600 rounded-lg text-white",
+          data: {"turbo-method": :delete, "turbo-confirm": "Are you sure?"} do %>
+        <%= image_tag "delete.png", width: "20px", height: "20px", class: "inline" %>
+        <span class="hidden lg:inline ml-2">Delete</span>
+      <% end %>
+    </div>
+  </div>
+<% end %>

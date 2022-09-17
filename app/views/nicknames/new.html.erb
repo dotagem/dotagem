@@ -1,0 +1,24 @@
+<%= turbo_frame_tag "hero_#{params[:hero_id]}_new_nickname" do %>
+  <%= form_for @nickname, url: hero_nicknames_url(params[:hero_id]) do |f| %>
+    <div class="flex border-b border-teal-400 py-2 gap-2">
+      <div class="grow">
+        <%= f.text_field :name, type: "text", class: "w-full text-black" %>
+      </div>
+      <div>
+        <%= button_tag type: "submit", class: "p-2 bg-slate-600 rounded-lg text-white" do %>
+          <%= image_tag "confirm.png", class: "inline", width: "20px", height: "20px" %>
+          <span class="ml-2 hidden lg:inline">Create</span>
+        <% end %>
+      </div>
+
+      <div>
+        <%= link_to nicknames_url,
+          class: "p-2 bg-slate-600 rounded-lg text-white",
+          data: { turbo_target: "hero_#{params[:hero_id]}_new_nickname" } do %>
+          <%= image_tag "cancel.png", class: "inline", width: "20px", height: "20px" %>
+          <span class="ml-2 hidden lg:inline">Cancel</span>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+<% end %>
