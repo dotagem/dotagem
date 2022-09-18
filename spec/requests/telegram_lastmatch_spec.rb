@@ -116,5 +116,22 @@ RSpec.describe "/lastmatch", telegram_bot: :rails do
       .to  include(user2.telegram_username)
       .and not_include(user.telegram_username)
     end
+
+    it "should not care about capitalization" do
+      user2 = create(:user, :steam_registered)
+
+      dispatch_message(
+        "/lastmatch #{user2.telegram_username.upcase}",
+        from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          }
+      )
+
+      expect(bot.requests[:sendMessage].last[:text])
+      .to  include(user2.telegram_username)
+      .and not_include(user.telegram_username)
+    end
   end
 end
