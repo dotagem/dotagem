@@ -3,12 +3,14 @@ module HeroPlayerOptions
     delimiters = ["as", "with", "against", "and"]
 
     # Prepare the array
+    prepared_args = []
     args.each do |a|
-      a.downcase.tr("@", "")
+      prepared_args << a.downcase.tr("@", "")
     end
-    args.delete_at(0) if User.find_by(telegram_username: args[0])
+    
+    prepared_args.delete_at(0) if User.find_by(telegram_username: prepared_args[0])
     # Split it up
-    chunks = args.chunk { |v| v.in?(delimiters) }.to_a
+    chunks = prepared_args.chunk { |v| v.in?(delimiters) }.to_a
     # Array must start with a true chunk and end with a false one
     # It's okay to insert an invalid value here, we just don't want to
     # throw an exception at this stage
