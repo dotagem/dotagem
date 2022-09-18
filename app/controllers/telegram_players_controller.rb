@@ -13,6 +13,9 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
   include OpendotaHelper
   include MatchMessages
 
+  include ErrorHandling
+  rescue_from StandardError, with: :error_out
+
   before_action :logged_in_or_mentioning_player, only: [:rank!,      :profile!,
                                                         :peers!,     :heroes!,
                                                         :lastmatch!]

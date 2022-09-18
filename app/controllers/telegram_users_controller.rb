@@ -2,6 +2,8 @@ class TelegramUsersController < Telegram::Bot::UpdatesController
   include Telegram::Bot::UpdatesController::MessageContext
   include TelegramHelper
   include LoginUrl
+  include ErrorHandling
+  rescue_from StandardError, with: :error_out
   # Mostly for making a signin button to the site
   # if you're looking for player data commands, check TelegramPlayersController
 
