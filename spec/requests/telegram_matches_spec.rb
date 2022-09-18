@@ -232,6 +232,32 @@ RSpec.describe "/matches", telegram_bot: :rails do
       .and include("Enemy heroes: Venomancer, Spectre")
     end
 
+    it "should not care about delimiter capitalization" do
+      expect(bot).to receive(:request).and_wrap_original do |m, *args|
+        m.call(*args)
+        {"ok"=>true, "result"=>{"message_id"=>55}}
+      end
+
+      allow_any_instance_of(User).to receive(:matches) {
+        build_list(:list_match, 5, hero_id: 63)
+      }
+
+      dispatch_message(
+        "/matches weaver WITH earthshaker AGAInST venomancer aND spectre with mars",
+        from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          }
+      )
+
+      expect(bot.requests[:sendMessage].last[:text])
+      .to  include("Playing as Weaver")
+      .and include("5 results")
+      .and include("Allied heroes: Earthshaker, Mars")
+      .and include("Enemy heroes: Venomancer, Spectre")
+    end
+
     it "should handle teammate arguments" do
       user2 = create(:user, :steam_registered)
 
@@ -258,6 +284,32 @@ RSpec.describe "/matches", telegram_bot: :rails do
       .and include("With players: #{user2.telegram_username}")
     end
 
+    it "should not care about capitalized teammate arguments" do
+      user2 = create(:user, :steam_registered)
+
+      expect(bot).to receive(:request).and_wrap_original do |m, *args|
+        m.call(*args)
+        {"ok"=>true, "result"=>{"message_id"=>56}}
+      end
+
+      allow_any_instance_of(User).to receive(:matches) {
+        build_list(:list_match, 5, hero_id: 63)
+      }
+
+      dispatch_message(
+        "/matches with #{user2.telegram_username.upcase}",
+        from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          }
+      )
+
+      expect(bot.requests[:sendMessage].last[:text])
+      .to  include("5 results")
+      .and include("With players: #{user2.telegram_username}")
+    end
+
     it "should be able to fetch matches for a different player" do
       user2 = create(:user, :steam_registered)
 
@@ -272,6 +324,34 @@ RSpec.describe "/matches", telegram_bot: :rails do
 
       dispatch_message(
         "/matches #{user2.telegram_username} as weaver",
+        from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          }
+      )
+
+      expect(bot.requests[:sendMessage].last[:text])
+      .to  include("Matches for #{user2.telegram_username}")
+      .and not_include("#{user.telegram_username}")
+      .and include("Playing as Weaver")
+      .and include("5 results")
+    end
+
+    it "should not care about other player capitalization" do
+      user2 = create(:user, :steam_registered)
+
+      expect(bot).to receive(:request).and_wrap_original do |m, *args|
+        m.call(*args)
+        {"ok"=>true, "result"=>{"message_id"=>57}}
+      end
+
+      allow_any_instance_of(User).to receive(:matches) {
+        build_list(:list_match, 5, hero_id: 63)
+      }
+
+      dispatch_message(
+        "/matches #{user2.telegram_username.upcase} as weaver",
         from: {
             id: user.telegram_id,
             username: user.telegram_username,
@@ -410,6 +490,50 @@ RSpec.describe "/matches", telegram_bot: :rails do
       
       dispatch_message(
         "/matches es against vs",
+        from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          }
+      )
+
+      dispatch(callback_query: {
+        data: "alias:7", message: {message_id: 61, chat: {id: 456}}
+      })
+
+      dispatch(callback_query: {
+        data: "alias:20", message: {message_id: 61, chat: {id: 456}}
+      })
+
+      expect(bot.requests[:editMessageText].last[:text])
+      .to  include("Earthshaker")
+      .and include("Vengeful Spirit")
+      .and include("12 results")
+
+      expect(bot.requests[:editMessageReplyMarkup].last[:reply_markup][:inline_keyboard].count)
+      .to eq(6)
+
+      expect(bot.requests[:editMessageReplyMarkup].last[:reply_markup][:inline_keyboard].first.to_s)
+      .to  include("Earthshaker")
+      .and include("10/3/5")
+
+      expect(bot.requests[:editMessageReplyMarkup].last[:reply_markup][:inline_keyboard].last.to_s)
+      .to  include("1 / 3")
+      .and include(">>|")
+    end
+
+    it "should not care about alias capitalization" do
+      allow(bot).to receive(:request).and_wrap_original do |m, *args|
+        m.call(*args)
+        {"ok"=>true, "result"=>{"message_id"=>61}}
+      end
+
+      allow_any_instance_of(User).to receive(:matches) {
+        build_list(:list_match, 12, hero_id: 7)
+      }
+      
+      dispatch_message(
+        "/matches eS against VS",
         from: {
             id: user.telegram_id,
             username: user.telegram_username,
