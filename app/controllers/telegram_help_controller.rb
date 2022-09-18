@@ -2,8 +2,10 @@ class TelegramHelpController < Telegram::Bot::UpdatesController
   include Telegram::Bot::UpdatesController::MessageContext
   include Telegram::Bot::UpdatesController::CallbackQueryContext
   include LoginUrl
-  # Generic help commands
 
+  include ErrorHandling
+  rescue_from StandardError, with: :error_out
+  
   def help!(*)
     respond_with :message,
     text: "Click the buttons below for the help page, and a list of commands!",

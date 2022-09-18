@@ -7,6 +7,9 @@ class TelegramMatchesController < Telegram::Bot::UpdatesController
   include MatchMessages
   include MessageSession
 
+  include ErrorHandling
+  rescue_from StandardError, with: :error_out
+
   def match!(*args)
     if args.any? && args.count == 1 && args.first.to_i > 0
       match_id = args.first.to_i

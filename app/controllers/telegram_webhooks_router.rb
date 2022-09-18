@@ -1,7 +1,8 @@
 class TelegramWebhooksRouter < Telegram::Bot::UpdatesController
   include Telegram::Bot::UpdatesController::MessageContext
-
   include LoginUrl
+  include ErrorHandling
+  rescue_from StandardError, with: :error_out
 
   # Dispatch the message to each Telegram controller,
   # until one of them handles it. If none handle it, super

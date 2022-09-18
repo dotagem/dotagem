@@ -5,6 +5,9 @@ class TelegramInlineQueryController < Telegram::Bot::UpdatesController
   include LoginUrl
   include ConstantsHelper
 
+  include ErrorHandling
+  rescue_from StandardError, with: :error_out
+
   def inline_query(query, _offset)
     @player ||= User.find_by(telegram_id: from['id'])
     

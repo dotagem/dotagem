@@ -8,6 +8,9 @@ class TelegramHeroesController < Telegram::Bot::UpdatesController
   include MessageSession
   include ConstantsHelper
 
+  include ErrorHandling
+  rescue_from StandardError, with: :error_out
+
   def alias!(*args)
     if args.any?
       input = args.join(" ").downcase
