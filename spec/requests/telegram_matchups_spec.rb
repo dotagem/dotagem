@@ -81,6 +81,18 @@ RSpec.describe "/matchups", telegram_bot: :rails do
       expect(bot.requests[:sendMessage].last[:reply_markup][:inline_keyboard].first.to_s)
       .to include("Ogre Magi")
     end
+
+    it "should not care about hero name capitalization" do
+      allow(bot).to receive(:request).and_wrap_original do |m, *args|
+        m.call(*args)
+        {"ok"=>true, "result"=>{"message_id"=>1000}}
+      end
+
+      expect { dispatch_message("/matchups ANTI-mage") }
+      .to  respond_with_message(/Matchups/)
+      .and respond_with_message(/Anti-Mage/)
+      .and respond_with_message(/Sorted by Wilson score/)
+    end
   end
 
   context "with an unclear alias" do
