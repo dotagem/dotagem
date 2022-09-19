@@ -319,6 +319,33 @@ RSpec.describe "/matches", telegram_bot: :rails do
       end
 
       allow_any_instance_of(User).to receive(:matches) {
+        build_list(:list_match, 5)
+      }
+
+      dispatch_message(
+        "/matches #{user2.telegram_username}",
+        from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          }
+      )
+
+      expect(bot.requests[:sendMessage].last[:text])
+      .to  include("Matches for #{user2.telegram_username}")
+      .and not_include("#{user.telegram_username}")
+      .and include("5 results")
+    end
+
+    it "should be able to fetch matches for a different player with hero arguments" do
+      user2 = create(:user, :steam_registered)
+
+      expect(bot).to receive(:request).and_wrap_original do |m, *args|
+        m.call(*args)
+        {"ok"=>true, "result"=>{"message_id"=>57}}
+      end
+
+      allow_any_instance_of(User).to receive(:matches) {
         build_list(:list_match, 5, hero_id: 63)
       }
 
