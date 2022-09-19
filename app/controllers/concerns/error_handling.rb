@@ -13,12 +13,19 @@ module ErrorHandling
 
     if update["message"]
       bot.send_message(
-        text: "Something went wrong, sorry!",
+        text: "Something went wrong, sorry!\n" +
+        "When reporting this error, please provide the following information:\n\n" +
+        "Update ID: #{update["update_id"]}\n" +
+        "Error: #{exception.inspect}",
         chat_id: update["message"]["chat"]["id"]
       )
     elsif update["callback_query"]
       bot.answer_callback_query(
-        text: "Something went wrong, sorry!",
+        text: "Something went wrong, sorry!\n" +
+        "When reporting this error, please provide the following information:\n\n" +
+        "Update ID: #{update["update_id"]}\n" +
+        "Error: #{exception.inspect}",
+        show_alert: true,
         callback_query_id: update["callback_query"]["id"]
       )
     elsif update["inline_query"]
@@ -28,7 +35,12 @@ module ErrorHandling
           {
             type: "article",
             id: 0,
-            title: "Something went wrong, sorry!"
+            title: "Something went wrong, sorry!",
+            description: "Send this message for error details.",
+            message_text: "Something went wrong, sorry!\n" +
+              "When reporting this error, please provide the following information:\n\n" + 
+              "Update ID: #{update["update_id"]}\n" +
+              "Error: #{exception.inspect}"
           }
         ],
         cache_time: 10
