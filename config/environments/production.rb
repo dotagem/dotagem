@@ -93,7 +93,7 @@ Rails.application.configure do
 
   # Configure session store for telegram bot.
   config.telegram_updates_controller.session_store = :redis_cache_store,
-    { expires_in: 1.month }
+    { expires_in: 1.week }
 
   config.force_ssl = true
 
