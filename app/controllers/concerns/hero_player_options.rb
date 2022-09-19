@@ -9,6 +9,8 @@ module HeroPlayerOptions
     end
     
     prepared_args.delete_at(0) if User.find_by(telegram_username: prepared_args[0])
+    return {} unless prepared_args.any?
+
     # Split it up
     chunks = prepared_args.chunk { |v| v.in?(delimiters) }.to_a
     # Array must start with a true chunk and end with a false one
