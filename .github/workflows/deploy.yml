@@ -1,18 +1,23 @@
 # Clone the repo and run the test suite
 
-name: Deploy
+name: Test and Deploy
 
 # Controls when the workflow will run
 on:
   # Triggers the workflow on push or pull request events but only for the "main" branch
-  release:
-    types: [released]
+  push:
+    branches:  [ "main" ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 jobs:
+  test:
+    name: Run tests
+    uses: cschuijt/dotagem/.github/workflows/tests.yml@main
+
   deploy:
+    name: Deploy to production
     runs-on: ubuntu-latest
 
     # Steps represent a sequence of tasks that will be executed as part of the job
