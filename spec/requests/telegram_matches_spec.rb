@@ -549,6 +549,43 @@ RSpec.describe "/matches", telegram_bot: :rails do
       .and include(">>|")
     end
 
+    it "should be possible to press buttons once everything is clear" do
+      allow(bot).to receive(:request).and_wrap_original do |m, *args|
+        m.call(*args)
+        {"ok"=>true, "result"=>{"message_id"=>61}}
+      end
+
+      allow_any_instance_of(User).to receive(:matches) {
+        build_list(:list_match, 12, hero_id: 7, match_id: 12345678)
+      }
+      
+      dispatch_message(
+        "/matches es against vs",
+        from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          }
+      )
+
+      dispatch(callback_query: {
+        data: "alias:7", message: {message_id: 61, chat: {id: 456}}
+      })
+
+      dispatch(callback_query: {
+        data: "alias:20", message: {message_id: 61, chat: {id: 456}}
+      })
+
+      expect(bot.requests[:editMessageText].last[:text])
+      .to  include("Earthshaker")
+      .and include("Vengeful Spirit")
+      .and include("12 results")
+
+      expect(bot.requests[:editMessageReplyMarkup].last[:reply_markup][:inline_keyboard].first.to_s)
+      .to  include("url")
+      .and include("https://opendota.com/matches/12345678")
+    end
+
     it "should not care about alias capitalization" do
       allow(bot).to receive(:request).and_wrap_original do |m, *args|
         m.call(*args)

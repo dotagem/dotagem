@@ -56,7 +56,7 @@ module AliasHandling
         session[:items] = @player.matches(session[:options])
         edit_message :text, text: build_matches_header(session[:items], session[:options])
         edit_message :reply_markup, reply_markup:
-          {inline_keyboard: build_paginated_buttons(session[:items], session[:button], 1)}
+          {inline_keyboard: build_paginated_url_buttons(session[:items], session[:button], 1)}
       end
     end
     answer_callback_query ""
