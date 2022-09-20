@@ -1,5 +1,5 @@
 GIT
-  remote: https://github.com/cschuijt/omniauth-telegram.git
+  remote: https://github.com/dotagem/omniauth-telegram.git
   revision: 45a6b3a3e322bfe5e2e706f95a8d26525efcd870
   branch: master
   specs:
