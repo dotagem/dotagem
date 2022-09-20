@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_09_18_133143) do
+ActiveRecord::Schema[7.0].define(version: 2022_09_20_192128) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -101,7 +101,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_18_133143) do
     t.string "telegram_username"
     t.string "telegram_avatar"
     t.bigint "steam_id64"
-    t.string "steam_id"
+    t.bigint "steam_id"
     t.string "steam_nickname"
     t.string "steam_url"
     t.string "steam_avatar"
