@@ -1,21 +1,20 @@
 # 💎 Gem of True Sight
 ##### A Telegram bot that fetches and displays stats and Dota 2 data
 
-![RSpec](https://github.com/cschuijt/dotagem/actions/workflows/tests.yml/badge.svg)
+![Deploy](https://github.com/dotagem/dotagem/actions/workflows/deploy.yml/badge.svg)
 
 
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/cschuijt/dotagem?label=latest%20release)
-![GitHub Release Date](https://img.shields.io/github/release-date/cschuijt/dotagem?label=release%20date)
-![Deploy](https://github.com/cschuijt/dotagem/actions/workflows/deploy.yml/badge.svg)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/dotagem/dotagem?label=latest%20release)
+![GitHub Release Date](https://img.shields.io/github/release-date/dotagem/dotagem?label=release%20date)
 
 
-![GitHub last commit](https://img.shields.io/github/last-commit/cschuijt/dotagem)
-![GitHub commit activity](https://img.shields.io/github/commit-activity/w/cschuijt/dotagem)
-![GitHub commits since latest release (by date)](https://img.shields.io/github/commits-since/cschuijt/dotagem/latest)
+![GitHub last commit](https://img.shields.io/github/last-commit/dotagem/dotagem)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/w/dotagem/dotagem)
+![GitHub commits since latest release (by date)](https://img.shields.io/github/commits-since/dotagem/dotagem/latest)
 
 
-![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/cschuijt/dotagem)
-![GitHub repo size](https://img.shields.io/github/repo-size/cschuijt/dotagem)
+![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/dotagem/dotagem)
+![GitHub repo size](https://img.shields.io/github/repo-size/dotagem/dotagem)
 
 ---
 
@@ -32,7 +31,7 @@ or go to the homepage at [Dotagem.net](https://dotagem.net).
 The data is fetched from [OpenDota](https://opendota.com), through their [API](https://docs.opendota.com).
 
 ### 😱 I've got a feature request/I've found a bug!
-Feel free to open an [issue](https://github.com/cschuijt/dotagem/issues) here and I'll take a look! Or if you're a Ruby enjoyer like me, feel free to fork the repo and try your hand at doing it yourself. A little further down in this readme is information to help you get set up.
+Feel free to open an [issue](https://github.com/dotagem/dotagem/issues) here and I'll take a look! Or if you're a Ruby enjoyer like me, feel free to fork the repo and try your hand at doing it yourself. A little further down in this readme is information to help you get set up.
 
 ---
 
