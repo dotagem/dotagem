@@ -1,11 +1,17 @@
 RSpec.describe "/heroes", telegram_bot: :rails do
   before(:example) do
     allow_any_instance_of(User).to receive(:heroes) do
-      array = Hero.where(
-        localized_name: ["Anti-Mage",    "Zeus",          "Faceless Void",
-                         "Weaver",       "Invoker",       "Io",
-                         "Ember Spirit", "Winter Wyvern", "Mars"]
-      )
+      array = []
+      
+      array << Hero.find_by(localized_name: "Ember Spirit")
+      array << Hero.find_by(localized_name: "Faceless Void")
+      array << Hero.find_by(localized_name: "Zeus")
+      array << Hero.find_by(localized_name: "Weaver")
+      array << Hero.find_by(localized_name: "Invoker")
+      array << Hero.find_by(localized_name: "Io")
+      array << Hero.find_by(localized_name: "Anti-Mage")
+      array << Hero.find_by(localized_name: "Winter Wyvern")
+      array << Hero.find_by(localized_name: "Mars")
 
       array.each do |h|
         h.last_played = 1.day.ago.to_i
@@ -19,13 +25,13 @@ RSpec.describe "/heroes", telegram_bot: :rails do
 
       # Highest alphabetically: Anti-Mage
       # Highest games: Ember Spirit
-      array[6].games = 100
-      array[6].win   = 50
-      # Highest winrate: Zeus
-      array[1].win = 45
+      array[0].games = 100
+      array[0].win   = 50
       # Highest games with: Faceless Void
-      array[2].with_games = 80
-      array[2].with_win   = 60
+      array[1].with_games = 80
+      array[1].with_win   = 60
+      # Highest winrate: Zeus
+      array[2].win = 45
       # Highest winrate with: Weaver
       array[3].with_win = 35
       # Highest games against: Invoker
@@ -34,7 +40,7 @@ RSpec.describe "/heroes", telegram_bot: :rails do
       # Highest winrate against: Io
       array[5].against_win = 50
 
-      array.sort_by {|i| i.games * -1 }
+      array
     end
   end
 
