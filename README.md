@@ -68,8 +68,9 @@ ask me:
 #### Install process
 * Fork/Clone the repo
 * `bundle` to install gems
-* Delete `config/credentials.yml.enc` and `config/credentials`, because my credentials aren't your credentials
-* Run `rails credentials:edit` to generate a new master key, then fill in the other secrets using `config/credentials.yml.example` as a guide
+* Run `rails credentials:edit --environment=development` to generate a new
+ dev-only master key and credentials file, then fill in the other secrets using
+ `config/credentials.yml.example` as a guide.
 * `rails db:setup` to load the database schema and seed the tables with constant data
 * Ensure that `authbind` to port 433 can be used, or change the line in `Procfile.dev`
 
