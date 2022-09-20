@@ -2,7 +2,7 @@
 lock "~> 3.17.1"
 
 set :application, "dotagem"
-set :repo_url, "https://github.com/cschuijt/dotagem.git"
+set :repo_url, "https://github.com/dotagem/dotagem.git"
 
 # Default branch, GITHUB_SHA is assigned by release event on github actions
 set :branch do

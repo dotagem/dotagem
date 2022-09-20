@@ -14,7 +14,7 @@ on:
 jobs:
   test:
     name: Run tests
-    uses: cschuijt/dotagem/.github/workflows/tests.yml@main
+    uses: dotagem/dotagem/.github/workflows/tests.yml@main
 
   deploy:
     name: Deploy to production
