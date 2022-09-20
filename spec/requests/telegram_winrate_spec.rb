@@ -54,6 +54,16 @@ RSpec.describe "/winrate", telegram_bot: :rails do
       .and respond_with_message(/999 wins, 123 losses/)
     end
 
+    it "should provide a percentage" do
+      expect { dispatch_message("/winrate", from: {
+        id: user.telegram_id,
+        username: user.telegram_username,
+        first_name: user.telegram_name
+      }) }
+      .to  respond_with_message(/89.04%/)
+      .and respond_with_message(/999 wins, 123 losses/)
+    end
+
     it "should pluralize correctly" do
       allow_any_instance_of(User).to receive(:win_loss) {
         {"win" => 1, "lose" => 1}
@@ -65,6 +75,19 @@ RSpec.describe "/winrate", telegram_bot: :rails do
             first_name: user.telegram_name
           }) }
       .to respond_with_message(/1 win, 1 loss/)
+    end
+
+    it "should correctly handle zero as an input" do
+      allow_any_instance_of(User).to receive(:win_loss) {
+        {"win" => 0, "lose" => 0}
+      }
+
+      expect { dispatch_message("/winrate", from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          }) }
+      .to respond_with_message(/\b0%/)
     end
   end
 

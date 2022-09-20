@@ -243,7 +243,17 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
       message << build_options_message(options)
     end
     message << "#{pluralize(data["win"], "win")}, #{pluralize(data["lose"], "loss")}"
+    message << build_percentage_line(data["win"], data["lose"])
     message.join("\n")
+  end
+
+  def build_percentage_line(w, l)
+    if w + l == 0
+      "0%"
+    else
+      p = (w.to_f / (w + l) * 100).round(2)
+      "#{p}%"
+    end
   end
 
   def logged_in_or_mentioning_player
