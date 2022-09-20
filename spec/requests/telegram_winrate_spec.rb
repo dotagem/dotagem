@@ -76,6 +76,19 @@ RSpec.describe "/winrate", telegram_bot: :rails do
           }) }
       .to respond_with_message(/1 win, 1 loss/)
     end
+
+    it "should correctly handle zero as an input" do
+      allow_any_instance_of(User).to receive(:win_loss) {
+        {"win" => 0, "lose" => 0}
+      }
+
+      expect { dispatch_message("/winrate", from: {
+            id: user.telegram_id,
+            username: user.telegram_username,
+            first_name: user.telegram_name
+          }) }
+      .to respond_with_message(/\b0%/)
+    end
   end
 
   context "with clear arguments" do
