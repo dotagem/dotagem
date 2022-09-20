@@ -18,11 +18,11 @@ class SessionsController < ApplicationController
       User.where(telegram_username: user.telegram_username).each do |u|
         unless user == u
           u.telegram_username = "[#{u.telegram_id}]"
-          u.save
+          u.save!
         end
       end
     end
-    user.save
+    user.save!
 
     log_out if logged_in?
     log_in(user)
@@ -42,7 +42,10 @@ class SessionsController < ApplicationController
           u.steam_nickname = nil
           u.steam_url      = nil
           u.steam_avatar   = nil
-          u.save
+          u.save!
+
+          flash[:notice] = "There was at least one other user with this Steam account" +
+                           " connected, their Steam account has been unset."
         end
       end
     end
@@ -53,7 +56,7 @@ class SessionsController < ApplicationController
     current_user.steam_url      = auth['info']['urls']['Profile']
     current_user.steam_avatar   = auth['extra']['raw_info']['avatarfull']
 
-    current_user.save
+    current_user.save!
     redirect_to '/'
   end
 

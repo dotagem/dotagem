@@ -9,6 +9,12 @@ RSpec.describe User do
       expect( build(:user, :steam_registered) )
       .to be_valid
     end
+
+    it "should accept several incomplete users" do
+      create(:user)
+      expect( build(:user) )
+      .to be_valid
+    end
   end
 
   context "telegram_id" do
