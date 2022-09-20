@@ -11,7 +11,8 @@ class User < ApplicationRecord
                                 },
                                 uniqueness: true,
                                 allow_nil: true
-  validates :steam_id64,        uniqueness: true
+  validates :steam_id64,        uniqueness: true,
+                                allow_nil: true
 
   DEFAULT_MATCH_OPTS = {project: ListMatch.attribute_names, limit: 500}
 
