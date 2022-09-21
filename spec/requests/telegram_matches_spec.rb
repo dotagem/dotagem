@@ -1,36 +1,96 @@
 RSpec.describe "/matches", telegram_bot: :rails do
   context "from an unregistered user" do
-    it "should say that user can't be found" do
-      expect { dispatch_message("/matches", from: {id: 99999}) }
-      .to respond_with_message(/Can't find that user/)
+    before(:example) do
+      dispatch_message("/matches")
+    end
+
+    it "should tell that user they need to register" do
+      expect(bot.requests[:sendMessage].last[:text])
+      .to  include("You need to register before you can use that command")
+      .and include("Use the button below to open a chat with me")
+    end
+
+    it "should have a button to open a chat with the bot" do
+      expect(bot.requests[:sendMessage].last[:reply_markup][:inline_keyboard].count)
+      .to eq(1)
+
+      expect(bot.requests[:sendMessage].last[:reply_markup][:inline_keyboard].first.to_s)
+      .to  include("\"Log In\"")
+      .and include("https://t.me/")
+      .and include(":url")  
     end
   end
 
   context "from an incomplete user" do
-    it "should tell the user they are not registered" do
-      user = create(:user)
+    let(:user) { create(:user) }
 
-      expect { dispatch_message("/matches", from: {
-            id: user.telegram_id,
-            username: user.telegram_username,
-            first_name: user.telegram_name
-          }) }
-      .to respond_with_message(/That user has not completed their registration/)
+    before(:example) do
+      dispatch_message("/matches", from: {
+        id: user.telegram_id,
+        username: user.telegram_username,
+        first_name: user.telegram_name
+      })
+    end
+
+    it "should tell that user they need to register" do
+      expect(bot.requests[:sendMessage].last[:text])
+      .to  include("You need to register before you can use that command")
+      .and include("Use the button below to open a chat with me")
+    end
+
+    it "should have a button to open a chat with the bot" do
+      expect(bot.requests[:sendMessage].last[:reply_markup][:inline_keyboard].count)
+      .to eq(1)
+
+      expect(bot.requests[:sendMessage].last[:reply_markup][:inline_keyboard].first.to_s)
+      .to  include("\"Log In\"")
+      .and include("https://t.me/")
+      .and include(":url")  
     end
   end
 
-  context "mentioning an unregistered user" do
-    it "should say that user can't be found" do
-      expect { dispatch_message("/matches lkjlkjlkjkljlkjl") }
-      .to respond_with_message(/Can't find that user/)
+  context "mentioning an unregistered user as an unregistered user" do
+    before(:example) do
+      dispatch_message("/matches sdlkjfjkdfjkjkdf")
+    end
+
+    it "should tell that user they need to register" do
+      expect(bot.requests[:sendMessage].last[:text])
+      .to  include("You need to register before you can use that command")
+      .and include("Use the button below to open a chat with me")
+    end
+
+    it "should have a button to open a chat with the bot" do
+      expect(bot.requests[:sendMessage].last[:reply_markup][:inline_keyboard].count)
+      .to eq(1)
+
+      expect(bot.requests[:sendMessage].last[:reply_markup][:inline_keyboard].first.to_s)
+      .to  include("\"Log In\"")
+      .and include("https://t.me/")
+      .and include(":url")  
     end
   end
 
-  context "mentioning an incomplete user" do
-    it "should say that user hasn't completed their registration" do
-      user = create(:user)
-      expect { dispatch_message("/matches #{user.telegram_username}") }
-      .to respond_with_message(/That user has not completed their registration/)
+  context "mentioning an incomplete user as an unregistered user" do
+    let(:user) { create(:user) }
+    before(:example) do
+      dispatch_message("/matches #{user.telegram_username}")
+    end
+    
+    it "should tell that user they need to register" do
+      expect(bot.requests[:sendMessage].last[:text])
+      .to  include("You need to register before you can use that command")
+      .and include("Use the button below to open a chat with me")
+    end
+
+    it "should have a button to open a chat with the bot" do
+      expect(bot.requests[:sendMessage].last[:reply_markup][:inline_keyboard].count)
+      .to eq(1)
+
+      expect(bot.requests[:sendMessage].last[:reply_markup][:inline_keyboard].first.to_s)
+      .to  include("\"Log In\"")
+      .and include("https://t.me/")
+      .and include(":url")  
     end
   end
 

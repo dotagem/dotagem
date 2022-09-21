@@ -47,26 +47,55 @@ RSpec.describe "/heroes", telegram_bot: :rails do
   let(:user) { create(:user, :steam_registered) }
 
   context "as an unregistered user" do
+    before(:example) do
+      dispatch_message("/heroes")
+    end
+
     it "should say you need to register" do
-      expect { dispatch_message("/heroes") }
-      .to respond_with_message(/You need to register before/)
+      expect(bot.requests[:sendMessage].last[:text])
+      .to include("You need to register before")
+    end
+
+    it "should provide a button to pm the bot" do
+      expect(bot.requests[:sendMessage].last[:reply_markup][:inline_keyboard].count)
+      .to eq(1)
+
+      expect(bot.requests[:sendMessage].last[:reply_markup][:inline_keyboard].first.to_s)
+      .to  include("\"Log In\"")
+      .and include("https://t.me/")
+      .and include(":url")
     end
   end
 
   context "as an incomplete user" do
-    it "should say that you need to complete their registration" do
-      user = create(:user)
-      expect { dispatch_message("/heroes", from: {
+    let(:user) { create(:user) }
+    
+    before(:example) do
+      dispatch_message("/heroes", from: {
         id: user.telegram_id,
         username: user.telegram_username,
         first_name: user.telegram_name
-      }) }
-      .to respond_with_message(/You need to complete your registration/)
+      })
+    end
+
+    it "should say that you need to register" do
+      expect(bot.requests[:sendMessage].last[:text])
+      .to include("You need to register before")
+    end
+
+    it "should provide a button to pm the bot" do
+      expect(bot.requests[:sendMessage].last[:reply_markup][:inline_keyboard].count)
+      .to eq(1)
+
+      expect(bot.requests[:sendMessage].last[:reply_markup][:inline_keyboard].first.to_s)
+      .to  include("\"Log In\"")
+      .and include("https://t.me/")
+      .and include(":url")
     end
   end
 
   context "mentioning an unknown user" do
-    it "should say that user can't be found" do
+    it "should say it doesn't know that user" do
       expect(bot).to receive(:request).and_wrap_original do |m, *args|
         m.call(*args)
         {"ok"=>true, "result"=>{"message_id"=>120}}
@@ -77,7 +106,8 @@ RSpec.describe "/heroes", telegram_bot: :rails do
         username: user.telegram_username,
         first_name: user.telegram_name
       }) }
-      .to respond_with_message(/Can't find that user/)
+      .to  respond_with_message(/I don't know that user, sorry!/)
+      .and respond_with_message(/They may not be registered yet./)
     end
   end
   
@@ -91,7 +121,8 @@ RSpec.describe "/heroes", telegram_bot: :rails do
           first_name: user.telegram_name
         }
       ) }
-      .to respond_with_message(/That user has not completed their registration/)
+      .to  respond_with_message(/That user has not signed in/)
+      .and respond_with_message(/Once they sign in, their data will become available/)
     end
   end
 

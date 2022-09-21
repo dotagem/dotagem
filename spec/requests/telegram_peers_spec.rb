@@ -8,37 +8,67 @@ RSpec.describe "/peers", telegram_bot: :rails do
   let(:user) { create(:user, :steam_registered) }
 
   context "as an unregistered user" do
+    before(:example) do
+      dispatch_message("/peers")
+    end
+
     it "should say you need to register" do
-      expect { dispatch_message("/peers") }
-      .to respond_with_message(/You need to register before/)
+      expect(bot.requests[:sendMessage].last[:text])
+      .to include("You need to register before")
+    end
+
+    it "should provide a button to pm the bot" do
+      expect(bot.requests[:sendMessage].last[:reply_markup][:inline_keyboard].count)
+      .to eq(1)
+
+      expect(bot.requests[:sendMessage].last[:reply_markup][:inline_keyboard].first.to_s)
+      .to  include("\"Log In\"")
+      .and include("https://t.me/")
+      .and include(":url")
     end
   end
 
   context "as an incomplete user" do
-    it "should say you need to complete your registration" do
-      user = create(:user)
-      expect { dispatch_message("/peers", from: {
-            id: user.telegram_id,
-            username: user.telegram_username,
-            first_name: user.telegram_name
-          }) }
-      .to respond_with_message(/You need to complete your registration/)
+    let(:user) { create(:user) }
+    
+    before(:example) do
+      dispatch_message("/peers", from: {
+        id: user.telegram_id,
+        username: user.telegram_username,
+        first_name: user.telegram_name
+      })
+    end
+
+    it "should say that you need to register" do
+      expect(bot.requests[:sendMessage].last[:text])
+      .to include("You need to register before")
+    end
+
+    it "should provide a button to pm the bot" do
+      expect(bot.requests[:sendMessage].last[:reply_markup][:inline_keyboard].count)
+      .to eq(1)
+
+      expect(bot.requests[:sendMessage].last[:reply_markup][:inline_keyboard].first.to_s)
+      .to  include("\"Log In\"")
+      .and include("https://t.me/")
+      .and include(":url")
     end
   end
 
   context "mentioning an unknown user" do
-    it "should say that user can't be found" do
+    it "should say it doesn't know that user" do
       expect(bot).to receive(:request).and_wrap_original do |m, *args|
         m.call(*args)
-        {"ok"=>true, "result"=>{"message_id"=>100}}
+        {"ok"=>true, "result"=>{"message_id"=>120}}
       end
 
       expect { dispatch_message("/peers asdfsf", from: {
-            id: user.telegram_id,
-            username: user.telegram_username,
-            first_name: user.telegram_name
-          }) }
-      .to  respond_with_message(/Can't find that user/)
+        id: user.telegram_id,
+        username: user.telegram_username,
+        first_name: user.telegram_name
+      }) }
+      .to  respond_with_message(/I don't know that user, sorry!/)
+      .and respond_with_message(/They may not be registered yet./)
     end
   end
   
@@ -47,12 +77,13 @@ RSpec.describe "/peers", telegram_bot: :rails do
       user2 = create(:user)
       expect { dispatch_message(
         "/peers #{user2.telegram_username}", from: {
-            id: user.telegram_id,
-            username: user.telegram_username,
-            first_name: user.telegram_name
-          }
+          id: user.telegram_id,
+          username: user.telegram_username,
+          first_name: user.telegram_name
+        }
       ) }
-      .to respond_with_message(/That user has not completed their registration/)
+      .to  respond_with_message(/That user has not signed in/)
+      .and respond_with_message(/Once they sign in, their data will become available/)
     end
   end
 

@@ -9,23 +9,51 @@ RSpec.describe "/lastmatch", telegram_bot: :rails do
 
   let(:user) { create(:user, :steam_registered) }
 
-  context "from an unregistered account" do
+  context "as an unregistered user" do
+    before(:example) do
+      dispatch_message("/lastmatch")
+    end
+
     it "should say you need to register" do
-      expect{ dispatch_message("/lastmatch") }
-      .to respond_with_message(/You need to register before you can use/)
+      expect(bot.requests[:sendMessage].last[:text])
+      .to include("You need to register before")
+    end
+
+    it "should provide a button to pm the bot" do
+      expect(bot.requests[:sendMessage].last[:reply_markup][:inline_keyboard].count)
+      .to eq(1)
+
+      expect(bot.requests[:sendMessage].last[:reply_markup][:inline_keyboard].first.to_s)
+      .to  include("\"Log In\"")
+      .and include("https://t.me/")
+      .and include(":url")
     end
   end
 
-  context "from an incomplete account" do
-    it "should say you need to complete your registration" do
-      user = create(:user)
+  context "as an incomplete user" do
+    let(:user) { create(:user) }
+    
+    before(:example) do
+      dispatch_message("/lastmatch", from: {
+        id: user.telegram_id,
+        username: user.telegram_username,
+        first_name: user.telegram_name
+      })
+    end
 
-      expect { dispatch_message("/lastmatch", from: {
-            id: user.telegram_id,
-            username: user.telegram_username,
-            first_name: user.telegram_name
-          }) }
-      .to respond_with_message(/You need to complete your registration/)
+    it "should say that you need to register" do
+      expect(bot.requests[:sendMessage].last[:text])
+      .to include("You need to register before")
+    end
+
+    it "should provide a button to pm the bot" do
+      expect(bot.requests[:sendMessage].last[:reply_markup][:inline_keyboard].count)
+      .to eq(1)
+
+      expect(bot.requests[:sendMessage].last[:reply_markup][:inline_keyboard].first.to_s)
+      .to  include("\"Log In\"")
+      .and include("https://t.me/")
+      .and include(":url")
     end
   end
 
@@ -77,14 +105,15 @@ RSpec.describe "/lastmatch", telegram_bot: :rails do
   end
 
   context "mentioning an unregistered account" do
-    it "should say that user can't be found" do
+    it "should say it doesn't know that user" do
       expect{ dispatch_message("/lastmatch 999999") }
-      .to respond_with_message(/Can't find that user/)
+      .to  respond_with_message(/I don't know that user, sorry!/)
+      .and respond_with_message(/They may not be registered yet/)
     end
   end
 
   context "mentioning an incomplete account" do
-    it "should tell that user they are not registered" do
+    it "should say that user needs to sign in with Steam" do
       user2 = create(:user)
 
       expect { dispatch_message(
@@ -95,7 +124,8 @@ RSpec.describe "/lastmatch", telegram_bot: :rails do
             first_name: user.telegram_name
           }
       ) }
-      .to respond_with_message(/That user has not completed their registration/)
+      .to  respond_with_message(/That user has not signed in with Steam yet!/)
+      .and respond_with_message(/Once they sign in, their data will become available/)
     end
   end
 
