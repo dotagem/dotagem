@@ -262,19 +262,24 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
       args[0] = args[0].tr("@", "")
       @player = User.find_by(telegram_username: args[0].downcase)
       if @player.nil?
-        respond_with :message, text: "Can't find that user!"
+        respond_with :message, text: "I don't know that user, sorry! They may not be" +
+        " registered yet."
         throw(:filtered)
       elsif !@player.steam_registered?
-        respond_with :message, text: "That user has not completed their registration!"
+        respond_with :message, text: "That user has not signed in with Steam yet! " +
+        "Once they sign in, their data will become available."
         throw(:filtered)
       end
     else
       @player = User.find_by(telegram_id: from["id"])
-      if @player.nil?
-        respond_with :message, text: "You need to register before you can use that command!"
-        throw(:filtered)
-      elsif !@player.steam_registered?
-        respond_with :message, text: "You need to complete your registration before you can use that command!"
+      if @player.nil? || !(@player.steam_registered?)
+        respond_with :message, text: "You need to register before you can use that command!" +
+        " Use the button below to open a chat with me and sign in with Steam.",
+        reply_markup: {
+          inline_keyboard: [[
+            { text: "Log In", url: "https://t.me/#{bot.username}?start=login" }
+          ]]
+        }
         throw(:filtered)
       end
     end
@@ -288,11 +293,15 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
     end
     @player ||= User.find_by(telegram_id: from["id"])
     
-    if @player.nil?
-      respond_with :message, text: "Can't find that user!"
-      throw(:filtered)
-    elsif !@player.steam_registered?
-      respond_with :message, text: "That user has not completed their registration!"
+    if @player.nil? || !(@player.steam_registered?)
+      respond_with :message, text: "You need to register before you can use that command!" +
+        "If you tried to tag another user, they may not be registered yet.\n\n" +
+        "Use the button below to open a chat with me and sign in with Steam.",
+        reply_markup: {
+          inline_keyboard: [[
+            { text: "Log In", url: "https://t.me/#{bot.username}?start=login" }
+          ]]
+        }
       throw(:filtered)
     end
   end
