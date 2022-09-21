@@ -23,14 +23,15 @@ module ErrorHandling
         chat_id: update["message"]["chat"]["id"]
       )
     elsif update["callback_query"]
-      bot.answer_callback_query(
+      bot.send_message(
+        chat_id: update["callback_query"]["message"]["chat"]["id"],
         text: "Something went wrong, sorry!\n" +
         "When reporting this error, please provide the following information:\n\n" +
         "Update ID: #{update["update_id"]}\n" +
-        "Error: #{exception.inspect}",
-        show_alert: true,
-        callback_query_id: update["callback_query"]["id"]
+        "Error:\n<pre>#{CGI::escapeHTML(exception.inspect)}</pre>",
+        parse_mode: "html"
       )
+      answer_callback_query "Something went wrong, sorry!"
     elsif update["inline_query"]
       bot.answer_inline_query(
         inline_query_id: update["inline_query"]["id"],
