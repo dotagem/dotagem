@@ -2,6 +2,7 @@ module ErrorHandling
   
   private
   def error_out(exception)
+    # Collect backtrace and error information
     backtrace_size = exception.backtrace.size
     if backtrace_size >= 2 then max_range = 2
     elsif backtrace_size >= 1 then max_range = 1
@@ -11,12 +12,14 @@ module ErrorHandling
       logger.error s
     end
 
+    # Send a message with helpful information about what to do next
     if update["message"]
       bot.send_message(
         text: "Something went wrong, sorry!\n" +
         "When reporting this error, please provide the following information:\n\n" +
         "Update ID: #{update["update_id"]}\n" +
-        "Error: #{exception.inspect}",
+        "Error:\n<pre>#{CGI::escapeHTML(exception.inspect)}</pre>",
+        parse_mode: "html",
         chat_id: update["message"]["chat"]["id"]
       )
     elsif update["callback_query"]
@@ -37,10 +40,13 @@ module ErrorHandling
             id: 0,
             title: "Something went wrong, sorry!",
             description: "Send this message for error details.",
-            message_text: "Something went wrong, sorry!\n" +
-              "When reporting this error, please provide the following information:\n\n" + 
+            input_message_content: {
+              message_text: "Something went wrong, sorry!\n" +
+              "When reporting this error, please provide the following information:\n\n" +
               "Update ID: #{update["update_id"]}\n" +
-              "Error: #{exception.inspect}"
+              "Error:\n<pre>#{CGI::escapeHTML(exception.inspect)}</pre>",
+              parse_mode: "html"
+            }
           }
         ],
         cache_time: 10
