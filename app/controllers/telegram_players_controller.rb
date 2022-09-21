@@ -295,7 +295,7 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
     
     if @player.nil? || !(@player.steam_registered?)
       respond_with :message, text: "You need to register before you can use that command!" +
-        "If you tried to tag another user, they may not be registered yet.\n\n" +
+        " If you tried to tag another user, they may not be registered yet.\n\n" +
         "Use the button below to open a chat with me and sign in with Steam.",
         reply_markup: {
           inline_keyboard: [[
