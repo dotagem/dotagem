@@ -85,7 +85,7 @@ gem 'omniauth-telegram', github: 'dotagem/omniauth-telegram', branch: 'master'
 
 # https://github.com/Dragaera/steam-id#readme
 gem 'steam-condenser', github: 'koraktor/steam-condenser-ruby', ref: '3ee580b'
-gem 'steam-id2', '~> 0.4.5'
+gem 'steam-id2', github: 'Dragaera/steam-id', branch: 'master'
 
 gem 'hashie', '~> 5.0.0'
 

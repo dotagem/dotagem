@@ -1,4 +1,12 @@
 GIT
+  remote: https://github.com/Dragaera/steam-id.git
+  revision: dc106b72f5c8375b022b511368a4470b769e3fd3
+  branch: master
+  specs:
+    steam-id2 (0.4.5)
+      steam-condenser (~> 1.3)
+
+GIT
   remote: https://github.com/dotagem/omniauth-telegram.git
   revision: 45a6b3a3e322bfe5e2e706f95a8d26525efcd870
   branch: master
@@ -283,8 +291,6 @@ GEM
     sshkit (1.21.3)
       net-scp (>= 1.1.2)
       net-ssh (>= 2.8.0)
-    steam-id2 (0.4.5)
-      steam-condenser (~> 1.3)
     stimulus-rails (1.1.0)
       railties (>= 6.0.0)
     strscan (3.0.4)
@@ -351,7 +357,7 @@ DEPENDENCIES
   selenium-webdriver
   sprockets-rails
   steam-condenser!
-  steam-id2 (~> 0.4.5)
+  steam-id2!
   stimulus-rails
   tailwindcss-rails (~> 2.0)
   telegram-bot (~> 0.15.6)
