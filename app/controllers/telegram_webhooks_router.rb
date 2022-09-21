@@ -25,7 +25,8 @@ class TelegramWebhooksRouter < Telegram::Bot::UpdatesController
       from = update["callback_query"]["from"]
     end
 
-    if defined?(from) && from
+    # Ensure automatic user saving is skipped in tests with minimal user data
+    if defined?(from) && defined?(from["id"]) && !(from["username"].nil?)
       user = User.find_or_create_by(telegram_id: from["id"])
       user.telegram_username = from["username"].downcase
       if from["last_name"]
