@@ -1,6 +1,22 @@
 RSpec.describe "Telegram bot", telegram_bot: :rails do
   describe "user data" do
-    let(:user) { create(:user, :steam_registered) }
+    let(:user)  { create(:user, :steam_registered) }
+
+    it "should add users to the database when they run a command" do
+      user2 = build(:user)
+
+      expect(User.find_by(telegram_id: user2.telegram_id))
+      .to eq(nil)
+
+      dispatch_message("/help", from: {
+        id: user2.telegram_id,
+        username: user2.telegram_username,
+        first_name: user2.telegram_name
+      })
+
+      expect(User.find_by(telegram_id: user2.telegram_id))
+      .to be_present
+    end
 
     it "should update user's username when they run a command" do
       original_username = user.telegram_username
@@ -81,10 +97,16 @@ RSpec.describe "Telegram bot", telegram_bot: :rails do
 
   it "should welcome new group members" do
     dispatch(message: {
-      from: {id: 12345, username: "asdfgh"},
-      chat: {id: 456},
+      from: {
+        id: 12345,
+        username: "asdfgh",
+        first_name: "Aaa"
+      },
+      chat: { id: 456 },
       new_chat_member: {
-        id: 12345, username: "asdfgh"
+        id: 12345,
+        username: "asdfgh",
+        first_name: "Aaa"
       }
     })
 
@@ -97,17 +119,24 @@ RSpec.describe "Telegram bot", telegram_bot: :rails do
     
     expect(bot.requests[:sendMessage].last[:reply_markup][:inline_keyboard].first.to_s)
     .to  include("\"Log In\"")
-    .and include("/auth/telegram/callback\"")
-    .and include(":login_url")
+    .and include("\"https://t.me/")
+    .and include("?start=login")
+    .and include(":url")
   end
 
   it "should welcome incomplete users" do
     user = create(:user)
     dispatch(message: {
-      from: {id: user.telegram_id, username: user.telegram_username},
+      from: {
+        id: user.telegram_id,
+        username: user.telegram_username,
+        first_name: user.telegram_name
+      },
       chat: {id: 456},
       new_chat_member: {
-        id: user.telegram_id, username: user.telegram_username
+        id: user.telegram_id,
+        username: user.telegram_username,
+        first_name: user.telegram_name
       }
     })
 
@@ -120,18 +149,25 @@ RSpec.describe "Telegram bot", telegram_bot: :rails do
     
     expect(bot.requests[:sendMessage].last[:reply_markup][:inline_keyboard].first.to_s)
     .to  include("\"Log In\"")
-    .and include("/auth/telegram/callback\"")
-    .and include(":login_url")
+    .and include("\"https://t.me/")
+    .and include("?start=login")
+    .and include(":url")
   end
 
   it "should not welcome users that are already registered" do
     user = create(:user, :steam_registered)
 
     dispatch(message: {
-      from: {id: user.telegram_id, username: user.telegram_username},
+      from: {
+        id: user.telegram_id,
+        username: user.telegram_username,
+        first_name: user.telegram_name
+      },
       chat: {id: 456},
       new_chat_member: {
-        id: user.telegram_id, username: user.telegram_username
+        id: user.telegram_id,
+        username: user.telegram_username,
+        first_name: user.telegram_name
       }
     })
 
@@ -140,10 +176,16 @@ RSpec.describe "Telegram bot", telegram_bot: :rails do
 
   it "should not welcome itself" do
     dispatch(message: {
-      from: {id: bot.id, username: bot.username},
+      from: {
+        id: bot.id,
+        username: bot.username,
+        first_name: "Bot"
+      },
       chat: {id: 456},
       new_chat_member: {
-        id: bot.id, username: bot.username
+        id: bot.id,
+        username: bot.username,
+        first_name: "Bot"
       }
     })
 
@@ -153,12 +195,17 @@ RSpec.describe "Telegram bot", telegram_bot: :rails do
   it "should introduce itself when added to a group" do
     user = create(:user, :steam_registered)
     dispatch(my_chat_member: {
-      from: { id: user.telegram_id, username: user.telegram_username },
+      from: {
+        id: user.telegram_id,
+        username: user.telegram_username,
+        first_name: user.telegram_name
+      },
       chat: { id: 456 },
       new_chat_member: {
         user: {
           id: bot.id,
-          username: bot.username
+          username: bot.username,
+          first_name: "Bot"
         }
       }
     })
@@ -173,7 +220,8 @@ RSpec.describe "Telegram bot", telegram_bot: :rails do
 
     expect(bot.requests[:sendMessage].last[:reply_markup][:inline_keyboard].first.to_s)
     .to  include("\"Log In\"")
-    .and include(":login_url")
-    .and include("/auth/telegram/callback\"")
+    .and include("\"https://t.me/")
+    .and include("?start=login")
+    .and include(":url")
   end
 end
