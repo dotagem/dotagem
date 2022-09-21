@@ -6,6 +6,16 @@ GIT
     omniauth-telegram (0.2.1)
       omniauth (>= 1.0)
 
+GIT
+  remote: https://github.com/koraktor/steam-condenser-ruby.git
+  revision: 3ee580b5c5d390ee3a706357f18f2e9a2949e5c2
+  ref: 3ee580b
+  specs:
+    steam-condenser (1.3.11)
+      multi_json (~> 1.6)
+      multi_xml (~> 0.5)
+      rexml (~> 3.2)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -273,9 +283,6 @@ GEM
     sshkit (1.21.3)
       net-scp (>= 1.1.2)
       net-ssh (>= 2.8.0)
-    steam-condenser (1.3.11)
-      multi_json (~> 1.6)
-      multi_xml (~> 0.5)
     steam-id2 (0.4.5)
       steam-condenser (~> 1.3)
     stimulus-rails (1.1.0)
@@ -343,7 +350,7 @@ DEPENDENCIES
   rspec-rails (~> 6.0.0.rc1)
   selenium-webdriver
   sprockets-rails
-  steam-condenser (~> 1.3.11)
+  steam-condenser!
   steam-id2 (~> 0.4.5)
   stimulus-rails
   tailwindcss-rails (~> 2.0)
