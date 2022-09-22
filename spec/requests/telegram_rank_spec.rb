@@ -10,21 +10,82 @@ RSpec.describe "/rank", telegram_bot: :rails do
   end
   
   context "as an unregistered user" do
+    before(:example) do
+      dispatch_message("/rank")
+    end
+
     it "should say you need to register" do
-      expect { dispatch_message("/rank") }
-      .to respond_with_message(/You need to register before/)
+      expect(bot.requests[:sendMessage].last[:text])
+      .to include("You need to register before")
+    end
+
+    it "should provide a button to pm the bot" do
+      expect(bot.requests[:sendMessage].last[:reply_markup][:inline_keyboard].count)
+      .to eq(1)
+
+      expect(bot.requests[:sendMessage].last[:reply_markup][:inline_keyboard].first.to_s)
+      .to  include("\"Log In\"")
+      .and include("https://t.me/")
+      .and include(":url")
     end
   end
 
   context "as an incomplete user" do
-    it "should say you need to complete their registration" do
-      user = create(:user)
-      expect { dispatch_message("/rank", from: {
-            id: user.telegram_id,
-            username: user.telegram_username,
-            first_name: user.telegram_name
-          }) }
-      .to respond_with_message(/You need to complete your registration/)
+    let(:user) { create(:user) }
+    
+    before(:example) do
+      dispatch_message("/rank", from: {
+        id: user.telegram_id,
+        username: user.telegram_username,
+        first_name: user.telegram_name
+      })
+    end
+
+    it "should say that you need to register" do
+      expect(bot.requests[:sendMessage].last[:text])
+      .to include("You need to register before")
+    end
+
+    it "should provide a button to pm the bot" do
+      expect(bot.requests[:sendMessage].last[:reply_markup][:inline_keyboard].count)
+      .to eq(1)
+
+      expect(bot.requests[:sendMessage].last[:reply_markup][:inline_keyboard].first.to_s)
+      .to  include("\"Log In\"")
+      .and include("https://t.me/")
+      .and include(":url")
+    end
+  end
+
+  context "mentioning an unknown user" do
+    it "should say it doesn't know that user" do
+      expect(bot).to receive(:request).and_wrap_original do |m, *args|
+        m.call(*args)
+        {"ok"=>true, "result"=>{"message_id"=>120}}
+      end
+
+      expect { dispatch_message("/rank asdfsf", from: {
+        id: user.telegram_id,
+        username: user.telegram_username,
+        first_name: user.telegram_name
+      }) }
+      .to  respond_with_message(/I don't know that user, sorry!/)
+      .and respond_with_message(/They may not be registered yet./)
+    end
+  end
+  
+  context "mentioning an incomplete user" do
+    it "should say that user needs to complete their registration" do
+      user2 = create(:user)
+      expect { dispatch_message(
+        "/rank #{user2.telegram_username}", from: {
+          id: user.telegram_id,
+          username: user.telegram_username,
+          first_name: user.telegram_name
+        }
+      ) }
+      .to  respond_with_message(/That user has not signed in/)
+      .and respond_with_message(/Once they sign in, their data will become available/)
     end
   end
   
@@ -87,39 +148,6 @@ RSpec.describe "/rank", telegram_bot: :rails do
             first_name: user.telegram_name
           }) }
       .to  respond_with_message("@#{user.telegram_username}'s rank is Immortal")
-    end
-  end
-
-  context "with an unknown user in args" do
-    it "should say it can't find that user" do
-      dispatch_message("/rank sdfkjsdkfsd", from: {
-            id: user.telegram_id,
-            username: user.telegram_username,
-            first_name: user.telegram_name
-          })
-
-      expect(bot.requests[:sendMessage].last[:text])
-      .to  include("Can't find that user")
-    end
-  end
-
-  context "with an incomplete user in args" do
-    it "should tell that user to complete their registration" do
-      user2 = create(:user)
-
-      dispatch_message(
-        "/rank #{user2.telegram_username}",
-        from: {
-            id: user.telegram_id,
-            username: user.telegram_username,
-            first_name: user.telegram_name
-          }
-      )
-
-      expect(bot.requests[:sendMessage].last[:text])
-      .to  include("has not completed their registration")
-      .and not_include(user.telegram_username)
-      .and not_include(user2.telegram_username)
     end
   end
 
