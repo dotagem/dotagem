@@ -38,7 +38,7 @@ class TelegramHelpController < Telegram::Bot::UpdatesController
   end
 
   def start!(*)
-    login_button = [
+    website_button = [
       {
         text: "Log In (website)",
         login_url: {url: login_callback_url}
@@ -61,9 +61,10 @@ class TelegramHelpController < Telegram::Bot::UpdatesController
         respond_with :message,
         text: base_message + "\nYou are already signed in and ready to use the " +
         "bot's commands! If you want to edit or remove your registration, " +
-        "you can do so on the site with the button below.",
+        "you can do so on the site with the button below. You can also send me" +
+        " a link to a Steam profile if you want to change your Steam account.",
         reply_markup: {
-          inline_keyboard: [login_button]
+          inline_keyboard: [website_button]
         }
       else
         respond_with :message,
@@ -72,7 +73,7 @@ class TelegramHelpController < Telegram::Bot::UpdatesController
         "a) Use the button below this message and log in with Steam through the site, or\n" +
         "b) Send a message with a link to your Steam profile!",
         reply_markup: {
-          inline_keyboard: [login_button]
+          inline_keyboard: [website_button]
         }
       end
     else
@@ -80,9 +81,10 @@ class TelegramHelpController < Telegram::Bot::UpdatesController
       text: base_message +
       "\nTo let me show your stats, I will need to know which Steam account " +
       "belongs to which Telegram account. If you want to use my commands, you " +
-      "need to log in with the button below and complete your registration.",
+      "need to log in with the button below and complete your registration on " +
+      "the site, or use the other button and complete it in chat.",
       reply_markup: {
-        inline_keyboard: [login_button, message_button]
+        inline_keyboard: [website_button, message_button]
       }
     end
   end
