@@ -109,12 +109,12 @@ class TelegramWebhooksRouter < Telegram::Bot::UpdatesController
   end
 
   # Do nothing when a channel message gets posted or edited
-  def channel_post
-    
+  def channel_post(*)
+    true
   end
 
-  def edited_channel_post
-
+  def edited_channel_post(*)
+    true
   end
 
   private
