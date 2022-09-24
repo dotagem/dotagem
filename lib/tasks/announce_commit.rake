@@ -3,7 +3,7 @@ namespace :telegram do
 
   task :announce_commit do
     if Rails.application.credentials.telegram.channel_id
-      if File.exists?("#{Rails.root}/CHANGELOG")
+      if File.exists?("#{Rails.root}/CHANGELOG") && !(File.read("#{Rails.root}/CHANGELOG").empty?)
         Telegram.bot.send_message(
           chat_id: Rails.application.credentials.telegram.channel_id,
           disable_web_page_preview: true,
@@ -12,7 +12,7 @@ namespace :telegram do
         )
         puts("Posted the changelog message!")
       else
-        puts("No CHANGELOG file provided, doing nothing.")
+        puts("No CHANGELOG file provided or file was empty, doing nothing.")
       end
     else
       puts "No changelog channel has been defined in the credentials, doing nothing."
