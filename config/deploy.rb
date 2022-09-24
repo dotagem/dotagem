@@ -21,4 +21,3 @@ set :rbenv_type, :user
 set :rbenv_prefix, "RBENV_ROOT=#{fetch(:rbenv_path)} /usr/bin/rbenv exec"
 
 after "deploy:published", "telegram:set_webhook"
-after "deploy:published", "telegram:announce_commit"
