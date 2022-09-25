@@ -77,7 +77,10 @@ jobs:
 
       - name: Create changelog file
         if: "!contains(toJSON(github.event.commits.*.message), '[no-changelog]')"
-        run: echo ${{ steps.build_changelog.outputs.changelog }} >> CHANGELOG
+        run: |
+          cat << EOF >> CHANGELOG
+          ${{ steps.build_changelog.outputs.changelog }}
+          EOF
       
       - name: Copy changelog file to server
         if: "!contains(toJSON(github.event.commits.*.message), '[no-changelog]')"
