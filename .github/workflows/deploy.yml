@@ -46,5 +46,43 @@ jobs:
           ruby-version: '3.1.2'
           bundler-cache: true
 
+      - name: Build changelog
+        if: "!contains(toJSON(github.event.commits.*.message), '[no-changelog]')"
+        id: build_changelog
+        uses: mikepenz/release-changelog-builder-action@v3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          fromTag: ${{github.event.before}}
+          toTag: ${{github.event.after}}
+          includeOpen: false
+          configurationJson: |
+            {
+              "categories": [],
+              "template": "An update just went live!\nWhat changed:\n\n${{UNCATEGORIZED}}\n\n---\n${{ADDITIONS}} lines added, ${{DELETIONS}} lines removed",
+              "pr_template": "<a href=\"${{URL}}\">#${{NUMBER}}</a>: <b>${{TITLE}}</b>\n${{BODY}}\n\n(By <a href=\"https://github.com/${{AUTHOR}}\">${{AUTHOR}}</a>)",
+              "ignore_labels": ["no changelog"],
+              "empty_template": "",
+              "transformers": [
+                {
+                  "pattern": "`([^`]+)`",
+                  "target": "<code>$1</code>"
+                }
+              ]
+            }
+
+
       - name: Run Capistrano
         run: bundle exec cap production deploy
+
+      - name: Create changelog file
+        if: "!contains(toJSON(github.event.commits.*.message), '[no-changelog]')"
+        run: echo ${{ steps.build_changelog.outputs.changelog }} >> CHANGELOG
+      
+      - name: Copy changelog file to server
+        if: "!contains(toJSON(github.event.commits.*.message), '[no-changelog]')"
+        run: scp CHANGELOG dotagem@dotagem.net:/var/www/dotagem/current/CHANGELOG
+      
+      - name: Run announcement task
+        if: "!contains(toJSON(github.event.commits.*.message), '[no-changelog]')"
+        run: cap production telegram:announce_commit
