@@ -59,8 +59,8 @@ jobs:
           configurationJson: |
             {
               "categories": [],
-              "template": "An update just went live!\nWhat changed:\n\n${{UNCATEGORIZED}}\n\n---\n${{ADDITIONS}} lines added, ${{DELETIONS}} lines removed",
-              "pr_template": "<a href=\"${{URL}}\">#${{NUMBER}}</a>: <b>${{TITLE}}</b>\n${{BODY}}\n\n(By <a href=\"https://github.com/${{AUTHOR}}\">${{AUTHOR}}</a>)",
+              "template": "An update just went live!\nWhat changed:\n\n#{{UNCATEGORIZED}}\n\n---\n#{{ADDITIONS}} lines added, #{{DELETIONS}} lines removed",
+              "pr_template": "<a href=\"#{{URL}}\">##{{NUMBER}}</a>: <b>#{{TITLE}}</b>\n#{{BODY}}\n\n(By <a href=\"https://github.com/#{{AUTHOR}}\">#{{AUTHOR}}</a>)",
               "ignore_labels": ["no changelog"],
               "empty_template": "",
               "transformers": [
