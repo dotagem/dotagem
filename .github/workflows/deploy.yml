@@ -88,4 +88,4 @@ jobs:
       
       - name: Run announcement task
         if: "!contains(toJSON(github.event.commits.*.message), '[no-changelog]')"
-        run: cap production telegram:announce_commit
+        run: bundle exec cap production telegram:announce_commit
