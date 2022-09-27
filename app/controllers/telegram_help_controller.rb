@@ -157,4 +157,18 @@ class TelegramHelpController < Telegram::Bot::UpdatesController
     )
     answer_callback_query ""
   end
+
+  def changelog!(*)
+    if Rails.application.credentials.telegram.channel_id
+      respond_with :message, text: "For an overview of recent updates, and to get " +
+      "a notification when a new update goes live, follow the " +
+      "#{Rails.application.credentials.telegram.channel_id} channel!"
+    else
+      respond_with :message, text: "No updates channel has been configured!"
+    end
+  end
+
+  alias_method :changes!, :changelog!
+
+  alias_method :updates!, :changelog!
 end
