@@ -10,3 +10,4 @@ match - Get results of a given match ID
 matchups - Get a hero's best and worst matchups in pro games
 rank - Get player's rank medal
 login - Send a link to sign in with Telegram
+changelog - Get a link to the updates channel
