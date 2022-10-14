@@ -69,6 +69,14 @@ RSpec.describe "/match", telegram_bot: :rails do
       .and not_include(user.telegram_username)
     end
 
+    it "should not fill in unregistered users" do
+      user2 = create(:user)
+      dispatch_message("/match 123456")
+      expect(bot.requests[:sendMessage].last[:text])
+      .to  not_include(user2.telegram_username)
+      .and not_include(user2.telegram_name)
+    end
+
     it "should give a button to OpenDota" do
       allow(Match).to receive(:from_api) do
         build(:match, match_id: 12345)
