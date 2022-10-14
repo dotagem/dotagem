@@ -52,6 +52,7 @@ class MatchPlayer
   end
 
   def known?
+    self.account_id && self.account_id != 0 && 
     !User.find_by(steam_id: self.account_id).nil?
   end
 
