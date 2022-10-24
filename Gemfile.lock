@@ -294,7 +294,7 @@ GEM
     stimulus-rails (1.1.0)
       railties (>= 6.0.0)
     strscan (3.0.4)
-    tailwindcss-rails (2.0.14-x86_64-linux)
+    tailwindcss-rails (2.0.16-x86_64-linux)
       railties (>= 6.0.0)
     telegram-bot (0.15.6)
       actionpack (>= 4.0, < 7.1)
