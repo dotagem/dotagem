@@ -188,7 +188,7 @@ GEM
       net-protocol
     net-ssh (7.0.1)
     nio4r (2.5.8)
-    nokogiri (1.14.1-x86_64-linux)
+    nokogiri (1.14.2-x86_64-linux)
       racc (~> 1.4)
     omniauth (2.1.1)
       hashie (>= 3.4.6)
@@ -286,7 +286,7 @@ GEM
       net-ssh (>= 2.8.0)
     stimulus-rails (1.2.1)
       railties (>= 6.0.0)
-    tailwindcss-rails (2.0.22-x86_64-linux)
+    tailwindcss-rails (2.0.23-x86_64-linux)
       railties (>= 6.0.0)
     telegram-bot (0.15.7)
       actionpack (>= 4.0, < 7.1)
