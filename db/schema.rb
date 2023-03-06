@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_09_20_192128) do
+ActiveRecord::Schema[7.0].define(version: 2023_03_06_225338) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -97,7 +97,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_20_192128) do
 
   create_table "users", force: :cascade do |t|
     t.boolean "admin", default: false
-    t.integer "telegram_id", null: false
+    t.bigint "telegram_id", null: false
     t.string "telegram_username"
     t.string "telegram_avatar"
     t.bigint "steam_id64"
