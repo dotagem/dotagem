@@ -150,7 +150,7 @@ GEM
     httpclient (2.8.3)
     i18n (1.12.0)
       concurrent-ruby (~> 1.0)
-    importmap-rails (1.1.5)
+    importmap-rails (1.1.6)
       actionpack (>= 6.0.0)
       railties (>= 6.0.0)
     io-console (0.6.0)
@@ -188,7 +188,7 @@ GEM
       net-protocol
     net-ssh (7.0.1)
     nio4r (2.5.9)
-    nokogiri (1.14.2-x86_64-linux)
+    nokogiri (1.14.3-x86_64-linux)
       racc (~> 1.4)
     omniauth (2.1.1)
       hashie (>= 3.4.6)
