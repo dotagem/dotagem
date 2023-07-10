@@ -92,7 +92,7 @@ gem 'hashie', '~> 5.0.0'
 gem "tailwindcss-rails", "~> 2.0"
 
 gem "capistrano", "~> 3.17", require: false
-gem "capistrano-rails", "~> 1.3", require: false
+gem "capistrano-rails", "~> 1.6", require: false
 gem "capistrano-rbenv", require: false
 gem "capistrano-passenger", require: false
 
