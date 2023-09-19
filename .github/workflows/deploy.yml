@@ -5,8 +5,8 @@ name: Test and Deploy
 # Controls when the workflow will run
 on:
   # Triggers the workflow on push or pull request events but only for the "main" branch
-  push:
-    branches:  [ "main" ]
+  # push:
+  #   branches:  [ "main" ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -81,11 +81,11 @@ jobs:
           cat << EOF >> CHANGELOG
           ${{ steps.build_changelog.outputs.changelog }}
           EOF
-      
+
       - name: Copy changelog file to server
         if: "!contains(toJSON(github.event.commits.*.message), '[no-changelog]')"
         run: scp CHANGELOG dotagem@dotagem.net:/var/www/dotagem/current/CHANGELOG
-      
+
       - name: Run announcement task
         if: "!contains(toJSON(github.event.commits.*.message), '[no-changelog]')"
         run: bundle exec cap production telegram:announce_commit
