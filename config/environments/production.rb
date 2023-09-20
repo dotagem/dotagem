@@ -93,9 +93,9 @@ Rails.application.configure do
 
   # Configure session store for telegram bot.
   config.telegram_updates_controller.session_store = :redis_cache_store,
-    { expires_in: 1.week }
+    { url: ENV.fetch("REDIS_HOST") { "redis://localhost:6379/0" }, expires_in: 1.week }
 
-  config.force_ssl = true
+  # config.force_ssl = true
 
-  routes.default_url_options = {host: 'dotagem.net', protocol: 'https'}
+  routes.default_url_options = { host: 'dotagem.net', protocol: 'https' }
 end
