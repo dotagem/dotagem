@@ -1,5 +1,5 @@
 module ErrorHandling
-  
+
   private
   def error_out(exception)
     # Collect backtrace and error information
@@ -7,7 +7,7 @@ module ErrorHandling
     if backtrace_size >= 2 then max_range = 2
     elsif backtrace_size >= 1 then max_range = 1
     end
-    if max_range > 0      
+    if max_range > 0
       s = "rescued_from: #{exception.inspect}\n#{exception.backtrace[0..max_range].to_s}\n"
       logger.error s
     end
@@ -53,5 +53,8 @@ module ErrorHandling
         cache_time: 10
       )
     end
-  end 
+
+    # Re-raise error so we can log it
+    raise
+  end
 end
