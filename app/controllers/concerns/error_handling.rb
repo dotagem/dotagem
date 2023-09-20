@@ -54,7 +54,11 @@ module ErrorHandling
       )
     end
 
-    # Re-raise error so we can log it
-    raise
+    # Capture exception in Sentry
+    Sentry.set_tags(
+      telegram_user: defined?(from) ? from["username"] : nil,
+      update_id:     defined?(update) ? update["update_id"] : nil
+    )
+    Sentry.capture_exception(exception)
   end
 end
