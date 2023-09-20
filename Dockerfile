@@ -12,6 +12,9 @@ ENV RAILS_ENV="production" \
     BUNDLE_WITHOUT="development:test" \
     BUNDLE_DEPLOYMENT="1"
 
+ARG RAILS_MASTER_KEY=${RAILS_MASTER_KEY}
+ENV RAILS_MASTER_KEY=${RAILS_MASTER_KEY}
+
 # Update gems and bundler
 RUN gem update --system --no-document && \
     gem install -N bundler
@@ -35,8 +38,6 @@ COPY --link . .
 
 # Precompile bootsnap code for faster boot times
 RUN bundle exec bootsnap precompile app/ lib/
-
-RUN echo $RAILS_MASTER_KEY $RAILS_ENV
 
 # Precompiling assets for production without requiring secret RAILS_MASTER_KEY
 RUN SECRET_KEY_BASE=DUMMY ./bin/rails assets:precompile
