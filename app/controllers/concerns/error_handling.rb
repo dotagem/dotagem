@@ -54,7 +54,7 @@ module ErrorHandling
       )
     end
 
-    # Re-raise error so we can log it
-    raise
+    # Capture exception in Sentry
+    Sentry.capture_exception(exception)
   end
 end
