@@ -43,25 +43,24 @@ class TelegramWebhooksRouter < Telegram::Bot::UpdatesController
           end
         end
       end
-      
+
       user.save!
     end
 
     catch :filtered do
       result = nil
-      
+
       telegram_controllers.each do |controller|
         result = controller.dispatch(bot, update) if result.nil?
         break unless result.nil?
       end
-      
-      super if result.nil?
+
+      super if result.nil? && update["message"] && update["message"]["text"]
     end
   end
 
   def action_missing(*)
-    respond_with :message, text:
-                 "I don't know how to handle that command, sorry!" 
+    raise Telegram::Bot::UnknownCommand
   end
 
   # Situations to handle:
@@ -103,7 +102,9 @@ class TelegramWebhooksRouter < Telegram::Bot::UpdatesController
           ]}
         end
       elsif from["id"] == chat["id"]
-        respond_with :message, text: "I don't know how to handle that command, sorry!" 
+        # We are in a DM with this user and should tell them we don't understand
+        # the command they are trying to run/
+        raise Telegram::Bot::UnknownCommand
       end
     end
   end
@@ -121,10 +122,14 @@ class TelegramWebhooksRouter < Telegram::Bot::UpdatesController
 
   # Build a list of telegram bot controllers
   def self.telegram_controllers
-    list = []
-    Dir[Rails.root.join('app/controllers/telegram_*_controller.rb')].each do |c|
-      list << File.basename(c, ".rb").camelize.constantize 
+    if @list
+      @list
+    else
+      @list = []
+      Dir[Rails.root.join('app/controllers/telegram_*_controller.rb')].each do |c|
+        @list << File.basename(c, ".rb").camelize.constantize
+      end
+      @list
     end
-    list
   end
 end
