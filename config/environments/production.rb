@@ -92,8 +92,11 @@ Rails.application.configure do
   config.active_record.dump_schema_after_migration = false
 
   # Configure session store for telegram bot.
-  config.telegram_updates_controller.session_store = :redis_cache_store,
-    { url: ENV.fetch("REDIS_HOST") { "redis://localhost:6379/0" }, expires_in: 1.week }
+  config.telegram_updates_controller.session_store = :redis_cache_store, {
+    url: ENV.fetch("REDIS_HOST") { "redis://localhost:6379" },
+    db: 0,
+    expires_in: 1.week
+  }
 
   # config.force_ssl = true
 
