@@ -100,5 +100,6 @@ Rails.application.configure do
 
   # config.force_ssl = true
 
-  routes.default_url_options = { host: 'dotagem.net', protocol: 'https' }
+  routes.default_url_options = { host: 'dotagem.net' }
+  config.assume_ssl = true
 end
