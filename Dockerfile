@@ -71,5 +71,4 @@ RUN ./bin/rails telegram:bot:set_webhook
 
 # Start the server by default, this can be overwritten at runtime
 EXPOSE 3000
-RUN ["./bin/rails", "telegram:bot:set_webhook"]
 CMD ["./bin/rails", "server"]
