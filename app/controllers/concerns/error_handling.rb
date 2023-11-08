@@ -82,6 +82,8 @@ module ErrorHandling
       end
     end
 
-    Sentry.capture_exception(exception)
+    if Rails.env.production?
+      Sentry.capture_exception(exception)
+    end
   end
 end

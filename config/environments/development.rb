@@ -78,5 +78,5 @@ Rails.application.configure do
   }
 
   # Enable this if you want to test the Telegram one-click authentication
-  config.force_ssl = true
+  config.force_ssl = false
 end
