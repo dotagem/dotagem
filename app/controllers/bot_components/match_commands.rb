@@ -1,4 +1,6 @@
-class TelegramMatchesController < Telegram::Bot::UpdatesController
+module BotComponents::MatchCommands
+  extend ActiveSupport::Concern
+
   include Telegram::Bot::UpdatesController::MessageContext
   include Telegram::Bot::UpdatesController::CallbackQueryContext
   include Telegram::Bot::UpdatesController::Session
@@ -6,9 +8,6 @@ class TelegramMatchesController < Telegram::Bot::UpdatesController
 
   include MatchMessages
   include MessageSession
-
-  include ErrorHandling
-  rescue_from StandardError, with: :error_out
 
   def match!(*args)
     if args.any? && args.count == 1 && args.first.to_i > 0

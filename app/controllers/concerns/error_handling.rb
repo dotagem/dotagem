@@ -68,21 +68,21 @@ module ErrorHandling
       end
     end
 
-    # Capture exception in Sentry
-    Sentry.set_tags(
-      telegram_user: defined?(from) ? from["username"] : nil,
-      update_id:     defined?(update) ? update["update_id"] : nil
-    )
-
-    if defined?(update)
-      Sentry.configure_scope do |scope|
-        scope.set_context(
-          'update', update
-        )
-      end
-    end
-
     if Rails.env.production?
+      # Capture exception in Sentry
+      Sentry.set_tags(
+        telegram_user: @from  ? @from["username"]   : nil,
+        update_id:     update ? update["update_id"] : nil
+      )
+
+      if defined?(update)
+        Sentry.configure_scope do |scope|
+          scope.set_context(
+            'update', update
+          )
+        end
+      end
+
       Sentry.capture_exception(exception)
     end
   end
