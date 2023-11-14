@@ -1,0 +1,77 @@
+version: '3'
+
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+
+    volumes:
+      - ../..:/workspaces:cached
+
+    # Overrides default command so things don't shut down after the process ends.
+    command: sleep infinity
+
+    environment:
+      DB_HOST               : ${DB_HOST}
+      DB_PORT               : ${DB_PORT}
+      DB_USER               : ${DB_USER}
+      DB_PASS               : ${DB_PASS}
+      REDIS_HOST            : ${REDIS_HOST}
+      SECRET_KEY_BASE       : ${SECRET_KEY_BASE}
+      BASE_URL              : ${BASE_URL}
+      TELEGRAM_BOT_TOKEN    : ${TELEGRAM_BOT_TOKEN}
+      TELEGRAM_BOT_USERNAME : ${TELEGRAM_BOT_USERNAME}
+      TELEGRAM_BOT_CHANNEL  : ${TELEGRAM_BOT_CHANNEL}
+      STEAM_TOKEN           : ${STEAM_TOKEN}
+
+    depends_on:
+      - db
+      - cache
+
+    ports:
+      - 3000:3000
+    # Use "forwardPorts" in **devcontainer.json** to forward an app port locally.
+    # (Adding the "ports" property to this file will not forward from a Codespace.)
+
+  db:
+    container_name: dotagem-dev-db
+    image: postgres:latest
+    restart: unless-stopped
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./create-db-user.sql:/docker-entrypoint-initdb.d/create-db-user.sql
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_DB: dotagem-development
+      POSTGRES_PASSWORD: ${DB_PASS}
+      # Your config/database.yml should use the user and password you set here,
+      # and host "db" (as that's the name of this service). You can use whatever
+      # database name you want. Use `bin/rails db:prepare` to create the database.
+      #
+      # Example:
+      #
+      #  development:
+      #    <<: *default
+      #    host: db
+      #    username: postgres
+      #    password: postgres
+      #    database: myapp_development
+
+    # Add "forwardPorts": ["5432"] to **devcontainer.json** to forward PostgreSQL locally.
+    # (Adding the "ports" property to this file will not forward from a Codespace.)
+
+  cache:
+    build: ../redis
+    container_name: dotagem-dev-cache
+    restart: always
+    ports:
+      - '6379:6379'
+    volumes:
+      - cache:/data
+
+volumes:
+  postgres-data: {}
+  cache: {}

@@ -2,10 +2,10 @@ namespace :telegram do
   desc "Sends the contents of CHANGELOG into the designated channel."
 
   task :announce_commit do
-    if Rails.application.credentials.telegram.channel_id
+    if ENV["TELEGRAM_BOT_CHANNEL"]
       if File.exists?("#{Rails.root}/CHANGELOG") && !(File.read("#{Rails.root}/CHANGELOG").empty?)
         Telegram.bot.send_message(
-          chat_id: Rails.application.credentials.telegram.channel_id,
+          chat_id: ENV["TELEGRAM_BOT_CHANNEL"],
           disable_web_page_preview: true,
           text: File.read("#{Rails.root}/CHANGELOG"),
           parse_mode: "html"

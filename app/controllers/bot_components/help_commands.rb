@@ -1,22 +1,22 @@
-class TelegramHelpController < Telegram::Bot::UpdatesController
+module BotComponents::HelpCommands
+  extend ActiveSupport::Concern
+
   include Telegram::Bot::UpdatesController::MessageContext
   include Telegram::Bot::UpdatesController::CallbackQueryContext
+
   include LoginUrl
-  
-  include ErrorHandling
-  rescue_from StandardError, with: :error_out
-  
+
   require 'steam_id'
-  
+
   def help!(*)
     respond_with :message,
     text: "Click the buttons below for the help page, and a list of commands!",
     reply_markup: { inline_keyboard: [
       [
-        {text: "Help", url: "#{Rails.application.credentials.base_url}/help"}
+        {text: "Help", url: "#{ENV['BASE_URL']}/help"}
       ],
       [
-        {text: "Commands", url: "#{Rails.application.credentials.base_url}/commands"}
+        {text: "Commands", url: "#{ENV['BASE_URL']}/commands"}
       ]
     ]}
   end
@@ -26,15 +26,9 @@ class TelegramHelpController < Telegram::Bot::UpdatesController
     text: "Click the button below for a list of commands!",
     reply_markup: { inline_keyboard: [
       [
-        {text: "Commands", url: "#{Rails.application.credentials.base_url}/commands"}
+        {text: "Commands", url: "#{ENV['BASE_URL']}/commands"}
       ]
     ]}
-  end
-
-  # For buttons that aren't supposed to do anything
-  def nothing_callback_query(*)
-    answer_callback_query ""
-    return false
   end
 
   def start!(*)
@@ -92,7 +86,7 @@ class TelegramHelpController < Telegram::Bot::UpdatesController
   def login_from_message(*words)
     try = words[0]
     begin
-      r = SteamID.from_string(try, api_key: Rails.application.credentials.steam.token)
+      r = SteamID.from_string(try, api_key: ENV["STEAM_TOKEN"])
       save_context :login_from_message
       respond_with :message, text: "I've found #{r.profile_url} \n" +
       "If you want to register this account, press the button below. If not, try " +
@@ -159,10 +153,10 @@ class TelegramHelpController < Telegram::Bot::UpdatesController
   end
 
   def changelog!(*)
-    if Rails.application.credentials.telegram.channel_id
+    if ENV["TELEGRAM_BOT_CHANNEL"]
       respond_with :message, text: "For an overview of recent updates, and to get " +
       "a notification when a new update goes live, follow the " +
-      "#{Rails.application.credentials.telegram.channel_id} channel!"
+      "#{ENV["TELEGRAM_BOT_CHANNEL"]} channel!"
     else
       respond_with :message, text: "No updates channel has been configured!"
     end

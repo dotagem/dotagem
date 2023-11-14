@@ -4,9 +4,9 @@ default: &default
   encoding: unicode
   timeout: 5000
   host: <%= ENV.fetch("DB_HOST") { Rails.application.credentials.db.host } %>
-  port: <%= Rails.application.credentials.db.port %>
-  username: <%= Rails.application.credentials.db.username %>
-  password: <%= Rails.application.credentials.db.password %>
+  port: <%= ENV.fetch("DB_PORT") %>
+  username: <%= ENV.fetch("DB_USER") %>
+  password: <%= ENV.fetch("DB_PASS") %>
 
 development:
   <<: *default

@@ -47,3 +47,6 @@
 /config/credentials/production.key
 
 /CHANGELOG
+
+/.env
+/.devcontainer/.env

@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
-  
+
   root "pages#home"
 
   get "commands", to: "pages#commands"
@@ -18,10 +18,12 @@ Rails.application.routes.draw do
   resources :users, only: [:destroy]
   delete "users/:id/unlink", to: "users#unlink_steam", as: "user_unlink_steam"
 
-  telegram_webhook TelegramWebhooksRouter
+  unless ENV["PRECOMPILE_ASSETS_SKIP"]
+    telegram_webhook TelegramBotController
+  end
 
   patch "admin/refresh_constants", to: "constants#refresh", as: "refresh_constants"
-  
+
   # OmniAuth endpoints, Steam POSTs back instead of GET
   get    'auth/telegram/callback', to: 'sessions#telegram'
   post   'auth/steam/callback',    to: 'sessions#steam'

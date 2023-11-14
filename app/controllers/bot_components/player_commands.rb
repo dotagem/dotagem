@@ -1,4 +1,6 @@
-class TelegramPlayersController < Telegram::Bot::UpdatesController
+module BotComponents::PlayerCommands
+  extend ActiveSupport::Concern
+
   include Telegram::Bot::UpdatesController::MessageContext
   include Telegram::Bot::UpdatesController::CallbackQueryContext
   include Telegram::Bot::UpdatesController::Session
@@ -13,28 +15,27 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
   include OpendotaHelper
   include MatchMessages
 
-  include ErrorHandling
-  rescue_from StandardError, with: :error_out
+  included do
+    before_action :logged_in_or_mentioning_player, only: [:rank!,      :profile!,
+                                                          :peers!,     :heroes!,
+                                                          :lastmatch!]
 
-  before_action :logged_in_or_mentioning_player, only: [:rank!,      :profile!,
-                                                        :peers!,     :heroes!,
-                                                        :lastmatch!]
-  
-  before_action :permissive_logged_in_or_mentioning_player, only: [:matches!,
-                                                                   :recents!,
-                                                                   :winrate!,
-                                                                   :wl!]
+    before_action :permissive_logged_in_or_mentioning_player, only: [:matches!,
+                                                                    :recents!,
+                                                                    :winrate!,
+                                                                    :wl!]
+  end
 
   def matches!(*args)
     options = nil
     if args.any?
-      options = build_and_validate_options(args) 
+      options = build_and_validate_options(args)
       if options == false
         respond_with :message, text: "Invalid input!"
-        throw(:filtered)
+        return
       end
       options.extend Hashie::Extensions::DeepLocate
-      
+
       unclear = options.deep_locate -> (key, _, object) { key == :query && !object[:result] }
       if unclear.any?
         intention = "matches"
@@ -46,7 +47,7 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
         message_session[:intention] = intention
         message_session[:button] = match_button_proc_string
         # We can't build a normal message yet so we throw out right now
-        throw(:filtered)
+        return
       else
         @matches = @player.matches(options)
       end
@@ -92,7 +93,7 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
     hero_id = hero_id.to_i
     options = {}
 
-    
+
     case session[:hero_mode]
     when "with"
       options[:with_hero_id] = [hero_id]
@@ -109,7 +110,7 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
     session[:page] = 1
     session[:button] = match_button_proc_string
     session[:intention] = "matches"
-    
+
     # These need to be nil or unintended buttons show up
     session[:hero_mode] = nil
     session[:hero_sort] = nil
@@ -134,7 +135,7 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
         return false
       end
       options.extend Hashie::Extensions::DeepLocate
-      
+
       unclear = options.deep_locate -> (key, _, object) { key == :query && !object[:result] }
       if unclear.any?
         intention = "wl"
@@ -144,7 +145,7 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
         message_session[:player] = @player.id
         message_session[:intention] = intention
         # We can't build a normal message yet so we throw out right now
-        throw(:filtered)
+        return
       else
         @data = @player.win_loss(options)
       end
@@ -157,7 +158,7 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
     else
       message = build_win_loss_message(@data)
     end
-    
+
     reply_with :message, text: message
   end
 
@@ -169,7 +170,7 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
 
     if data.any?
       data = sort_peers_by_mode(data, sort)
-      
+
       if data.count > 1
         keyboard =  [build_peer_sort_buttons(sort)]
         keyboard += build_paginated_buttons(data, peer_button_proc_string)
@@ -179,7 +180,7 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
     else
       keyboard = []
     end
-  
+
     result = respond_with :message,
       text: "Peers of #{@player.telegram_username}\n#{pluralize(data.count, "result")}",
       reply_markup: {inline_keyboard: keyboard}
@@ -264,11 +265,11 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
       if @player.nil?
         respond_with :message, text: "I don't know that user, sorry! They may not be" +
         " registered yet."
-        throw(:filtered)
+        throw :abort
       elsif !@player.steam_registered?
         respond_with :message, text: "That user has not signed in with Steam yet! " +
         "Once they sign in, their data will become available."
-        throw(:filtered)
+        throw :abort
       end
     else
       @player = User.find_by(telegram_id: from["id"])
@@ -280,7 +281,7 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
             { text: "Log In", url: "https://t.me/#{bot.username}?start=login" }
           ]]
         }
-        throw(:filtered)
+        throw :abort
       end
     end
   end
@@ -292,7 +293,7 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
       @player = User.find_by(telegram_username: args[0].downcase)
     end
     @player ||= User.find_by(telegram_id: from["id"])
-    
+
     if @player.nil? || !(@player.steam_registered?)
       respond_with :message, text: "You need to register before you can use that command!" +
         " If you tried to tag another user, they may not be registered yet.\n\n" +
@@ -302,7 +303,7 @@ class TelegramPlayersController < Telegram::Bot::UpdatesController
             { text: "Log In", url: "https://t.me/#{bot.username}?start=login" }
           ]]
         }
-      throw(:filtered)
+      throw :abort
     end
   end
 end

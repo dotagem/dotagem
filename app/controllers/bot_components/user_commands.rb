@@ -1,13 +1,18 @@
-class TelegramUsersController < Telegram::Bot::UpdatesController
+module BotComponents::UserCommands
+  extend ActiveSupport::Concern
+
   include Telegram::Bot::UpdatesController::MessageContext
   include TelegramHelper
   include LoginUrl
-  include ErrorHandling
-  rescue_from StandardError, with: :error_out
   # Mostly for making a signin button to the site
-  # if you're looking for player data commands, check TelegramPlayersController
+  # if you're looking for player data commands, check PlayerCommands
 
-  def login!(*)
+  def login!(*args)
+    if args.count > 0
+      login_from_message(args[0])
+      return
+    end
+
     web_button = [
       {
         text: "Log In (website)",
@@ -26,7 +31,7 @@ class TelegramUsersController < Telegram::Bot::UpdatesController
     if current_user && current_user.steam_registered?
       message = "Your registration is complete and you can now use the bot! " +
                 "If you want to unlink your account, use the button below to " +
-                "log in or go to #{Rails.application.credentials.base_url} " +
+                "log in or go to #{ENV['BASE_URL']} " +
                 "and log in there."
       respond_with :message,
         text: message,
@@ -67,7 +72,7 @@ class TelegramUsersController < Telegram::Bot::UpdatesController
   def account!(*)
 
     message = "To connect, disconnect or delete your account, use the button " +
-              "below or go to #{Rails.application.credentials.base_url} " +
+              "below or go to #{ENV['BASE_URL']} " +
               "and log in."
     respond_with  :message, text: message,
       reply_markup: {

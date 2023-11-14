@@ -1,6 +1,8 @@
 Rails.application.config.middleware.use OmniAuth::Builder do
-  provider :telegram, Rails.application.credentials.telegram.bot.username, Rails.application.credentials.telegram.bot.token
-  provider :steam, Rails.application.credentials.steam.token
+  unless ENV["PRECOMPILE_ASSETS_SKIP"]
+    provider :telegram, ENV.fetch("TELEGRAM_BOT_USERNAME"), ENV.fetch("TELEGRAM_BOT_TOKEN")
+    provider :steam, ENV.fetch("STEAM_TOKEN")
+  end
 end
 
 # When a user uses the /login link without checking the box to provide their

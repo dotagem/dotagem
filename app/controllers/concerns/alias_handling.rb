@@ -19,7 +19,7 @@ module AliasHandling
 
   def build_alias_resolution_keyboard(options)
     to_match = options.deep_locate -> (key, _, object) do
-      key == :query && !object[:result] 
+      key == :query && !object[:result]
     end
     to_match = to_match.first[:query]
     possible_matches = Nickname.where(name: to_match).includes(:hero).order("heroes.localized_name")
