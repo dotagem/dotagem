@@ -1,21 +1,6 @@
 # 💎 Gem of True Sight
 ##### A Telegram bot that fetches and displays stats and Dota 2 data
 
-![Deploy](https://github.com/dotagem/dotagem/actions/workflows/deploy.yml/badge.svg)
-
-
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/dotagem/dotagem?label=latest%20release)
-![GitHub Release Date](https://img.shields.io/github/release-date/dotagem/dotagem?label=release%20date)
-
-
-![GitHub last commit](https://img.shields.io/github/last-commit/dotagem/dotagem)
-![GitHub commit activity](https://img.shields.io/github/commit-activity/w/dotagem/dotagem)
-![GitHub commits since latest release (by date)](https://img.shields.io/github/commits-since/dotagem/dotagem/latest)
-
-
-![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/dotagem/dotagem)
-![GitHub repo size](https://img.shields.io/github/repo-size/dotagem/dotagem)
-
 ---
 
 ### 🔍 What's this?
@@ -42,28 +27,22 @@ ask me:
 
 * App features:
   * Fetching data from an external JSON API, organizing endpoints, normalizing data
-  * Caching large datasets in Redis so only one API call is required
-  * Monolith design: app serves both Telegram bot API requests and web requests without the need for containers or multi-server deploys
+  * Caching large datasets in Redis so only one API call is required when paging through the response
 * DevOps features:
   * Testing suite for all chat commands, complete with factories and mocks for API data
-  * CI and branch protection to ensure the main branch always passes tests
-  * Continuous deployment: tagging a new version will automatically deploy to server
-  * Modifying the default setup for `rails s` in development to be able to test all HTTPS-dependent Telegram features, without the need to install Nginx
-* Server features
-  * Passenger + Nginx, with the app code living under a non-sudo user account
-  * Strict HTTPS with auto-renewing certificates
-  * Capistrano ensures the server is only updated on successful deploy and rollbacks are always possible
+  * CI to ensure the main branch always passes tests
+  * Continuous deployment: pushing to main will automatically deploy to the server
 
 ---
 
 ### ⚙ Technical information
 
+⚠ I'm currently dockerizing this app to make sure it runs in my newest server setup, and to save everyone the grueling pain of creating a million services and pretending to be an HTTPS-supporting app in development. In the meantime, this information may be outdated, things may be broken, or not quite work as expected. Sorry!
+
 #### Requirements
 * Ruby 3.1.2
 * Postgresql (14+, though swapping out for another database should be possible)
 * Redis
-* Authbind (if you want to be able to log in with Telegram on the dev server, see below)
-* Foreman (for running the Procfile that starts all parts of the bot at once in development)
 
 #### Install process
 * Fork/Clone the repo
@@ -92,7 +71,7 @@ For your convenience, the list of commands I pass to BotFather is also available
 ### 👩‍💻 Under the hood
 * The bot runs on Rails, with the Telegram part acting as middleware. The server is set up as a monolith. Exporting components should be possible too (database, redis) but it's written with the intention to keep everything in one place.
 * To be able to juggle all the bot's commands, a global controller handles the initial request, then tries the sub-controllers one by one until one of them handles the message. This strikes a good balance in terms of spreading the code across multiple files, at the expense of invoking each subsequent controller until the right one is found.
-* The OpenDota API is not JSON-api compliant, so we interact with it through [HTTParty](https://github.com/jnunemaker/httparty), then use database-less models to normalize the data we get back. This way, our controllers/the chatbot code will never have to touch the API directly, the heavy lifting is handled in the model and API files. To see how the API endpoints work under the hood, check out the `app/apis` directory.
+* We interact with the OpenDota API through [HTTParty](https://github.com/jnunemaker/httparty), then use database-less models to normalize the data we get back. This way, our controllers/the chatbot code will never have to touch the API directly, the heavy lifting is handled in the model and API files. To see how the API endpoints work under the hood, check out the `app/apis` directory.
 * Signing in through Telegram and Steam is handled by OmniAuth, with a few small changes. By default, OmniAuth in development throws an exception when authentication fails. To ensure that you can follow login-links from Telegram to your site in development, that behavior is overridden with a redirect to root.
 * The test suite should only query OpenDota once, to seed the database with constants at the very start. The actual tests should have their API calls stubbed out and replaced with factory data.
 * Since Telegram requires our bot to run over HTTPS, Authbind and related setup is required. I've bundled my self-signed certificates with the bot in `config/certs`. If you use a browser from the Chrome family and want to avoid constant security warnings, there's a flag called "Allow invalid certificates for resources loaded from localhost" to suppress them.
