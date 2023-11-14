@@ -49,3 +49,4 @@
 /CHANGELOG
 
 /.env
+/.devcontainer/.env
