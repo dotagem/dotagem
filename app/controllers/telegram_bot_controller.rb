@@ -1,5 +1,8 @@
 class TelegramBotController < Telegram::Bot::UpdatesController
   include Telegram::Bot::UpdatesController::MessageContext
+  include Telegram::Bot::UpdatesController::CallbackQueryContext
+  include Telegram::Bot::UpdatesController::Session
+
   include LoginUrl
   include ErrorHandling
 
@@ -62,7 +65,7 @@ class TelegramBotController < Telegram::Bot::UpdatesController
             }]
           ]}
         end
-      elsif @from["id"] == chat["id"]
+      elsif from["id"] == chat["id"]
         # We are in a DM with this user and should tell them we don't understand
         # the command they are trying to run/
         raise Telegram::Bot::UnknownCommand
@@ -81,24 +84,24 @@ class TelegramBotController < Telegram::Bot::UpdatesController
 
   private
 
-  def update_user_details
+  def update_user_details(*)
     # Update the user's details if we can
     if update["message"]
-      @from = update["message"]["from"]
+      from = update["message"]["from"]
     elsif update["inline_query"]
-      @from = update["inline_query"]["from"]
+      from = update["inline_query"]["from"]
     elsif update["callback_query"]
-      @from = update["callback_query"]["from"]
+      from = update["callback_query"]["from"]
     end
 
     # Ensure automatic user saving is skipped in tests with minimal user data
-    if defined?(@from) && defined?(@from["id"]) && !(@from["username"].nil?) && @from["username"] != bot.username
-      user = User.find_or_create_by(telegram_id: @from["id"])
-      user.telegram_username = @from["username"].downcase
-      if @from["last_name"]
-        user.telegram_name = [@from["first_name"], @from["last_name"]].join(" ")
+    if defined?(from) && defined?(from["id"]) && !(from["username"].nil?) && from["username"] != bot.username
+      user = User.find_or_create_by(telegram_id: from["id"])
+      user.telegram_username = from["username"].downcase
+      if from["last_name"]
+        user.telegram_name = [from["first_name"], from["last_name"]].join(" ")
       else
-        user.telegram_name = @from["first_name"]
+        user.telegram_name = from["first_name"]
       end
 
       if User.where(telegram_username: user.telegram_username).any?
@@ -113,4 +116,20 @@ class TelegramBotController < Telegram::Bot::UpdatesController
       user.save!
     end
   end
+
+  # def session_key
+  #   if update['message']
+  #     chat_id = update['message']['chat']['id']
+  #     message_id = update['message']['message_id']
+  #   elsif update['callback_query']
+  #     chat_id = update['callback_query']['message']['chat']['id']
+  #     message_id = update['callback_query']['message']['message_id']
+  #   else
+  #     super
+  #   end
+
+  #   raise StandardError unless chat_id && message_id
+
+  #   "#{bot.username}:#{chat_id}:#{message_id}"
+  # end
 end
