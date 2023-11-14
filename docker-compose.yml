@@ -3,7 +3,7 @@ version: '3'
 services:
   app:
     build: .
-    image: dotagem_app:latest
+    image: dotagem-app:latest
     container_name: dotagem-app
     ports:
       - "3000:3000"
