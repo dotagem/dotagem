@@ -36,12 +36,9 @@ services:
       - "5432:5432"
 
   cache:
-    image: redis:latest
+    build: ./redis
     container_name: dotagem-cache
     restart: always
-    ports:
-      - '6379:6379'
-    command: redis-server
     volumes:
       - cache:/data
 

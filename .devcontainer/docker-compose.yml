@@ -17,6 +17,7 @@ services:
       DB_PORT               : ${DB_PORT}
       DB_USER               : ${DB_USER}
       DB_PASS               : ${DB_PASS}
+      REDIS_HOST            : ${REDIS_HOST}
       SECRET_KEY_BASE       : ${SECRET_KEY_BASE}
       BASE_URL              : ${BASE_URL}
       TELEGRAM_BOT_TOKEN    : ${TELEGRAM_BOT_TOKEN}
@@ -27,6 +28,9 @@ services:
     depends_on:
       - db
       - cache
+
+    ports:
+      - 3000:3000
     # Use "forwardPorts" in **devcontainer.json** to forward an app port locally.
     # (Adding the "ports" property to this file will not forward from a Codespace.)
 
@@ -37,6 +41,8 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
       - ./create-db-user.sql:/docker-entrypoint-initdb.d/create-db-user.sql
+    ports:
+      - 5432:5432
     environment:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_DB: dotagem-development
@@ -58,12 +64,11 @@ services:
     # (Adding the "ports" property to this file will not forward from a Codespace.)
 
   cache:
-    image: redis:latest
+    build: ../redis
     container_name: dotagem-dev-cache
     restart: always
     ports:
       - '6379:6379'
-    command: redis-server
     volumes:
       - cache:/data
 
