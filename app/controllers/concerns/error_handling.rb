@@ -71,7 +71,7 @@ module ErrorHandling
     if Rails.env.production?
       # Capture exception in Sentry
       Sentry.set_tags(
-        telegram_user: @from  ? @from["username"]   : nil,
+        telegram_user: from   ? from["username"]    : nil,
         update_id:     update ? update["update_id"] : nil
       )
 
