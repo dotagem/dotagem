@@ -265,11 +265,11 @@ module BotComponents::PlayerCommands
       if @player.nil?
         respond_with :message, text: "I don't know that user, sorry! They may not be" +
         " registered yet."
-        return
+        throw :abort
       elsif !@player.steam_registered?
         respond_with :message, text: "That user has not signed in with Steam yet! " +
         "Once they sign in, their data will become available."
-        return
+        throw :abort
       end
     else
       @player = User.find_by(telegram_id: from["id"])
@@ -281,7 +281,7 @@ module BotComponents::PlayerCommands
             { text: "Log In", url: "https://t.me/#{bot.username}?start=login" }
           ]]
         }
-        return
+        throw :abort
       end
     end
   end
@@ -303,7 +303,7 @@ module BotComponents::PlayerCommands
             { text: "Log In", url: "https://t.me/#{bot.username}?start=login" }
           ]]
         }
-      return
+      throw :abort
     end
   end
 end
