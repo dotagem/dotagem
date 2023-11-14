@@ -14,6 +14,7 @@ services:
       DB_PASS               : ${DB_PASS}
       SECRET_KEY_BASE       : ${SECRET_KEY_BASE}
       BASE_URL              : ${BASE_URL}
+      REDIS_HOST            : ${REDIS_HOST}
       TELEGRAM_BOT_TOKEN    : ${TELEGRAM_BOT_TOKEN}
       TELEGRAM_BOT_USERNAME : ${TELEGRAM_BOT_USERNAME}
       TELEGRAM_BOT_CHANNEL  : ${TELEGRAM_BOT_CHANNEL}
