@@ -1,16 +1,15 @@
-class TelegramInlineQueryController < Telegram::Bot::UpdatesController
+module BotComponents::InlineQueries
+  extend ActiveSupport::Concern
+
   include Telegram::Bot::UpdatesController::Session
 
   include MatchMessages
   include LoginUrl
   include ConstantsHelper
 
-  include ErrorHandling
-  rescue_from StandardError, with: :error_out
-
   def inline_query(query, _offset)
     @player ||= User.find_by(telegram_id: from['id'])
-    
+
     if @player && @player.steam_registered?
       results = []
 
@@ -61,7 +60,7 @@ def build_inline_result(lm)
     id: lm.match_id,
     thumb_url: Hero.find_by(hero_id: lm.hero_id).icon_url,
     title: "#{lm.won? ? "Win" : "Loss"} as #{hero_name(lm.hero_id)}",
-    description: "#{lm.kills}/#{lm.deaths}/#{lm.assists} in #{lm.duration / 60} min\n" + 
+    description: "#{lm.kills}/#{lm.deaths}/#{lm.assists} in #{lm.duration / 60} min\n" +
     "#{time_ago_in_words(Time.at(lm.start_time))} ago",
     input_message_content: {
       message_text: build_short_match_message(lm)

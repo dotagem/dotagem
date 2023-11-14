@@ -1,10 +1,10 @@
-class TelegramHelpController < Telegram::Bot::UpdatesController
+module BotComponents::HelpCommands
+  extend ActiveSupport::Concern
+
   include Telegram::Bot::UpdatesController::MessageContext
   include Telegram::Bot::UpdatesController::CallbackQueryContext
-  include LoginUrl
 
-  include ErrorHandling
-  rescue_from StandardError, with: :error_out
+  include LoginUrl
 
   require 'steam_id'
 
@@ -29,12 +29,6 @@ class TelegramHelpController < Telegram::Bot::UpdatesController
         {text: "Commands", url: "#{ENV['BASE_URL']}/commands"}
       ]
     ]}
-  end
-
-  # For buttons that aren't supposed to do anything
-  def nothing_callback_query(*)
-    answer_callback_query ""
-    return false
   end
 
   def start!(*)

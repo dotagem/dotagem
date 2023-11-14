@@ -19,7 +19,7 @@ Rails.application.routes.draw do
   delete "users/:id/unlink", to: "users#unlink_steam", as: "user_unlink_steam"
 
   unless ENV["PRECOMPILE_ASSETS_SKIP"]
-    telegram_webhook TelegramWebhooksRouter
+    telegram_webhook TelegramBotController
   end
 
   patch "admin/refresh_constants", to: "constants#refresh", as: "refresh_constants"

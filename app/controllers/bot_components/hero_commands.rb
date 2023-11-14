@@ -1,15 +1,16 @@
-class TelegramHeroesController < Telegram::Bot::UpdatesController
+module BotComponents::HeroCommands
+  extend ActiveSupport::Concern
+
   include Telegram::Bot::UpdatesController::MessageContext
   include Telegram::Bot::UpdatesController::CallbackQueryContext
   include Telegram::Bot::UpdatesController::Session
+
   include ActionView::Helpers::TextHelper
+
   include Pagination
   include ButtonProcStrings
   include MessageSession
   include ConstantsHelper
-
-  include ErrorHandling
-  rescue_from StandardError, with: :error_out
 
   def alias!(*args)
     if args.any?
@@ -34,7 +35,7 @@ class TelegramHeroesController < Telegram::Bot::UpdatesController
   end
 
   alias_method :aliases!, :alias!
-  
+
   def alias_list_callback_query(hero_id)
     edit_message :text, text: build_alias_list_message(hero_id.to_i)
     answer_callback_query ""
