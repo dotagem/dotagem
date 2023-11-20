@@ -75,7 +75,7 @@ group :test do
   gem "webdrivers"
 end
 
-gem 'telegram-bot', '~> 0.15.6'
+gem 'telegram-bot', '~> 0.16.0'
 gem 'httparty', '~> 0.20'
 
 gem 'omniauth', '~> 2.1.1'
