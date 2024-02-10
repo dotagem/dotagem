@@ -153,10 +153,10 @@ module BotComponents::HelpCommands
   end
 
   def changelog!(*)
-    if ENV["TELEGRAM_BOT_CHANNEL"]
+    if ENV.fetch("TELEGRAM_BOT_CHANNEL", nil)
       respond_with :message, text: "For an overview of recent updates, and to get " +
       "a notification when a new update goes live, follow the " +
-      "#{ENV["TELEGRAM_BOT_CHANNEL"]} channel!"
+      "#{ENV.fetch("TELEGRAM_BOT_CHANNEL")} channel!"
     else
       respond_with :message, text: "No updates channel has been configured!"
     end
