@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/devcontainers/ruby:1-3.2-bullseye
+FROM mcr.microsoft.com/devcontainers/ruby:1-3.3-bullseye
 
 # Install Rails
 RUN su vscode -c "gem install rails webdrivers"
