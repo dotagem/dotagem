@@ -8,11 +8,6 @@ module BotComponents::UserCommands
   # if you're looking for player data commands, check PlayerCommands
 
   def login!(*args)
-    if args.count > 0
-      login_from_message(args[0])
-      return
-    end
-
     web_button = [
       {
         text: "Log In (website)",
@@ -40,14 +35,20 @@ module BotComponents::UserCommands
         }
     else
       if update["message"]["chat"]["type"] == "private"
-        save_context :login_from_message
+        if args.count > 0
+          login_from_message(args[0])
+          return
+        end
+
         message = "To use this bot, you need to log in with both Steam and " +
                   "Telegram. To complete your registration, you have two options:" +
                   "\n\na) Use the button below to log in with Steam via the website, or\n" +
-                  "b) Send me a message with a link to your Steam profile and " +
+                  "b) Send me this command again with a link to your Steam profile " +
+                  "(<code>/login https://steamcommunity.com/id/tradeless</code>`) and " +
                   "complete your registration that way."
         respond_with :message,
           text: message,
+          parse_mode: "html",
           reply_markup: {
           inline_keyboard: [web_button]
         }
