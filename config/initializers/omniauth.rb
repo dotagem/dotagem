@@ -1,7 +1,7 @@
 Rails.application.config.middleware.use OmniAuth::Builder do
   unless ENV["PRECOMPILE_ASSETS_SKIP"]
-    provider :telegram, ENV.fetch("TELEGRAM_BOT_USERNAME"), ENV.fetch("TELEGRAM_BOT_TOKEN")
-    provider :steam, ENV.fetch("STEAM_TOKEN")
+    provider :telegram, ENV.fetch("TELEGRAM_BOT_USERNAME", nil), ENV.fetch("TELEGRAM_BOT_TOKEN", nil)
+    provider :steam, ENV.fetch("STEAM_TOKEN", nil)
   end
 end
 
