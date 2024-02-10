@@ -65,7 +65,8 @@ module BotComponents::HelpCommands
         text: base_message +
         "\nTo let me show your stats, you have two options for signing in: \n\n" +
         "a) Use the button below this message and log in with Steam through the site, or\n" +
-        "b) Send a message with a link to your Steam profile!",
+        "b) Send a command with a link to your Steam profile: <code>/login https://steamcommunity.com/id/tradeless</code>",
+        parse_mode: "html",
         reply_markup: {
           inline_keyboard: [website_button]
         }
