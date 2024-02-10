@@ -2,13 +2,8 @@ name: Run tests and push image
 
 # Controls when the workflow will run
 on:
-  pull_request:
-    branches: [ "main" ]
-  # Allows this workflow to be called from the deploy one
-  workflow_call:
-
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
+  push:
+    branches: [main]
 
 jobs:
   test:
